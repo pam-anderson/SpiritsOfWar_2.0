@@ -84,7 +84,7 @@ class Drawer:
         self.boardIsReady()
         out = (memory << 8) | y
         self.setMessagePins(Message.Sprite)
-        self.setDataPins(out, 14)
+        self.setDataPins(out, 18)
         return
     
     def drawHealthbar(self, character):
@@ -121,22 +121,21 @@ class Drawer:
     
     def animateToTile(self,ram_location, dx, dy, oldx, oldy, newx, newy,
             sprite_type):
+        x1 = (oldx << 4) + START_PIXEL_X
+        y1 = (oldy << 4) + START_PIXEL_Y
+        x2 = (newx << 4) + START_PIXEL_X
+        y2 = (newy << 4) + START_PIXEL_Y
         for i in range(16):
-            self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
-                self.gameMap.tiles[oldx][oldy].sprite.value)
-            self.drawSprite((newx << 4) + START_PIXEL_X, (newy << 4) + START_PIXEL_Y,
-                self.gameMap.tiles[newx][newy].sprite.value)
+            self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
+            self.drawSprite(x2, y2, self.gameMap.tiles[newx][newy].sprite.value)
             if i % 8 <= 3:
-                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
-                    (oldy << 4) + i * dy +
-                    START_PIXEL_Y, ram_location + sprite_type)
+                self.drawSprite(x1 + i * dx, y1 + i * dy,
+                    ram_location + sprite_type)
             else:
-                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
-                    (oldy << 4) + i * dy + 
-                    START_PIXEL_Y, ram_location + sprite_type + 1)
+                self.drawSprite(x1 + i * dx, y1 + i * dy,
+                    ram_location + sprite_type + 1)
             #wait some time
-        self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
-            self.gameMap.tiles[oldx][oldy].sprite.value)
+        self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):

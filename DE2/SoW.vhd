@@ -1,8 +1,8 @@
 -- Implements a simple Nios II system for the DE2 board.
--- Inputs: SW7°0 are parallel port inputs to the Nios II system.
+-- Inputs: SW7Â°0 are parallel port inputs to the Nios II system.
 -- CLOCK_50 is the system clock.
 -- KEY0 is the active-low system reset.
--- Outputs: LEDG7°0 are parallel port outputs from the Nios II system.
+-- Outputs: LEDG7Â°0 are parallel port outputs from the Nios II system.
 -- SDRAM ports correspond to the signals in Figure 2; their names are those
 -- used in the DE2 User Manual.
 LIBRARY ieee;
@@ -57,7 +57,7 @@ UART_RXD :		IN 	STD_LOGIC;
 UART_TXD :		OUT	STD_LOGIC;
 SD_DAT, SD_DAT3, SD_CMD: INOUT STD_LOGIC;
 SD_CLK: OUT STD_LOGIC;
-GPIO_0 : INOUT STD_LOGIC_VECTOR(20 downto 0)
+GPIO_0 : INOUT STD_LOGIC_VECTOR(25 downto 0)
 );
 END SoW;
 ARCHITECTURE Structure OF SoW IS
@@ -115,7 +115,7 @@ COMPONENT SoW_system
 				sdcard_b_SD_dat: INOUT STD_LOGIC;
 				sdcard_b_SD_dat3: INOUT STD_LOGIC;
 				sdcard_o_SD_clock: OUT STD_LOGIC;
-				gpio_0_readdata       : inout   std_logic_vector(20 downto 0)  
+				gpio_0_readdata       : inout   std_logic_vector(25 downto 0)  
         );
 END COMPONENT;
 SIGNAL DQM : STD_LOGIC_VECTOR(1 DOWNTO 0);
@@ -180,6 +180,6 @@ sdcard_b_SD_cmd => SD_CMD,
 sdcard_b_SD_dat => SD_DAT,
 sdcard_b_SD_dat3 => SD_DAT3,
 sdcard_o_SD_clock => SD_CLK ,
-gpio_0_readdata        => GPIO_0(20 downto 0)
+gpio_0_readdata        => GPIO_0(25 downto 0)
 );
 END Structure;
