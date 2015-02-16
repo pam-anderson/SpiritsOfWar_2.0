@@ -83,10 +83,8 @@ class Drawer:
         #                     MSB       LSB
         self.boardIsReady()
         if tileCoords is 1:
-            print (x << 4) + START_PIXEL_X, (y << 4) + START_PIXEL_Y, memory
             out = (x << 4) + START_PIXEL_X
         else:
-            print x, y, memory
             out = x
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 9)
@@ -95,7 +93,6 @@ class Drawer:
             out = (memory << 8) | ((y << 4) + START_PIXEL_Y)
         else:
             out = (memory << 8) | y
-        print out
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 18)
         return
