@@ -136,6 +136,7 @@ class Drawer:
         oldy = (oldy << 4) + START_PIXEL_Y
         newx = (newx << 4) + START_PIXEL_X
         newy = (newy << 4) + START_PIXEL_Y
+        print oldx, oldy, newx, newy
         for i in range(16):
             self.drawSprite(oldx, oldy, oldTile.sprite, 0)
             self.drawSprite(newx, newy, newTile.sprite, 0)
@@ -145,8 +146,8 @@ class Drawer:
             else:
                 self.drawSprite(oldx + i * dx, oldy + i * dy,
                     ram_location + sprite_type + 1, 0)
-            sleep(0.05)
-        self.drawSprite(oldx, oldy, oldTile.sprite)
+            sleep(0.03)
+        self.drawSprite(oldx, oldy, oldTile.sprite, 0)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):
