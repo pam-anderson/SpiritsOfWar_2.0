@@ -20,9 +20,6 @@ class Game:
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
             self.gameMap.tiles)
-        self.drawMenu();
-        self.draw.drawMap()
-        self.draw.drawCharacters()
 
     def getPlayerInput(self):
         keypress = getch()
@@ -186,14 +183,20 @@ class Game:
     def drawMenu(self):
         # Draw Main Menu
         print "drawMenu"
+        opts = {'1P' : 0, '2P' : 1, 'Inst' : 2, 'AV' : 3}
+        cursor = 0
         while True:
             keypress = self.getPlayerInput()
             if keypress == Input.Left or keypress == Input.Up:
-                self.draw.navigateMenu(0)
+                if cursor > 0:
+                    cursor -= 1
+                self.draw.navigateMenu(cursor)
             elif keypress == Input.Right or keypress == Input.Down:
-                self.draw.navigateMenu(1)
+                if cursor < len(opts):
+                    cursor += 1
+                self.draw.navigateMenu(cursor)
             elif keypress == Input.Enter:
-                self.draw.navigateMenu(2)
+                self.draw.navigateMenu(4)
                 break
 
     def exitMenu(self):
@@ -212,6 +215,9 @@ class Game:
 
     def playGame(self):
         print "playGame"
+        self.drawMenu();
+        self.draw.drawMap()
+        self.draw.drawCharacters()
         currPlayer = 0
         while True:
             while not self.players[currPlayer].isTurnDone():

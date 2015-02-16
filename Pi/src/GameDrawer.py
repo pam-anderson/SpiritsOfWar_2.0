@@ -68,7 +68,7 @@ class Drawer:
     def navigateMenu(self, sel):
         self.boardIsReady()
         self.setMessagePins(Message.Menu)
-        self.setDataPins(sel, 2)
+        self.setDataPins(sel, 3)
         # Pi is now a reader until the DE2 passes the changeWriter message
 
     def exitMenu(self, sel):
