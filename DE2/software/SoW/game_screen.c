@@ -65,7 +65,7 @@ int draw_exit_screen(void) {
 	alt_up_char_buffer_clear(char_buffer);
 	alt_up_char_buffer_string(char_buffer, "Are you sure you want to quit?", 25, 23);
 	alt_up_char_buffer_string(char_buffer, "[A] - Yes     [D] - No", 30, 25);
-	get_input(0, key);
+	get_input(0, &key);
 	if (key == 0) {
 		// EXIT
 		alt_up_char_buffer_clear(char_buffer);
@@ -146,9 +146,11 @@ void record_video(int player_id, int character_id) {
 
 void display_video(int player_id, int character_id) {
     int frames = 0, pixel = 0, index = player_id * 3 + character_id;
+    int message, color;
     int x = VIDEO_CORNER_X, y = VIDEO_CORNER_X;
     for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
         for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+        	get_input(&message, &color);
             alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
                 y + (pixel / VIDEO_X_PIXELS), pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
                 y + (pixel / VIDEO_X_PIXELS), videos[index][frames][pixel]);
