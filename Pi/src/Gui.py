@@ -30,12 +30,11 @@ class guiVideoRec():
         t2_header.insert(END, "    Team Two")
         t1_header.pack(); t1_war.pack(); t1_arch.pack(); t1_mage.pack(); 
         t2_header.pack(); t2_war.pack(); t2_arch.pack(); t2_mage.pack();  
-        Button(master, text="Done Recording", command=quit).pack()
         mainloop()
 
 
-#app = guiVideoRec()
-#app.createButton()
+app = guiVideoRec()
+app.createButton()
 
 class guiSoundRec():
     def recWar(self):
@@ -57,8 +56,7 @@ class guiSoundRec():
         rec_move = Button(master, text="Movement", command=self.recMov)
         rec_die = Button(master, text="Death", command= self.recDie)
         rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack(); rec_die.pack()
-        Button(master, text="Done Recording", command=quit).pack()
         mainloop()
 
-#app = guiSoundRec()
-#app.createButton()
+app2 = guiSoundRec()
+app2.createButton()
