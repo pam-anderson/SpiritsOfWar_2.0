@@ -46,7 +46,6 @@ class Game:
         oldY = character.position.y 
         while(True):
             keypress = self.getPlayerInput()
-            #TODO: Boundary checking
             if keypress == Input.Up:
                 self.draw.drawCursor(oldX, oldY, oldX, oldY - 1)
                 oldY -= 1
@@ -112,8 +111,9 @@ class Game:
             character.move = Turn.Done
             if newTile.occupiedBy is not character and \
                     newTile.occupiedBy is not 0:
-                print "Successful hit"
-                newTile.occupiedBy.currentHp -= character.characterClass.attack
+                newTile.occupiedBy.currentHp = max(0,
+                    newTile.occupiedBy.currentHp - \
+                    character.characterClass.attack)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
 #                    self.sound.play_sfx(4)
