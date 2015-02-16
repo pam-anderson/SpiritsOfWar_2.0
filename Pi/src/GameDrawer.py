@@ -6,7 +6,7 @@ MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit, Turn, Writer = range(11)
+        RecordVideo, Sprite, Exit, Turn, Menu = range(11)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -41,7 +41,7 @@ class Drawer:
         return
 
     def setMessagePins(self, message):
-        for pin in range(3):
+        for pin in range(len(self.messagePins)):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
@@ -61,19 +61,22 @@ class Drawer:
             pass
         return
 
-    def changeWriter(self):
+    def navigateMenu(self, sel):
         self.boardIsReady()
-        self.setmessagePins(Message.Writer)
-        self.setDataPins(0, 0)
-        self.boardIsReady()
-        GPIO.cleanup()
+        self.setMessagePins(Message.Menu)
+        self.setDataPins(sel, 2)
         # Pi is now a reader until the DE2 passes the changeWriter message
+
+    def exitMenu(self, sel):
+        self.boardIsReady()
+        self.setMessagePins(Message.Exit)
+        self.setDataPins(sel, 1)
 
     def drawSprite(self, x, y, memory):
         # 1st Set of Data = [x pixel]
         # 2nd Set of Data = [Memory | y pixel]
         #                     MSB       LSB
-        print x
+        print x, y, memory
         self.boardIsReady()
         out = x
         self.setMessagePins(Message.Sprite)
@@ -97,9 +100,9 @@ class Drawer:
     def drawCursor(self,oldX, oldY, newX, newY):
         oldXpix = (oldX << 4) + START_PIXEL_X
         oldYpix = (oldY << 4) + START_PIXEL_Y
-        drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
+        self.drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
         if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
-            drawSprite(oldXpix, oldYpix,
+            self.drawSprite(oldXpix, oldYpix,
                 self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
@@ -198,4 +201,4 @@ class Drawer:
         self.boardIsReady()
         out = playerTurn
         self.setMessagePins(Message.Turn)
-        self.setDataPin(out, 1)
+        self.setDataPins(out, 1)
