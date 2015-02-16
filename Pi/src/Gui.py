@@ -60,5 +60,5 @@ class guiSoundRec():
         Button(master, text="Done Recording", command=quit).pack()
         mainloop()
 
-app = guiSoundRec()
-app.createButton()
+#app = guiSoundRec()
+#app.createButton()
