@@ -15,34 +15,36 @@ class Game:
         self.players = initializePlayers()
         self.gameMap = Map()
         self.draw = Drawer(self.gameMap, self.players)
+        self.cpu = 0
         #self.sound = Sound()
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
             self.gameMap.tiles)
 
-    def getPlayerInput(self):
-        keypress = getch()
-        if keypress == 'a' or keypress == 'A':
-            return Input.Left
-        elif keypress == 'd' or keypress == 'D':
-            return Input.Right
-        elif keypress == 's' or keypress == 'S':
-            return Input.Down
-        elif keypress == 'w' or keypress == 'W':
-            return Input.Up
-        elif keypress == 'n' or keypress == 'N':
-            return Input.Next
-        elif keypress == ' ':
-            return Input.Enter
-        elif keypress == 'x' or keypress == 'X':
-            return Input.Esc
+    def getPlayerInput(self, team):
+        if self.players[team].mode is 0:
+            keypress = getch()
+            if keypress == 'a' or keypress == 'A':
+                return Input.Left
+            elif keypress == 'd' or keypress == 'D':
+                return Input.Right
+            elif keypress == 's' or keypress == 'S':
+                return Input.Down
+            elif keypress == 'w' or keypress == 'W':
+                return Input.Up
+            elif keypress == 'n' or keypress == 'N':
+                return Input.Next
+            elif keypress == ' ':
+                return Input.Enter
+            elif keypress == 'x' or keypress == 'X':
+                return Input.Esc
 
     def selectSpace(self, character, validMoves):
         oldX = character.position.x
         oldY = character.position.y 
         while(True):
-            keypress = self.getPlayerInput()
+            keypress = self.getPlayerInput(character.team)
             if keypress == Input.Up:
                 self.draw.drawCursor(oldX, oldY, oldX, oldY - 1)
                 oldY -= 1
@@ -77,7 +79,8 @@ class Game:
         print "moveChar"
 #        self.sound.play_sfx(3)
         oldTile = character.position
-        validMoves = self.gameMap.depthFirstSearch(character,
+        validMoves = self.gameMap.depthFirstSearch(character.position.x,
+            character.position.y, character.team,
             character.characterClass.movement, False)
         self.highlightTiles(validMoves, 1)
         newTile = self.selectSpace(character, validMoves)
@@ -100,7 +103,8 @@ class Game:
 #        elif character.characterClass == "mage":
 #            self.sound.play_sfx(2)
         oldTile = character.position
-        validMoves = self.gameMap.depthFirstSearch(character,
+        validMoves = self.gameMap.depthFirstSearch(character.position.x,
+            character.position.y, character.team,
             character.characterClass.movement, True)
         self.highlightTiles(validMoves, 2)
         newTile = self.selectSpace(character, validMoves)
@@ -130,7 +134,7 @@ class Game:
             self.players[team].characters[charId].position.x,
             self.players[team].characters[charId].position.y)
         while True:
-            keypress = self.getPlayerInput()
+            keypress = self.getPlayerInput(team)
             if keypress == Input.Esc:
                 # Draw exit screen
                 if self.exitMenu():
@@ -186,7 +190,7 @@ class Game:
         opts = {'1P' : 0, '2P' : 1, 'Inst' : 2, 'AV' : 3}
         cursor = 0
         while True:
-            keypress = self.getPlayerInput()
+            keypress = self.getPlayerInput(0)
             if keypress == Input.Left or keypress == Input.Up:
                 if cursor > 0:
                     cursor -= 1
@@ -197,13 +201,15 @@ class Game:
                 self.draw.navigateMenu(cursor)
             elif keypress == Input.Enter:
                 self.draw.navigateMenu(4)
-                break
+                if cursor is 0:
+                    self.players[1].mode = 1
+                return
 
     def exitMenu(self):
         print "exitMenu"
         self.draw.exitMenu(0)
         while True:
-            keypress = self.getPlayerInput()
+            keypress = self.getPlayerInput(0)
             if keypress == Input.Left:
                 # Exit
                 self.draw.exitMenu(0)

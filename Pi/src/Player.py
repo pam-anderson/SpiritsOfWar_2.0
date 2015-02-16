@@ -51,6 +51,7 @@ class Character:
 
 class Player:
     def __init__(self, characters):
+        self.mode = 0 # Set to 1 if controlled by CPU
         self.characters = characters
         self.charactersRemaining = CHARS_PER_PLAYER
         self.cursor = [0, 0]

@@ -1,4 +1,5 @@
 from enum import Enum
+from random import randint
 # If getting error about not having module enum, do:
 # sudo pip install enum34
 
@@ -35,11 +36,25 @@ class Map:
         for x in range(MAP_SIZE):
             for y in range(MAP_SIZE):
                 self.tiles[x][y] = MapTile(x, y, Sprite.Grass)
+        self.randomizeMap()
+
+    def randomizeMap(self):
+        # Generate random body of water
+        size = randint(1, 2)
+        lakeX = randint(2, MAP_SIZE - 3)
+        lakeY = randint(2, MAP_SIZE - 3)
+        lakeTiles = self.depthFirstSearch(lakeX, lakeY, 0, size, 0)
+        for tile in lakeTiles:
+            tile.sprite = Sprite.Water.value
+            tile.distance = 1000
+        # Generate random rocks on map
+        rocks = randint(5, 10)
+        for rock in range(rocks):
+            x = randint(2, MAP_SIZE - 3)
+            y = randint(0, MAP_SIZE - 1)
+            self.tiles[x][y].sprite = Sprite.Rock.value
     
-    def depthFirstSearch(self, character, levels, attackable):
-        x = character.position.x
-        y = character.position.y
-        teamId = character.team
+    def depthFirstSearch(self, x, y, teamId, levels, attackable):
         queue = [self.tiles[x][y]]
         neighbours = []
         validMoves = [self.tiles[x][y]]
