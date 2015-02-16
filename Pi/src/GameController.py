@@ -22,8 +22,8 @@ class Game:
         self.draw = Drawer(self.gameMap, self.players)
         self.cpu = 0
         #self.sound = Sound()
-        #self.vidGui = guiVideoRec()
-        #self.sndGui = guiSoundRec()
+        self.vidGui = guiVideoRec()
+        self.sndGui = guiSoundRec()
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
@@ -196,21 +196,20 @@ class Game:
             if keypress == Input.Left or keypress == Input.Up:
                 if cursor > 0:
                     cursor -= 1
+                    print cursor
                 self.draw.navigateMenu(cursor)
             elif keypress == Input.Right or keypress == Input.Down:
-                if cursor < len(opts):
+                if cursor+1 < len(opts):
                     cursor += 1
+                    print cursor
                 self.draw.navigateMenu(cursor)
             elif keypress == Input.Enter:
                 self.draw.navigateMenu(4)
                 if cursor is 0:
                     self.players[1].mode = 1
                 if cursor is 3:
-                    break
-                   # appVid = vidGui.guiVideoRec()
-                   # appVid.createButton()
-                   # appSnd = sndGui.guiSoundRec()
-                   # appSnd.createButton()                    
+                    self.vidGui.createButton()
+                    self.sndGui.createButton()                    
                 return
 
     def exitMenu(self):
