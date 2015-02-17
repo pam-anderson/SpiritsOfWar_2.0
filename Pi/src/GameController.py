@@ -6,9 +6,14 @@ from enum import Enum
 from Sounds import Sound
 from getch import getch
 from ComputerPlayer import ComputerPlayer
+from Gui import guiVideoRec
+from Gui import guiSoundRec
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
+class Sound(Enum):
+    War, Mage, Arch, Move, Die = range(5)
+    
 
 class Game:
     def __init__(self):
@@ -18,6 +23,8 @@ class Game:
         self.draw = Drawer(self.gameMap, self.players)
         self.cpu = 0
         #self.sound = Sound()
+        self.vidGui = guiVideoRec()
+        self.sndGui = guiSoundRec()
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
@@ -75,7 +82,7 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
-#        self.sound.play_sfx(3)
+#        self.sound.play_sfx(Sound.Move)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
@@ -94,12 +101,7 @@ class Game:
 
     def attackCharacter(self, team, character):
         print "attackChar"
-#        if character.characterClass == "warrior":
-#            self.sound.play_sfx(0)
-#        elif character.characterClass == "ranger":
-#            self.sound.play_sfx(1)
-#        elif character.characterClass == "mage":
-#            self.sound.play_sfx(2)
+#       self.sound.play_sfx(character.characterId)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
@@ -115,7 +117,7 @@ class Game:
                     character.characterClass.attack)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
-#                    self.sound.play_sfx(4)
+#                    self.sound.play_sfx(Sound.Die)
                     newTile.occupiedBy.currentHp = 0
                     newTile.occupiedBy = 0
                     self.draw.drawSprite(newTile.x, newTile.y,
@@ -192,15 +194,20 @@ class Game:
             if keypress == Input.Left or keypress == Input.Up:
                 if cursor > 0:
                     cursor -= 1
+                    print cursor
                 self.draw.navigateMenu(cursor)
             elif keypress == Input.Right or keypress == Input.Down:
-                if cursor < len(opts):
+                if cursor+1 < len(opts):
                     cursor += 1
+                    print cursor
                 self.draw.navigateMenu(cursor)
             elif keypress == Input.Enter:
                 self.draw.navigateMenu(4)
                 if cursor is 0:
                     self.players[1].mode = 1
+                if cursor is 3:
+                    self.vidGui.createButton()
+                    self.sndGui.createButton()                    
                 return
 
     def exitMenu(self):
