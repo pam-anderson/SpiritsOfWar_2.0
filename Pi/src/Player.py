@@ -54,7 +54,6 @@ class Player:
         self.mode = 0 # Set to 1 if controlled by CPU
         self.characters = characters
         self.charactersRemaining = CHARS_PER_PLAYER
-        self.cursor = [0, 0]
 
     def isTurnDone(self):
         for character in self.characters:

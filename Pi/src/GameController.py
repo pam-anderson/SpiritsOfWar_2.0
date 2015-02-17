@@ -5,6 +5,7 @@ from Player import CHARS_PER_PLAYER
 from enum import Enum
 from Sounds import Sound
 from getch import getch
+from ComputerPlayer import ComputerPlayer
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
@@ -23,22 +24,19 @@ class Game:
             self.gameMap.tiles)
 
     def getPlayerInput(self, team):
+        keys = {'a' : Input.Left,  'A' : Input.Left,
+                'd' : Input.Right, 'D' : Input.Right,
+                's' : Input.Down,  'S' : Input.Down,
+                'w' : Input.Up,    'W' : Input.Up,
+                'n' : Input.Next,  'N' : Input.Next,
+                'x' : Input.Esc,   'X' : Input.Esc,
+                ' ' : Input.Enter }
         if self.players[team].mode is 0:
             keypress = getch()
-            if keypress == 'a' or keypress == 'A':
-                return Input.Left
-            elif keypress == 'd' or keypress == 'D':
-                return Input.Right
-            elif keypress == 's' or keypress == 'S':
-                return Input.Down
-            elif keypress == 'w' or keypress == 'W':
-                return Input.Up
-            elif keypress == 'n' or keypress == 'N':
-                return Input.Next
-            elif keypress == ' ':
-                return Input.Enter
-            elif keypress == 'x' or keypress == 'X':
-                return Input.Esc
+        try:
+            return keys[keypress]
+        except KeyError as exception:
+            return
 
     def selectSpace(self, character, validMoves):
         oldX = character.position.x
@@ -221,6 +219,8 @@ class Game:
 
     def playGame(self):
         print "playGame"
+        self.cpu = ComputerPlayer(self.gameMap, self.players[1], self.players[0])
+        self.cpu.planTurn(self.players[1].characters[1])
         self.drawMenu();
         self.draw.drawMap()
         self.draw.drawCharacters()
