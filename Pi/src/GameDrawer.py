@@ -1,12 +1,13 @@
-START_PIXEL_X = 0
-START_PIXEL_Y = 0
+START_TILE_X = 0
+START_TILE_Y = 0
+MAP_SIZE = 8
 
 #Draw functions
 def drawMap():
-    #send command to
     for y in range(0, MAP_SIZE):
         for x in range(0, MAP_SIZE):
-            drawSprite(x << 4 + START_PIXEL_X, y << 4 + START_PIXEL_Y, gameMap.tiles[x][y].sprite)
+            drawSprite(x + START_TILE_X, y + START_TILE_Y,
+                gameMap.tiles[x][y].sprite)
 
     drawCharacters()
     return
@@ -21,8 +22,13 @@ def drawSprite(x, y, memory):
     return
 
 def drawHealthbar(player_id, character_id):
-    #draw on DE2
+    #draw on DE2 send max health and current health
     return
 
 def drawCharacters():
+    for p in players:
+        for c in players.characters:
+            drawSprite(c.position[0] + START_TILE_X, c.position[1]
+                + START_TILE_Y, c.standingSprite)
+        
     return
