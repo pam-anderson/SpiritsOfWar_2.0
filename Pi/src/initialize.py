@@ -1,6 +1,7 @@
 from player import CharacterClass
 from player import Character
 from player import Player 
+from map import Map
 
 # CLASS STATS
 WARRIOR_HP = 10
@@ -43,3 +44,6 @@ def initializePlayers():
     players.append(Player(initializeCharacters(0)))
     players.append(Player(initializeCharacters(1)))
     return players
+
+def initializeMap():
+    return Map()
