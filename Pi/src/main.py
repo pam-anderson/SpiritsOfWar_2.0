@@ -1,5 +1,6 @@
 from initialize import initializePlayers
 from initialize import initializeMap
+from map import MapTile
 
 def main():
     players = initializePlayers()
