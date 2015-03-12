@@ -1,1 +1,25 @@
-README
+Communication Protocol between the Pi and DE2:
+
+- 2 pin writes:
+    1. [Msg Type] - Wait for Ready flag to be set
+    2. [Data] - Wait for Done flag to be set
+
+- Messages:
+    0 Update health
+        Pass current health and max health (8 bits)
+    1 Update screen
+        Pass screen type, eg. start, end, instruction (2 bits)
+    2 Move cursor
+        Pass direction to move cursor, eg. up, down, etc (2 bits)
+    3 Highlight characters
+        Pass player id and characters that are alive (3 bits)
+    4 Play video animation
+        Pass player id (1 bit)
+    5 Calibrate video
+    6 Record video
+        Pass player id + camera frames (25 bits)
+    7 Pixel drawer
+        Pass sprite type (6 bits), colour shift (2 bits), and 
+        x (5 bits), y (4 bits) tile coordinates
+    8 Exit menu
+        Draw or clear exit menu (1 bit)
