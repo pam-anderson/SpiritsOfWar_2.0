@@ -1,12 +1,12 @@
-START_TILE_X = 0
-START_TILE_Y = 0
+START_PIXEL_X = 0
+START_PIXEL_Y = 0
 MAP_SIZE = 8
 
 #Draw functions
 def drawMap():
     for y in range(0, MAP_SIZE):
         for x in range(0, MAP_SIZE):
-            drawSprite(x + START_TILE_X, y + START_TILE_Y,
+            drawSprite(x << 4 + START_PIXEL_X, y << 4 + START_PIXEL_Y,
                 gameMap.tiles[x][y].sprite)
 
     drawCharacters()
@@ -28,7 +28,7 @@ def drawHealthbar(player_id, character_id):
 def drawCharacters():
     for p in players:
         for c in players.characters:
-            drawSprite(c.position[0] + START_TILE_X, c.position[1]
-                + START_TILE_Y, c.standingSprite)
+            drawSprite(c.position[0] << 4 + START_PIXEL_X, c.position[1] << 4
+                + START_PIXEL_Y, c.standingSprite)
         
     return

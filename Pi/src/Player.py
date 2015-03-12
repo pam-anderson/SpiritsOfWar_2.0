@@ -23,12 +23,9 @@ class Character:
         self.team = team
         self.characterId = characterId
         self.position = [0, 0] # [x coord, y coord]
-<<<<<<< HEAD
         self.move = Turn.Move
-=======
         self.standingSprite = team * 3 + 3 + characterId
         self.animationSprite = characterId * 8 + 9
->>>>>>> updated player and game drawer
 
 class Player:
     def __init__(self, characters):
