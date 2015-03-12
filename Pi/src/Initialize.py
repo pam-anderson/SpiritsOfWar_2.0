@@ -1,7 +1,7 @@
-from player import CharacterClass
-from player import Character
-from player import Player 
-from map import Map
+from Player import CharacterClass
+from Player import Character
+from Player import Player 
+from Map import Map
 
 # CLASS STATS
 WARRIOR_HP = 10
