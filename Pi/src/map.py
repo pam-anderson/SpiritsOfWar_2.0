@@ -1,4 +1,11 @@
+from enum import Enum
+# If getting error about not having module enum, do:
+# sudo pip install enum34
+
 MAP_SIZE = 8
+
+class Direction(Enum):
+    Left, Right, Up, Down = range(4)
 
 class MapTile:
     def __init__(self, x, y, sprite):
@@ -41,27 +48,27 @@ class Map:
         validMoves = [self.tiles[x][y]]
         for level in range(levels):
             for node in queue:
-                for direction in range(4):
-                    if direction == 0 and valid(self.tiles[x - 1][y], teamId):
-                        # LEFT
+                for direction in Direction:
+                    if direction == Direction.Left and \
+                            valid(self.tiles[x - 1][y], teamId):
                         self.tiles[x - 1][y].explored = True
                         neighbours.append(self.tiles[x - 1][y])
                         validMoves.append(self.tiles[x - 1][y])
-                    elif direction == 1 and valid(self.tiles[x + 1][y], teamId):
-                        # RIGHT
+                    elif direction == Direction.Right and \
+                            valid(self.tiles[x + 1][y], teamId):
                         self.tiles[x + 1][y].explored = True
                         neighbours.append(self.tiles[x + 1][y])
                         validMoves.append(self.tiles[x + 1][y])
-                    elif direction == 2 and valid(self.tiles[x][y - 1], teamId):
-                        # UP
+                    elif direction == Direction.Up and \
+                            valid(self.tiles[x][y - 1], teamId):
                         self.tiles[x][y - 1].explored = True
                         neighbours.append(self.tiles[x][y - 1])
                         validMoves.append(self.tiles[x][y - 1])
-                    elif direction == 3 and valid(self.tiles[x][y + 1], teamId):
-                        # DOWN
-                        self.tiles[x][y + 1].explored = True
-                        neighbours.append(self.tiles[x][y + 1])
-                        validMoves.append(self.tiles[x][y + 1])
+                    elif direction == Direction.Down:
+                        if valid(self.tiles[x][y + 1], teamId):
+                            self.tiles[x][y + 1].explored = True
+                            neighbours.append(self.tiles[x][y + 1])
+                            validMoves.append(self.tiles[x][y + 1])
                         queue.remove(node) 
             queue = list(neighbours)
             neighbours = []
