@@ -7,6 +7,9 @@ MAP_SIZE = 8
 class Direction(Enum):
     Left, Right, Up, Down = range(4)
 
+class Sprite(Enum):
+    Grass, Water, Rock = range(3)
+
 class MapTile:
     def __init__(self, x, y, sprite):
         self.x = x
@@ -20,7 +23,7 @@ class MapTile:
     # Even though we don't use teamId, we want the same arguments as
     # tileIsAttackable since these will be passed to the DFS
         if not self.explored and self.occupiedBy == 0 and \
-            self.sprite == "grass":
+            self.sprite == Sprite.Grass:
             return True
         else:
             return False
@@ -30,7 +33,7 @@ class MapTile:
             self.occupiedBy.team != teamId:
             return True
         elif not self.explored and self.occupiedBy == 0 and \
-            self.sprite == "grass":
+            self.sprite == Sprite.Grass:
             return True
         else:
             return False
@@ -40,7 +43,7 @@ class Map:
         self.tiles = [[0 for x in range(MAP_SIZE)] for x in range(MAP_SIZE)]
         for x in range(MAP_SIZE):
             for y in range(MAP_SIZE):
-                self.tiles[x][y] = MapTile(x, y, "grass")
+                self.tiles[x][y] = MapTile(x, y, Sprite.Grass)
     
     def depthFirstSearch(self, teamId, charId, x, y, levels, valid):
         queue = [self.tiles[x][y]]
