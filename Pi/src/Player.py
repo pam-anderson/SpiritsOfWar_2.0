@@ -45,6 +45,8 @@ class Character:
         self.characterId = characterId
         self.position = [0, 0] # [x coord, y coord]
         self.move = Turn.Move
+        self.standingSprite = team * 3 + 3 + characterId
+        self.animationSprite = characterId * 8 + 9
 
 class Player:
     def __init__(self, characters):
