@@ -1,10 +1,7 @@
-from Initialize import initializePlayers
-from Initialize import initializeMap
-from Map import MapTile
+from GameController import Game
 
 def main():
-    players = initializePlayers()
-    gameMap = initializeMap()
+    game = Game()
 
 if __name__ == "__main__":
     main()

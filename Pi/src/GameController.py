@@ -1,46 +1,59 @@
-def select_character(player_id):
-    return True
+from Player import initializePlayers
+from Map import Map
 
-def show_game():
-    return
+class Game:
+    def __init__(self):
+        self.currPlayer = 0
+        # Draw map and initialize players here
+        self.players = initializePlayers()
+        self.gameMap = Map()
+ 
+    def doPlayerTurn(self, team):
+        # cycle thru chars, exit menu, skip turn, or select char
+        # GET PLAYER INPUT
+        keypress = 0
+        charId = 0
+        while True:
+            if keypress == Input.Esc:
+                # Draw exit screen
+                return False
+            elif keypress == Input.Next:
+                # moveable->atk or atk->done
+                move = players[team].currentMove()
+                for character in players[team].characters:
+                    if character.move == move and move != Turn.Done:
+                        character.move += 1
+                return True
+            elif keypress == Input.Enter and \
+                    gameMap.tiles[x][y].occupiedBy != 0:
+                # do mvmnt or atk
+                pass
+            elif keypress == Input.Left:
+                while True:
+                    if charId > 0:
+                        charId -= 1
+                    else:
+                        charId = CHARS_PER_PLAYER - 1
+                    if players[team].characters[charId].currentHp > 0:
+                        break
+            elif keypress == Input.Right:
+                while True:
+                    if charId < CHAR_PER_PLAYER - 1:
+                        charId += 1
+                    else:
+                        charId = 0
+                    if players[team].characters[charId].currentHp > 0:
+                        break
+                #cycle right thru characters
+                pass
+            
+    def playGame():
+        while True:
+            while not players[currPlayer].isTurnDone:
+                if players[currPlayer].charactersRemaining == 0:
+                    print "Game over"
+                    return
+                doPlayerTurn(currPlayer)
+            players[currPlayer].resetTurn()
+            currPlayer = not currPlayer
 
-
-#turn actions
-
-
-
-#turn control checking
-def is_turn_done(player_id):
-    for i in range(0, CHARS_PER_PLAYER):
-        #if Players[player_id].characters[i].move != DONE && Players[player_id].characters[i].hp > 0:
-            return False
-    return True
-
-def reset_turn(player_id):
-    #for i in range(0, CHARS_PER_PLAYER):
-        #Players[player_id].characters[i].move = MOVE;
-    return
-
-def is_game_over(player_id):
-    #return Players[main_player_id].characters_remaining == 0
-    return False
-
-#main game playing function
-def play_game():
-    main_player_id = 0
-    #show_game()
-    #draw_map()
-    #load_turn(main_player_id)
-   
-    while True:
-        while not is_turn_done(main_player_id):
-            if is_game_over(main_player_id):
-                print "Game over. Player", main_player_id, "lost!"
-                return
-            if not select_character(main_player_id):
-                print "Game over. Player", main_player_id, "lost!"
-                return
-        reset_turn(main_player_id)
-        main_player_id = (main_player_id + 1) % 2
-        #load_turn(main_player_id)
-    return

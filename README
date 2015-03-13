@@ -1,8 +1,8 @@
 Communication Protocol between the Pi and DE2:
 
-- 2 pin writes:
-    1. [Msg Type] - Wait for Ready flag to be set
-    2. [Data] - Wait for Done flag to be set
+- Pi write [Msg Type][Data]
+- DE2 waits for Ready flag to be set. Pi sets ready flag when done above step.
+- Pi waits for Ready to be cleared. DE2 clears ready when it is done reading.
 
 - Messages:
     0 Update health
