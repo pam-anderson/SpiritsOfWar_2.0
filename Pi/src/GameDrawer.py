@@ -26,12 +26,15 @@ def drawHealthbar(player_id, character_id):
     #draw on DE2 send max health and current health
     return
 
+def drawCursor(oldX, oldY, newX, newY):
+    #clear old cursor position, draw new position
+    return
+
 def drawCharacters():
     for p in players:
         for c in players.characters:
             drawSprite(c.position[0] << 4 + START_PIXEL_X, c.position[1] << 4
-                + START_PIXEL_Y, c.standingSprite)
-        
+                + START_PIXEL_Y, c.standingSprite) 
     return
 
 def animateToTile(ram_location, dx, dy, oldx, oldy, newx, newy, sprite_type):
@@ -51,7 +54,7 @@ def animateToTile(ram_location, dx, dy, oldx, oldy, newx, newy, sprite_type):
         gameMap.tiles[oldx][oldy].sprite)
     return
 
-def animate(ram_location, oldx, oldy, newx, newy):
+def animate(gameMap, ram_location, oldx, oldy, newx, newy):
     dist = 1
     #movement music
     path = [0] * (gameMap.tiles[newx][newy].distance + 1)
@@ -96,11 +99,11 @@ def getPath(newx, newy, path):
 
 def movePlayer(player_id, character_id, oldx, oldy, newx, newy):
     gameMap.tiles[oldx][oldy].occupiedBy = 0
-        if newx == -1 or newy == -1 or newx == MAP_SIZE or newy == MAP_SIZE:
-            return
-        animate(players[player_id].characters[character_id].animationSprite, oldx, oldy, newx, newy)
-        players[player_id].characters[character_id].position[0] = newx
-        players[player_id].characters[character_id].position[1] = newy
-        gameMap.tiles[newx][newy].occupiedBy = players[player_id].characters[character_id]
-        drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
-            players[player_id].characters[character_id].standingSprite)
+    if newx == -1 or newy == -1 or newx == MAP_SIZE or newy == MAP_SIZE:
+        return
+    animate(players[player_id].characters[character_id].animationSprite, oldx, oldy, newx, newy)
+    players[player_id].characters[character_id].position[0] = newx
+    players[player_id].characters[character_id].position[1] = newy
+    gameMap.tiles[newx][newy].occupiedBy = players[player_id].characters[character_id]
+    drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
+        players[player_id].characters[character_id].standingSprite)

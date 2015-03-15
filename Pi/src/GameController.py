@@ -1,59 +1,143 @@
-from Player import initializePlayers
+from Player import initializePlayers, initializeCharacterPositions, Turn
 from Map import Map
+from GameDrawer import drawCursor, drawSprite, animate
+from Player import CHARS_PER_PLAYER
+from enum import Enum
+
+class Input(Enum):
+    Up, Down, Left, Right, Esc, Next, Enter = range(7)
 
 class Game:
     def __init__(self):
-        self.currPlayer = 0
         # Draw map and initialize players here
         self.players = initializePlayers()
         self.gameMap = Map()
+        initializeCharacterPositions(0, self.players[0].characters,
+            self.gameMap.tiles)
+        initializeCharacterPositions(1, self.players[1].characters,
+            self.gameMap.tiles)
+
+    def getPlayerInput(self):
+        keypress = raw_input("")
+        if keypress == 'a' or keypress == 'A':
+            return Input.Left
+        elif keypress == 'd' or keypress == 'D':
+            return Input.Right
+        elif keypress == 's' or keypress == 'S':
+            return Input.Down
+        elif keypress == 'w' or keypress == 'W':
+            return Input.Up
+        elif keypress == 'n' or keypress == 'N':
+            return Input.Next
+        elif keypress == ' ':
+            return Input.Enter
+        elif keypress == 'x' or keypress == 'X':
+            return Input.Esc
+
+    def selectSpace(self, character, validMoves):
+        keypress = self.getPlayerInput()
+        oldX = character.position.x
+        oldY = character.position.y 
+        while(True):
+            if keypress == Input.Up:
+                drawCursor(oldX, oldY, oldX, oldY - 1)
+            elif keypress == Input.Down:
+                drawCursor(oldX, oldY, oldX, oldY + 1)
+            elif keypress == Input.Left:
+                drawCursor(oldX, oldY, oldX - 1, oldY)
+            elif keypress == Input.Right:
+                drawCursor(oldX, oldY, oldX + 1, oldY)
+            elif keypress == Input.Enter and \
+                    self.gameMap.tiles[oldX][oldY] in validMoves:
+                return self.gameMap.tiles[oldX][oldY]
+            elif keypress == Input.Esc:
+                return False                
+
+    def moveCharacter(self, character):
+        print "moveChar"
+        oldTile = character.position
+        validMoves = self.gameMap.depthFirstSearch(character,
+            character.characterClass.movement, 0)
+        for move in validMoves:
+            drawSprite(move.x, move.y, 0) #highlight potential moves
+
+        newTile = self.selectSpace(character, validMoves)
+        if newTile is not False:
+            character.position = newTile
+            character.move = Turn.Attack
+            animate(0, oldTile.x, oldTile.y, newTile.x, newTile.y)
+
+        for move in validMoves:
+            drawSprite(move.x, move.y, 0)#unhighlight moves
+
+    def attackCharacter(self, character, target):
+        print "attackChar"
+        pass
  
     def doPlayerTurn(self, team):
-        # cycle thru chars, exit menu, skip turn, or select char
-        # GET PLAYER INPUT
-        keypress = 0
+        print "doPlayerTurn"
         charId = 0
+        drawCursor(0, 0, self.players[team].characters[charId].position.x,
+            self.players[team].characters[charId].position.y)
         while True:
+            keypress = self.getPlayerInput()
             if keypress == Input.Esc:
                 # Draw exit screen
                 return False
             elif keypress == Input.Next:
-                # moveable->atk or atk->done
-                move = players[team].currentMove()
-                for character in players[team].characters:
+                move = self.players[team].currentMove()
+                for character in self.players[team].characters:
                     if character.move == move and move != Turn.Done:
                         character.move += 1
                 return True
-            elif keypress == Input.Enter and \
-                    gameMap.tiles[x][y].occupiedBy != 0:
-                # do mvmnt or atk
-                pass
+            elif keypress == Input.Enter:
+                if self.players[team].characters[charId].move == Turn.Move:
+                    self.moveCharacter(self.players[team].characters[charId])
+                    return True
+                elif self.players[team].characters[charId].move == Turn.Attack:
+                    self.attackCharacter(self.players[team].characters[charId],
+                        0)
+                    return True
             elif keypress == Input.Left:
+                oldId = charId
                 while True:
                     if charId > 0:
                         charId -= 1
                     else:
                         charId = CHARS_PER_PLAYER - 1
-                    if players[team].characters[charId].currentHp > 0:
+                    if self.players[team].characters[charId].currentHp > 0:
                         break
+                drawCursor(
+                    self.players[team].characters[oldId].position.x,
+                    self.players[team].characters[oldId].position.y,
+                    self.players[team].characters[charId].position.x,
+                    self.players[team].characters[charId].position.y)
             elif keypress == Input.Right:
+                oldId = charId
                 while True:
-                    if charId < CHAR_PER_PLAYER - 1:
+                    if charId < CHARS_PER_PLAYER - 1:
                         charId += 1
                     else:
                         charId = 0
-                    if players[team].characters[charId].currentHp > 0:
+                    if self.players[team].characters[charId].currentHp > 0:
                         break
-                #cycle right thru characters
-                pass
-            
-    def playGame():
+                drawCursor(
+                    self.players[team].characters[oldId].position.x,
+                    self.players[team].characters[oldId].position.y,
+                    self.players[team].characters[charId].position.x,
+                    self.players[team].characters[charId].position.y)
+ 
+    def playGame(self):
+        print "playGame"
+        currPlayer = 0
         while True:
-            while not players[currPlayer].isTurnDone:
-                if players[currPlayer].charactersRemaining == 0:
+            while not self.players[currPlayer].isTurnDone():
+                if self.players[currPlayer].charactersRemaining == 0:
                     print "Game over"
                     return
-                doPlayerTurn(currPlayer)
-            players[currPlayer].resetTurn()
+                if not self.doPlayerTurn(currPlayer):
+                    print "Exited game"
+                    return
+            self.players[currPlayer].resetTurn()
             currPlayer = not currPlayer
 

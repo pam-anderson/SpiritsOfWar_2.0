@@ -19,21 +19,12 @@ class MapTile:
         self.explored = False
         self.occupiedBy = 0 
 
-    def tileIsMoveable(self, teamId):
-    # Even though we don't use teamId, we want the same arguments as
-    # tileIsAttackable since these will be passed to the DFS
+    def tileIsValid(self, teamId, attackable):
         if not self.explored and self.occupiedBy == 0 and \
             self.sprite == Sprite.Grass:
             return True
-        else:
-            return False
-
-    def tileIsAttackable(self, teamId):
-        if not self.explored and self.occupiedBy != 0 and \
+        if attackable and not self.explored and self.occupiedBy != 0 and \
             self.occupiedBy.team != teamId:
-            return True
-        elif not self.explored and self.occupiedBy == 0 and \
-            self.sprite == Sprite.Grass:
             return True
         else:
             return False
@@ -45,7 +36,10 @@ class Map:
             for y in range(MAP_SIZE):
                 self.tiles[x][y] = MapTile(x, y, Sprite.Grass)
     
-    def depthFirstSearch(self, teamId, charId, x, y, levels, valid):
+    def depthFirstSearch(self, character, levels, attackable):
+        x = character.position.x
+        y = character.position.y
+        teamId = character.team
         queue = [self.tiles[x][y]]
         neighbours = []
         validMoves = [self.tiles[x][y]]
@@ -53,22 +47,22 @@ class Map:
             for node in queue:
                 for direction in Direction:
                     if direction == Direction.Left and \
-                            valid(self.tiles[x - 1][y], teamId):
+                          self.tiles[x - 1][y].tileIsValid(teamId, attackable):
                         self.tiles[x - 1][y].explored = True
                         neighbours.append(self.tiles[x - 1][y])
                         validMoves.append(self.tiles[x - 1][y])
                     elif direction == Direction.Right and \
-                            valid(self.tiles[x + 1][y], teamId):
+                          self.tiles[x + 1][y].tileIsValid(teamId, attackable):
                         self.tiles[x + 1][y].explored = True
                         neighbours.append(self.tiles[x + 1][y])
                         validMoves.append(self.tiles[x + 1][y])
                     elif direction == Direction.Up and \
-                            valid(self.tiles[x][y - 1], teamId):
+                          self.tiles[x][y - 1].tileIsValid(teamId, attackable):
                         self.tiles[x][y - 1].explored = True
                         neighbours.append(self.tiles[x][y - 1])
                         validMoves.append(self.tiles[x][y - 1])
                     elif direction == Direction.Down:
-                        if valid(self.tiles[x][y + 1], teamId):
+                        if self.tiles[x][y + 1].tileIsValid(teamId, attackable):
                             self.tiles[x][y + 1].explored = True
                             neighbours.append(self.tiles[x][y + 1])
                             validMoves.append(self.tiles[x][y + 1])

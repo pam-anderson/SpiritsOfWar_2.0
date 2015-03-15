@@ -1,4 +1,5 @@
-from enum import Enum
+from enum import Enum, IntEnum
+from Map import MAP_SIZE
 
 CHARS_PER_PLAYER = 3
 
@@ -21,7 +22,7 @@ RANGER_DEF = 4
 RANGER_RANGE = 2
 RANGER_MVMNT = 3
 
-class Turn(Enum):
+class Turn(IntEnum):
     Move, Attack, Done = range(3)
 
 class Input(Enum):
@@ -43,7 +44,7 @@ class Character:
         self.currentHp = characterClass.maxHp
         self.team = team
         self.characterId = characterId
-        self.position = [0, 0] # [x coord, y coord]
+        self.position = 0
         self.move = Turn.Move
         self.standingSprite = team * 3 + 3 + characterId
         self.animationSprite = characterId * 8 + 9
@@ -79,7 +80,7 @@ def initializeClasses():
         MAGE_RANGE, MAGE_MVMNT))
     classes.append(CharacterClass("ranger", RANGER_HP, RANGER_ATK, RANGER_DEF,
         RANGER_RANGE, RANGER_MVMNT))
-    return classes    
+    return classes
 
 def initializeCharacters(team):
     characters = []
@@ -87,6 +88,16 @@ def initializeCharacters(team):
     for characterClass, i in zip(classes, range(len(classes))):
         characters.append(Character(characterClass, team, i))
     return characters
+
+def initializeCharacterPositions(team, characters, gameMap):
+    if team == 0:
+        characters[0].position = gameMap[0][0]
+        characters[1].position = gameMap[0][1]
+        characters[2].position = gameMap[1][0]
+    else:
+        characters[0].position = gameMap[MAP_SIZE - 1][MAP_SIZE - 1]
+        characters[1].position = gameMap[MAP_SIZE - 1][MAP_SIZE - 2]
+        characters[2].position = gameMap[MAP_SIZE - 2][MAP_SIZE - 1]
 
 def initializePlayers():
     players = []
