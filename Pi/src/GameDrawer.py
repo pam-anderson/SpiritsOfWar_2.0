@@ -58,7 +58,7 @@ def animate(gameMap, ram_location, oldx, oldy, newx, newy):
     #movement music
     path = [0] * (gameMap.tiles[newx][newy].distance + 1)
     getPath(gameMap, newx, newy, path)
-    while dist <= map[newx][newy].distance:
+    while dist <= gameMap.tiles[newx][newy].distance:
         if path[dist] == 0:
             animateToTile(gameMap, ram_location, 1, 0, oldx, oldy, oldx + 1, oldy, 0)
             oldx += 1
@@ -101,7 +101,7 @@ def movePlayer(gameMap, character, oldx, oldy, newx, newy):
     if newx == -1 or newy == -1 or newx == MAP_SIZE or newy == MAP_SIZE:
         return
     animate(gameMap, character.animationSprite, oldx, oldy, newx, newy)
-    character.position[0] = newx
-    character.position[1] = newy
+    character.position = gameMap.tiles[newx][newy]
     gameMap.tiles[newx][newy].occupiedBy = character
-    drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y, character.standingSprite)
+    drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
+        character.standingSprite)

@@ -65,7 +65,7 @@ class Game:
         if newTile is not False:
             character.position = newTile
             character.move = Turn.Attack
-            animate(0, oldTile.x, oldTile.y, newTile.x, newTile.y)
+            animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x, newTile.y)
 
         for move in validMoves:
             drawSprite(move.x, move.y, 0)#unhighlight moves
