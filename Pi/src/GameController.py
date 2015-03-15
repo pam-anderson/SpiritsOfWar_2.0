@@ -1,6 +1,6 @@
 from Player import initializePlayers, initializeCharacterPositions, Turn
 from Map import Map
-from GameDrawer import drawCursor, drawSprite, animate
+from GameDrawer import drawCursor, drawSprite, animate, drawHealthbar
 from Player import CHARS_PER_PLAYER
 from enum import Enum
 
@@ -35,18 +35,22 @@ class Game:
             return Input.Esc
 
     def selectSpace(self, character, validMoves):
-        keypress = self.getPlayerInput()
         oldX = character.position.x
         oldY = character.position.y 
         while(True):
+            keypress = self.getPlayerInput()
             if keypress == Input.Up:
                 drawCursor(oldX, oldY, oldX, oldY - 1)
+                oldY -= 1
             elif keypress == Input.Down:
                 drawCursor(oldX, oldY, oldX, oldY + 1)
+                oldY += 1
             elif keypress == Input.Left:
                 drawCursor(oldX, oldY, oldX - 1, oldY)
+                oldX -= 1
             elif keypress == Input.Right:
                 drawCursor(oldX, oldY, oldX + 1, oldY)
+                oldX += 1
             elif keypress == Input.Enter and \
                     self.gameMap.tiles[oldX][oldY] in validMoves:
                 return self.gameMap.tiles[oldX][oldY]
@@ -57,22 +61,46 @@ class Game:
         print "moveChar"
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
-            character.characterClass.movement, 0)
+            character.characterClass.movement, False)
         for move in validMoves:
+            print move.x, move.y
             drawSprite(move.x, move.y, 0) #highlight potential moves
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
             character.position = newTile
             character.move = Turn.Attack
+            oldTile.occupiedBy = 0
+            newTile.occupiedBy = character
             animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x, newTile.y)
 
         for move in validMoves:
-            drawSprite(move.x, move.y, 0)#unhighlight moves
+            drawSprite(move.x, move.y, 0) # unhighlight moves
 
-    def attackCharacter(self, character, target):
+    def attackCharacter(self, team, character):
         print "attackChar"
-        pass
+        oldTile = character.position
+        validMoves = self.gameMap.depthFirstSearch(character,
+            character.characterClass.movement, True)
+        for move in validMoves:
+            print move.x, move.y
+            drawSprite(move.x, move.y, 0) # highlight attacks
+
+        newTile = self.selectSpace(character, validMoves)
+        if newTile is not False:
+            character.move = Turn.Done
+            if newTile.occupiedBy is not character and \
+                    newTile.occupiedBy is not 0:
+                print "Successful hit"
+                newTile.occupiedBy.currentHp -= character.characterClass.attack
+                drawHealthbar(character)
+                if newTile.occupiedBy.currentHp <= 0:
+                    newTile.occupiedBy.currentHp = 0
+                    drawSprite(newTile.x, newTile.y, Tile.Grass)
+                    self.players[team].charactersRemaining -= 1
+
+        for move in validMoves:
+            drawSprite(move.x, move.y, 0) # unhighlight attacks
  
     def doPlayerTurn(self, team):
         print "doPlayerTurn"
@@ -95,8 +123,8 @@ class Game:
                     self.moveCharacter(self.players[team].characters[charId])
                     return True
                 elif self.players[team].characters[charId].move == Turn.Attack:
-                    self.attackCharacter(self.players[team].characters[charId],
-                        0)
+                    self.attackCharacter(team,
+                        self.players[team].characters[charId])
                     return True
             elif keypress == Input.Left:
                 oldId = charId

@@ -21,7 +21,7 @@ def drawSprite(x, y, memory):
 	#while(IORD_32DIRECT(DRAWER_BASE, 24) == 0) {}
     return
 
-def drawHealthbar(player_id, character_id):
+def drawHealthbar(character):
     #draw on DE2 send max health and current health
     return
 

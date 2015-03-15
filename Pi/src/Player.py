@@ -94,10 +94,16 @@ def initializeCharacterPositions(team, characters, gameMap):
         characters[0].position = gameMap[0][0]
         characters[1].position = gameMap[0][1]
         characters[2].position = gameMap[1][0]
+        gameMap[0][0].occupiedBy = characters[0]
+        gameMap[0][1].occupiedBy = characters[1]
+        gameMap[1][0].occupiedBy = characters[2]
     else:
         characters[0].position = gameMap[MAP_SIZE - 1][MAP_SIZE - 1]
         characters[1].position = gameMap[MAP_SIZE - 1][MAP_SIZE - 2]
         characters[2].position = gameMap[MAP_SIZE - 2][MAP_SIZE - 1]
+        gameMap[MAP_SIZE - 1][MAP_SIZE - 1].occupiedBy = characters[0]
+        gameMap[MAP_SIZE - 1][MAP_SIZE - 2].occupiedBy = characters[1]
+        gameMap[MAP_SIZE - 2][MAP_SIZE - 1].occupiedBy = characters[2]
 
 def initializePlayers():
     players = []
