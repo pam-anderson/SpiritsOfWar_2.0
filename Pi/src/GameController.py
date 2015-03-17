@@ -1,6 +1,6 @@
 from Player import initializePlayers, initializeCharacterPositions, Turn
 from Map import Map
-from GameDrawer import drawCursor, drawSprite, animate, drawHealthbar
+from GameDrawer import Drawer
 from Player import CHARS_PER_PLAYER
 from enum import Enum
 
@@ -12,6 +12,7 @@ class Game:
         # Draw map and initialize players here
         self.players = initializePlayers()
         self.gameMap = Map()
+        self.draw = Drawer(self.gameMap())
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
@@ -40,16 +41,16 @@ class Game:
         while(True):
             keypress = self.getPlayerInput()
             if keypress == Input.Up:
-                drawCursor(oldX, oldY, oldX, oldY - 1)
+                self.draw.drawCursor(oldX, oldY, oldX, oldY - 1)
                 oldY -= 1
             elif keypress == Input.Down:
-                drawCursor(oldX, oldY, oldX, oldY + 1)
+                self.draw.drawCursor(oldX, oldY, oldX, oldY + 1)
                 oldY += 1
             elif keypress == Input.Left:
-                drawCursor(oldX, oldY, oldX - 1, oldY)
+                self.draw.drawCursor(oldX, oldY, oldX - 1, oldY)
                 oldX -= 1
             elif keypress == Input.Right:
-                drawCursor(oldX, oldY, oldX + 1, oldY)
+                self.draw.drawCursor(oldX, oldY, oldX + 1, oldY)
                 oldX += 1
             elif keypress == Input.Enter and \
                     self.gameMap.tiles[oldX][oldY] in validMoves:
@@ -64,7 +65,7 @@ class Game:
             character.characterClass.movement, False)
         for move in validMoves:
             print move.x, move.y
-            drawSprite(move.x, move.y, 0) #highlight potential moves
+            self.draw.drawSprite(move.x, move.y, 0) #highlight potential moves
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -72,10 +73,11 @@ class Game:
             character.move = Turn.Attack
             oldTile.occupiedBy = 0
             newTile.occupiedBy = character
-            animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x, newTile.y)
+            self.draw.animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x,
+                 newTile.y)
 
         for move in validMoves:
-            drawSprite(move.x, move.y, 0) # unhighlight moves
+            self.draw.drawSprite(move.x, move.y, 0) # unhighlight moves
 
     def attackCharacter(self, team, character):
         print "attackChar"
@@ -84,7 +86,7 @@ class Game:
             character.characterClass.movement, True)
         for move in validMoves:
             print move.x, move.y
-            drawSprite(move.x, move.y, 0) # highlight attacks
+            self.draw.drawSprite(move.x, move.y, 0) # highlight attacks
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -93,19 +95,20 @@ class Game:
                     newTile.occupiedBy is not 0:
                 print "Successful hit"
                 newTile.occupiedBy.currentHp -= character.characterClass.attack
-                drawHealthbar(character)
+                self.draw.drawHealthbar(character)
                 if newTile.occupiedBy.currentHp <= 0:
                     newTile.occupiedBy.currentHp = 0
-                    drawSprite(newTile.x, newTile.y, Tile.Grass)
+                    self.draw.drawSprite(newTile.x, newTile.y, Tile.Grass)
                     self.players[team].charactersRemaining -= 1
 
         for move in validMoves:
-            drawSprite(move.x, move.y, 0) # unhighlight attacks
+            self.draw.drawSprite(move.x, move.y, 0) # unhighlight attacks
  
     def doPlayerTurn(self, team):
         print "doPlayerTurn"
         charId = 0
-        drawCursor(0, 0, self.players[team].characters[charId].position.x,
+        self.draw.drawCursor(0, 0,
+            self.players[team].characters[charId].position.x,
             self.players[team].characters[charId].position.y)
         while True:
             keypress = self.getPlayerInput()
@@ -135,7 +138,7 @@ class Game:
                         charId = CHARS_PER_PLAYER - 1
                     if self.players[team].characters[charId].currentHp > 0:
                         break
-                drawCursor(
+                self.draw.drawCursor(
                     self.players[team].characters[oldId].position.x,
                     self.players[team].characters[oldId].position.y,
                     self.players[team].characters[charId].position.x,
@@ -149,7 +152,7 @@ class Game:
                         charId = 0
                     if self.players[team].characters[charId].currentHp > 0:
                         break
-                drawCursor(
+                self.draw.drawCursor(
                     self.players[team].characters[oldId].position.x,
                     self.players[team].characters[oldId].position.y,
                     self.players[team].characters[charId].position.x,
