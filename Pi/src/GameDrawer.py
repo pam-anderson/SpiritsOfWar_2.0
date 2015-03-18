@@ -4,16 +4,18 @@ START_PIXEL_X = 0
 START_PIXEL_Y = 0
 MAP_SIZE = 8
 
-# Write message type to: [7, 11, 12] (BOARD)
-# Ready flag at [13] 
-# Pins available for data (13): [15, 16, 18, 22, 29, 31, 32, 33, 35,
-# 36, 37, 38, 40]
+class Message:
+    Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
+        RecordVideo, Sprite, Exit = range(8)
 
 class Drawer:
     def __init__(self, gameMap, players):
         self.gameMap = gameMap
         self.players = players
-        self.dataPins = [15, 16, 18, 22, 29, 31, 32, 33, 35, 36, 37, 38, 40]
+        self.messagePins = [3, 5, 7, 8]
+        self.readyPin = 10
+        self.dataPins = [11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
+            36, 37, 38, 40]
         GPIO.setmode(GPIO.BOARD)
 
     def drawMap(self):
@@ -23,6 +25,13 @@ class Drawer:
                     self.gameMap.tiles[x][y].sprite)
         self.drawCharacters()
         return
+
+    def setMessagePins(self, message):
+        for pin in range(3):
+            mask = 1 << pin
+            out = 1 if mask & message > 0 else 0
+            GPIO.output(self.messagePins[pin], out)
+        GPIO.output(self.readyPin, 1)
 
     def setDataPins(self, data, length):
         for pin in range(length):
@@ -34,7 +43,6 @@ class Drawer:
         while GPIO.input(13):
             pass
         return
-            
     
     def drawSprite(self, x, y, memory):
         self.boardIsReady()
@@ -47,24 +55,23 @@ class Drawer:
     
     def drawHealthbar(self, character):
         self.boardIsReady()
-        GPIO.output(7, GPIO.LOW)
-        GPIO.output(11, GPIO.LOW)
-        GPIO.output(12, GPIO.LOW)
-        # PUT HEALTHBAR INFO IN GPIO HERE
-        out = character.currentHp << 4 | character.characterClass.maxHp
-        self.setDataPins(out, 8)
+        out = character.team << 12 | character.characterId << 10 | \
+                character.currentHp << 5 | character.characterClass.maxHp
+        self.setMessagePins(Message.Health, out)
+        self.setDataPins(out, 13)
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
-        #clear old cursor position, draw new position     
         self.boardIsReady()
+        out = newX << 4 | newY
+        self.setMessagePins(Message.Cursor, out)
         return
     
     def drawCharacters(self):
         for p in self.players:
             for c in self.players.characters:
-                self.drawSprite(c.position[0] << 4 + START_PIXEL_X,
-                    c.position[1] << 4 + START_PIXEL_Y, c.standingSprite)
+                self.drawSprite(c.position.x << 4 + START_PIXEL_X,
+                    c.position.y << 4 + START_PIXEL_Y, c.standingSprite)
         return
     
     def animateToTile(self,ram_location, dx, dy, oldx, oldy, newx, newy,
