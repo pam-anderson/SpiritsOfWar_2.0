@@ -6,11 +6,11 @@ Communication Protocol between the Pi and DE2:
 
 - Messages:
     0 Update health
-        Pass current health and max health (8 bits)
+        Pass current health and max health + team/character (11 bits)
     1 Update screen
         Pass screen type, eg. start, end, instruction (2 bits)
     2 Move cursor
-        Pass direction to move cursor, eg. up, down, etc (2 bits)
+        x, y location etc (9 bits)
     3 Highlight characters
         Pass player id and characters that are alive (3 bits)
     4 Play video animation
@@ -23,3 +23,5 @@ Communication Protocol between the Pi and DE2:
         x (5 bits), y (4 bits) tile coordinates
     8 Exit menu
         Draw or clear exit menu (1 bit)
+    9 Change Turn
+        Team number (1 bit)
