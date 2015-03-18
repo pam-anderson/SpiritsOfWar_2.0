@@ -1,16 +1,20 @@
 #include "SoW.h"
 #include <stdio.h>
 
+#define GPIO_ADDRESS 0x4440
 
 void get_input(int *instruction, int *data) {
 	int i = 0;
 	char c = 0;
-	while(IORD_32DIRECT(0x4440, 0) == 0);
-	*instruction = IORD_32DIRECT(0x4440, 4);
-	*data = IORD_32DIRECT(0x4440, 4);
-	IOWR_32DIRECT(0x4440, 0, 1);
-	while(IORD_32DIRECT(0x4440, 0) == 1);
-	IOWR_32DIRECT(0x4440, 0, 0);
+	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 0);
+	i = IORD_32DIRECT(GPIO_ADDRESS, 4);
+//	*instruction = IORD_32DIRECT(GPIO_ADDRESS, 4);
+//	*data = IORD_32DIRECT(0x4440, 4);
+	IOWR_32DIRECT(GPIO_ADDRESS, 0, 1);
+	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 1);
+	IOWR_32DIRECT(GPIO_ADDRESS, 0, 0);
+	*instruction = i & 0x1F;
+	*data = i & 0xFFFE0 >> 5;
 }
 
 
@@ -20,6 +24,7 @@ int main(void) {
 	hardware_init();
 	int instruction;
 	int data;
+	int data2;
 	menu_init();
 	initialize_players();
 	
@@ -27,13 +32,13 @@ int main(void) {
 		get_input(&instruction, &data);
 		switch(instuction) {
 			case 0:
-				update_health(data, data, data, data);
+				update_health(data & 0x400 >> 10, data & 0x300 >> 8, data & 0xF0 >> 4, data & 0xF);
 				break;
 			case 1:
 				//update_screen(data);
 				break;
 			case 2:
-				draw_cursor(data, data);
+				draw_cursor(data & 0x38 >> 3, data & 0x7);
 				break;
 			case 3:
 				//highlight_characters(data);
@@ -45,13 +50,14 @@ int main(void) {
 				//record_video(data);
 				break;
 			case 7:
-				draw_sprite(data, data, data);
+				get_input(&instruction, &data2);
+				draw_sprite(data & 0x1FF, data2 & 0xFF, data2 & 0x3F00 >> 8);
 				break;
 			case 8:
 				//exit_menu(data);
 				break;
 			case 9:
-				load_turn(data);
+				load_turn(data & 0x1);
 				break;
 			case default:
 				break;
