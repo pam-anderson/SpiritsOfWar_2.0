@@ -10,7 +10,7 @@
  * @param y The absolute position of the pixel in the y axis of the top left corner of the sprite
  * @param type The sprite to draw
  */
-void draw_sprite(int x, int y, sprite type) {
+void draw_sprite(int x, int y, int type) {
 	IOWR_32DIRECT(DRAWER_BASE, 0, x);
 	IOWR_32DIRECT(DRAWER_BASE, 4, y);
 	IOWR_32DIRECT(DRAWER_BASE, 8, type);
@@ -41,7 +41,7 @@ void draw_sprite(int x, int y, sprite type) {
  */
 void draw_healthbar(int player_id, int character_id, int x, int y) {
 	// Draw character
-	draw_sprite(x - 8, y - 4, Players[player_id]->characters[character_id].standing);
+	draw_sprite(x - 8, y - 4, player_id * 3 + character_id + 3);
 	//alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x + SIZE_OF_TILE/2, y + SIZE_OF_TILE/2, colour, 0);
 	// Draw healthbar
 	alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x + SIZE_OF_TILE/2 + 8, y, x + SIZE_OF_TILE/2 + 8 + HEALTHBAR_LEN,
@@ -50,20 +50,6 @@ void draw_healthbar(int player_id, int character_id, int x, int y) {
 				y + SIZE_OF_TILE/2, 0xFFFF, 0);
 }
 
-/*
- * @brief Draw every alive character to the map
- */
-void draw_characters() {
-	int i = 0, k = 0;
-	for(i = 0; i < 2; i++) {
-		for(k = 0; k < 3; k++) {
-			if(Players[i]->characters[k].hp > 0) {
-				draw_sprite(0, 0, i * 3 + 3 + k);
-				//draw_corner(px, py, map[px][py].type);
-			}
-		}
-	}
-}
 
 /*
  * @brief Move the selection cursor to a new position
