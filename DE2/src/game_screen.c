@@ -4,6 +4,9 @@
  int cursor_x = 0;
  int cursor_y = 0;
  int cursor_ram = 0;
+
+ static int healthbar_pos[2][3][2] = {{{29, 15}, {123, 15}, {217, 15}},
+ 		{{29, 214}, {123, 214}, {217, 214}}};
 /*
  * @brief Draw a specific sprite to the screen using the pixel_drawer accelerator.
  * @param x The absolute position of the pixel in the x axis of the top left corner of the sprite
@@ -16,20 +19,8 @@ void draw_sprite(int x, int y, int type) {
 	IOWR_32DIRECT(DRAWER_BASE, 8, type);
 	IOWR_32DIRECT(DRAWER_BASE, 12, 1); //Start
 	while(IORD_32DIRECT(DRAWER_BASE, 24) == 0) {}
-	//if(type == GRASS) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x, y, grass[0], 0);
-	//else if(type == WATER) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x, y, water[0], 0);
-	//else if(type == ROCK) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x, y, rock[0], 0);
-	//else if(type == (GRASS|0x200)) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x, y, grass[0]|0xF800, 0);
-	//else if(type == (GRASS|0x100) || (type & 0xFF) >= ANIMATION_HARDWARE) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x, y, x, y, grass[0]|0x001F, 0);
 }
 
-//void draw_corner(int px, int py, sprite type) {
-//	if(map[px][py].type == GRASS) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, map[px][py].pos.x, map[px][py].pos.y, map[px][py].pos.x, map[px][py].pos.y, grass[0], 0);
-//	else if(map[px][py].type == WATER) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, map[px][py].pos.x, map[px][py].pos.y, map[px][py].pos.x, map[px][py].pos.y, water[0], 0);
-//	else if(map[px][py].type == ROCK) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, map[px][py].pos.x, map[px][py].pos.y, map[px][py].pos.x, map[px][py].pos.y, rock[0], 0);
-//	else if(map[px][py].type == (GRASS|0x100)) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, map[px][py].pos.x, map[px][py].pos.y, map[px][py].pos.x, map[px][py].pos.y, grass[0]|0x1F, 0);
-//	else if(map[px][py].type == (GRASS|0x200)) alt_up_pixel_buffer_dma_draw_box(pixel_buffer, map[px][py].pos.x, map[px][py].pos.y, map[px][py].pos.x, map[px][py].pos.y, grass[0]|0xF800, 0);
-//}
 
 /*
  * @brief Draw the initial health bar at a given position, as well as the character associated with
@@ -86,21 +77,6 @@ int draw_exit_screen(int player_id) {
 	}
 }
 
-
-void initialize_players() {
-	int i;
-	int j;
-	int x;
-	int y;
-
-	for(i = 0; i < 2; i++) {
-		for(j = 0; j < 3; j++) {
-			//draw_sprite(0, 0, i * 3 + 3 + j); draw characters at x and y
-			healthbar_init(i, j, healthbar_pos[i][j][0], healthbar_pos[i][j][1]);
-		}
-	}
-}
-
 /*
  * @brief Draw the initial health bar at a given position, as well as the character associated with
  *        that health bar
@@ -119,6 +95,22 @@ void healthbar_init(int player_id, int character_id, int x, int y) {
 	alt_up_pixel_buffer_dma_draw_rectangle(pixel_buffer, x + SIZE_OF_TILE/2 + 7, y, x + SIZE_OF_TILE/2 + 9 + HEALTHBAR_LEN,
 				y + SIZE_OF_TILE/2, 0xFFFF, 0);
 }
+
+void initialize_players() {
+	int i;
+	int j;
+	int x;
+	int y;
+
+	for(i = 0; i < 2; i++) {
+		for(j = 0; j < 3; j++) {
+			//draw_sprite(0, 0, i * 3 + 3 + j); draw characters at x and y
+			healthbar_init(i, j, healthbar_pos[i][j][0], healthbar_pos[i][j][1]);
+		}
+	}
+}
+
+
 
 void update_healthbar(int player_id, int character_id, int hp, int max_hp) {
 	// Black out health lost
