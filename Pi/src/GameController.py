@@ -15,8 +15,6 @@ class Game:
         self.gameMap = Map()
         self.draw = Drawer(self.gameMap, self.players)
         self.sound = Sound()
-        self.sound.init_music() # comment in for music. 
-        self.sound.init_sfx()   # use command "sudo amixer cset numid=3 1"
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
