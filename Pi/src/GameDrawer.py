@@ -12,17 +12,22 @@ class Drawer:
     def __init__(self, gameMap, players):
         self.gameMap = gameMap
         self.players = players
-        self.messagePins = [3, 5, 7, 8]
-        self.readyPin = 10
-        self.dataPins = [11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
+        self.readyPin = 3
+        self.donePin = 5
+        self.messagePins = [7, 8, 10, 11]
+        self.dataPins = [12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
             36, 37, 38, 40]
-        GPIO.cleanup()
         GPIO.setmode(GPIO.BOARD)
         for pin in self.messagePins:
             GPIO.setup(pin, GPIO.OUT)
         for pin in self.dataPins:
             GPIO.setup(pin, GPIO.OUT)
         GPIO.setup(self.readyPin, GPIO.OUT)
+        GPIO.setup(self.donePin, GPIO.IN)
+
+    def __del__(self):
+        print "drawer cleanup"
+        GPIO.cleanup()
 
     def drawMap(self):
         for y in range(MAP_SIZE):
@@ -38,7 +43,6 @@ class Drawer:
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
-        GPIO.output(self.readyPin, 1)
 
     def setDataPins(self, data, length):
         GPIO.setmode(GPIO.BOARD)
@@ -46,11 +50,16 @@ class Drawer:
             mask = 1 << pin
             out = 1 if mask & data > 0 else 0
             GPIO.output(self.dataPins[pin], out)
+        GPIO.output(self.readyPin, 1)
+        while not GPIO.input(self.donePin):
+            pass
+        GPIO.output(self.readyPin, 0)
 
     def boardIsReady(self):
-        while GPIO.output(self.readyPin, not GPIO.input(self.readyPin)):
+        while GPIO.input(self.donePin):
             pass
         return
+
     #9bits for x, 8 bits for y, 6 bits for memory
     def drawSprite(self, x, y, memory):
         self.boardIsReady()
