@@ -16,6 +16,7 @@ class Drawer:
         self.readyPin = 10
         self.dataPins = [11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
             36, 37, 38, 40]
+        GPIO.cleanup()
         GPIO.setmode(GPIO.BOARD)
         for pin in self.messagePins:
             GPIO.setup(pin, GPIO.OUT)
@@ -37,7 +38,6 @@ class Drawer:
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
-        GPIO.setup(self.readyPin, GPIO.OUT)
         GPIO.output(self.readyPin, 1)
 
     def setDataPins(self, data, length):
@@ -48,8 +48,7 @@ class Drawer:
             GPIO.output(self.dataPins[pin], out)
 
     def boardIsReady(self):
-        GPIO.setup(self.readyPin, GPIO.IN)
-        while GPIO.input(self.readyPin):
+        while GPIO.output(self.readyPin, not GPIO.input(self.readyPin)):
             pass
         return
     #9bits for x, 8 bits for y, 6 bits for memory

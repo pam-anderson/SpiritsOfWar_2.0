@@ -1,6 +1,8 @@
 import pygame
-#run the following command first!
-#sudo amixer cset numid=3 1
+
+# Run the following command first!
+# sudo amixer cset numid=3 1
+
 class Sound:
     def init_music(self):
         pygame.mixer.init()  # initialize pygame
