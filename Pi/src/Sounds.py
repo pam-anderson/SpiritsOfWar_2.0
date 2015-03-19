@@ -4,14 +4,13 @@ import pygame
 # sudo amixer cset numid=3 1
 
 class Sound:
+    sfx = []
     def init_music(self):
         pygame.mixer.init()  # initialize pygame
         pygame.mixer.music.load("mus.wav") # load main music
         pygame.mixer.music.play(-1) # -1 for infinite loop
 
     def init_sfx(self):
-        global sfx # initialize global
-        sfx = [] # create an array of objects
         sfx.append(pygame.mixer.Sound("war.wav")) # can append more depending on # of SFX
         sfx.append(pygame.mixer.Sound("arch.wav"))
         sfx.append(pygame.mixer.Sound("mag.wav"))
