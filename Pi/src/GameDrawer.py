@@ -1,12 +1,12 @@
 import RPi.GPIO as GPIO
 
-START_PIXEL_X = 0
-START_PIXEL_Y = 0
+START_PIXEL_X = 32
+START_PIXEL_Y = 40
 MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit = range(9)
+        RecordVideo, Sprite, Exit, Turn = range(9)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -46,9 +46,16 @@ class Drawer:
         while GPIO.input(13):
             pass
         return
-    
+    #9bits for x, 8 bits for y, 6 bits for memory
     def drawSprite(self, x, y, memory):
         self.boardIsReady()
+        out = x
+        self.setMessagePins(Message.Sprite)
+        self.setDataPins(out, 9)
+        self.boardIsReady()
+        out = memory << 8 | y
+        self.setMessagePins(Message.Sprite)
+        self.setDataPin(out, 14)
     	#IOWR_32DIRECT(DRAWER_BASE, 0, x);
     	#IOWR_32DIRECT(DRAWER_BASE, 4, y);
     	#IOWR_32DIRECT(DRAWER_BASE, 8, memory);
@@ -58,16 +65,17 @@ class Drawer:
     
     def drawHealthbar(self, character):
         self.boardIsReady()
-        out = character.team << 12 | character.characterId << 10 | \
-                character.currentHp << 5 | character.characterClass.maxHp
-        self.setMessagePins(Message.Health, out)
-        self.setDataPins(out, 13)
+        out = character.team << 10 | character.characterId << 8 | \
+                character.currentHp << 4 | character.characterClass.maxHp
+        self.setMessagePins(Message.Health)
+        self.setDataPins(out, 11)
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
         self.boardIsReady()
-        out = newX << 4 | newY
-        self.setMessagePins(Message.Cursor, out)
+        out = newX << 3 | newY
+        self.setMessagePins(Message.Cursor)
+        self.setDataPins(out, 6) 
         return
     
     def drawCharacters(self):
@@ -154,3 +162,9 @@ class Drawer:
         self.gameMap.tiles[newx][newy].occupiedBy = character
         self.drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
             character.standingSprite)
+	
+	def loadTurn(self, playerTurn):
+        self.boardIsReady()
+        out = playerTurn
+        self.setMessagePins(Message.Turn)
+        self.setDataPin(out, 1)
