@@ -17,6 +17,13 @@ void get_input(int *instruction, int *data) {
 	*data = i & 0xFFFE0 >> 5;
 }
 
+void menu_init() {
+	// Initialize
+	  char_buffer = alt_up_char_buffer_open_dev("/dev/char_drawer");
+	  alt_up_char_buffer_init(char_buffer);
+	  alt_up_char_buffer_clear(char_buffer);
+	  pixel_buffer = alt_up_pixel_buffer_dma_open_dev("/dev/pixel_buffer_dma");
+}
 
 int main(void) {
 	sdcard_init();
@@ -30,9 +37,9 @@ int main(void) {
 	
 	while(1) {
 		get_input(&instruction, &data);
-		switch(instuction) {
+		switch(instruction) {
 			case 0:
-				update_health(data & 0x400 >> 10, data & 0x300 >> 8, data & 0xF0 >> 4, data & 0xF);
+				update_healthbar(data & 0x400 >> 10, data & 0x300 >> 8, data & 0xF0 >> 4, data & 0xF);
 				break;
 			case 1:
 				//update_screen(data);
@@ -59,7 +66,7 @@ int main(void) {
 			case 9:
 				load_turn(data & 0x1);
 				break;
-			case default:
+			default:
 				break;
 		}
 	}

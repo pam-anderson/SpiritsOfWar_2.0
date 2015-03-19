@@ -75,7 +75,7 @@ int draw_exit_screen(int player_id) {
 	alt_up_char_buffer_string(char_buffer, "Are you sure you want to quit?", 25, 23);
 	alt_up_char_buffer_string(char_buffer, "[A] - Yes     [D] - No", 30, 25);
 	while(1) {
-		key = get_player_input(player_id);
+		//key = get_player_input(player_id);
 		if (key == LEFT) {
 			alt_up_char_buffer_clear(char_buffer);
 			return 0;

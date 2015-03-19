@@ -27,9 +27,9 @@
 
 int **sprites;
 
-char blinker = 0xFFFF;
+//char blinker = 0xFFFF;
 
-static int healthbar_pos[NO_PLAYERS][CHARS_PER_PLAYER][2] = {{{29, 15}, {123, 15}, {217, 15}},
+static int healthbar_pos[2][3][2] = {{{29, 15}, {123, 15}, {217, 15}},
 		{{29, 214}, {123, 214}, {217, 214}}};
 
 int grass[] = {0x1d20, 0x1ce0, 0x1d00, 0x1d00, 0x1cc0, 0x1d00, 0x1d00, 0x1cc0, 0x1ca0, 0x1cc0, 0x1ce0, 0x1d00, 0x1ce0, 0x1d00, 0x1c60, 0x1d00,
