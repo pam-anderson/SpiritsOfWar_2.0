@@ -17,6 +17,8 @@ class Game:
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
             self.gameMap.tiles)
+        self.draw.drawMap()
+        self.draw.drawCharacters()
 
     def getPlayerInput(self):
         keypress = raw_input("")
@@ -73,7 +75,7 @@ class Game:
             character.move = Turn.Attack
             oldTile.occupiedBy = 0
             newTile.occupiedBy = character
-            self.draw.animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x,
+            self.draw.animate(0, oldTile.x, oldTile.y, newTile.x,
                  newTile.y)
 
         for move in validMoves:

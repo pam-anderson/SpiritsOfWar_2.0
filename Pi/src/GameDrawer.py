@@ -6,7 +6,7 @@ MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit, Turn = range(9)
+        RecordVideo, Sprite, Exit, Turn = range(10)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -17,12 +17,17 @@ class Drawer:
         self.dataPins = [11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
             36, 37, 38, 40]
         GPIO.setmode(GPIO.BOARD)
+        for pin in self.messagePins:
+            GPIO.setup(pin, GPIO.OUT)
+        for pin in self.dataPins:
+            GPIO.setup(pin, GPIO.OUT)
+        GPIO.setup(self.readyPin, GPIO.OUT)
 
     def drawMap(self):
         for y in range(MAP_SIZE):
             for x in range(MAP_SIZE):
                 self.drawSprite(x << 4 + START_PIXEL_X, y << 4 + START_PIXEL_Y,
-                    self.gameMap.tiles[x][y].sprite)
+                    self.gameMap.tiles[x][y].sprite.value)
         self.drawCharacters()
         return
 
@@ -32,6 +37,7 @@ class Drawer:
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
+        GPIO.setup(self.readyPin, GPIO.OUT)
         GPIO.output(self.readyPin, 1)
 
     def setDataPins(self, data, length):
@@ -42,8 +48,8 @@ class Drawer:
             GPIO.output(self.dataPins[pin], out)
 
     def boardIsReady(self):
-        GPIO.setup(13, GPIO.IN)
-        while GPIO.input(13):
+        GPIO.setup(self.readyPin, GPIO.IN)
+        while GPIO.input(self.readyPin):
             pass
         return
     #9bits for x, 8 bits for y, 6 bits for memory
@@ -55,12 +61,7 @@ class Drawer:
         self.boardIsReady()
         out = memory << 8 | y
         self.setMessagePins(Message.Sprite)
-        self.setDataPin(out, 14)
-    	#IOWR_32DIRECT(DRAWER_BASE, 0, x);
-    	#IOWR_32DIRECT(DRAWER_BASE, 4, y);
-    	#IOWR_32DIRECT(DRAWER_BASE, 8, memory);
-    	#IOWR_32DIRECT(DRAWER_BASE, 12, 1); //Start
-    	#while(IORD_32DIRECT(DRAWER_BASE, 24) == 0) {}
+        self.setDataPins(out, 14)
         return
     
     def drawHealthbar(self, character):
@@ -80,7 +81,7 @@ class Drawer:
     
     def drawCharacters(self):
         for p in self.players:
-            for c in self.players.characters:
+            for c in p.characters:
                 self.drawSprite(c.position.x << 4 + START_PIXEL_X,
                     c.position.y << 4 + START_PIXEL_Y, c.standingSprite)
         return
@@ -89,9 +90,9 @@ class Drawer:
             sprite_type):
         for i in range(16):
             self.drawSprite(oldx << 4 + START_PIXEL_X, oldy << 4 + START_PIXEL_Y,
-                self.gameMap.tiles[oldx][oldy].sprite)
+                self.gameMap.tiles[oldx][oldy].sprite.value)
             self.drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
-                self.gameMap.tiles[newx][newy].sprite)
+                self.gameMap.tiles[newx][newy].sprite.value)
             if i % 8 <= 3:
                 self.drawSprite(oldx << 4 + i * dx + START_PIXEL_X,
                     oldy << 4 + i * dy +
@@ -102,7 +103,7 @@ class Drawer:
                     START_PIXEL_Y, ram_location + sprite_type + 1)
             #wait some time
         self.drawSprite(oldx << 4 + START_PIXEL_X, oldy << 4 + START_PIXEL_Y,
-            self.gameMap.tiles[oldx][oldy].sprite)
+            self.gameMap.tiles[oldx][oldy].sprite.value)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):
@@ -163,7 +164,7 @@ class Drawer:
         self.drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
             character.standingSprite)
 	
-	def loadTurn(self, playerTurn):
+    def loadTurn(self, playerTurn):
         self.boardIsReady()
         out = playerTurn
         self.setMessagePins(Message.Turn)
