@@ -1,5 +1,7 @@
 import pygame
 
+#sudo amixer cset numid=3 1
+
 def init_music():
     pygame.mixer.init()  # initialize pygame
     pygame.mixer.music.load("Gumi.wav") # load main music

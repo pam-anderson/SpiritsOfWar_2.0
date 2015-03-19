@@ -12,7 +12,7 @@ class Game:
         # Draw map and initialize players here
         self.players = initializePlayers()
         self.gameMap = Map()
-        self.draw = Drawer(self.gameMap())
+        self.draw = Drawer(self.gameMap, self.players)
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,

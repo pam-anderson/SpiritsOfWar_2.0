@@ -6,7 +6,7 @@ MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit = range(8)
+        RecordVideo, Sprite, Exit = range(9)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -27,6 +27,7 @@ class Drawer:
         return
 
     def setMessagePins(self, message):
+        GPIO.setmode(GPIO.BOARD)
         for pin in range(3):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
@@ -34,12 +35,14 @@ class Drawer:
         GPIO.output(self.readyPin, 1)
 
     def setDataPins(self, data, length):
+        GPIO.setmode(GPIO.BOARD)
         for pin in range(length):
             mask = 1 << pin
             out = 1 if mask & data > 0 else 0
             GPIO.output(self.dataPins[pin], out)
 
     def boardIsReady(self):
+        GPIO.setup(13, GPIO.IN)
         while GPIO.input(13):
             pass
         return
