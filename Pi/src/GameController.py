@@ -3,6 +3,7 @@ from Map import Map
 from GameDrawer import Drawer
 from Player import CHARS_PER_PLAYER
 from enum import Enum
+from Sounds import Sound
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
@@ -62,6 +63,7 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
+		play_sfx(3)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, False)
@@ -83,6 +85,12 @@ class Game:
 
     def attackCharacter(self, team, character):
         print "attackChar"
+		if character.characterClass = "warrior"
+		    play_sfx(0)
+		elif character.characterClass = "ranger"
+		    play_sfx(1)
+		elif character.characterClass = "mage"
+		    play_sfx(2)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, True)
@@ -99,6 +107,7 @@ class Game:
                 newTile.occupiedBy.currentHp -= character.characterClass.attack
                 self.draw.drawHealthbar(character)
                 if newTile.occupiedBy.currentHp <= 0:
+				    play_sfx(4)
                     newTile.occupiedBy.currentHp = 0
                     self.draw.drawSprite(newTile.x, newTile.y, Tile.Grass)
                     self.players[team].charactersRemaining -= 1
@@ -173,4 +182,6 @@ class Game:
                     return
             self.players[currPlayer].resetTurn()
             currPlayer = not currPlayer
+
+
 
