@@ -40,7 +40,7 @@ class Drawer:
     def drawMap(self):
         for y in range(MAP_SIZE):
             for x in range(MAP_SIZE):
-                self.drawSprite(x, y, self.gameMap.tiles[x][y].sprite.value)
+                self.drawSprite(x, y, self.gameMap.tiles[x][y].sprite)
         self.drawCharacters()
         return
 
@@ -95,6 +95,7 @@ class Drawer:
             out = (memory << 8) | ((y << 4) + START_PIXEL_Y)
         else:
             out = (memory << 8) | y
+        print out
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 18)
         return
@@ -111,7 +112,7 @@ class Drawer:
     
     def drawCursor(self,oldX, oldY, newX, newY):
         oldTile = self.gameMap.tiles[oldX][oldY]
-        self.drawSprite(oldX, oldY, oldTile.sprite.value)
+        self.drawSprite(oldX, oldY, oldTile.sprite)
         if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
             self.drawSprite(oldX, oldY, oldTile.occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
@@ -137,8 +138,8 @@ class Drawer:
         newx = (newx << 4) + START_PIXEL_X
         newy = (newy << 4) + START_PIXEL_Y
         for i in range(16):
-            self.drawSprite(oldx, oldy, oldTile.sprite.value, 0)
-            self.drawSprite(newx, newy, newTile.sprite.value, 0)
+            self.drawSprite(oldx, oldy, oldTile.sprite, 0)
+            self.drawSprite(newx, newy, newTile.sprite, 0)
             if i % 8 <= 3:
                 self.drawSprite(oldx + i * dx, oldy + i * dy,
                     ram_location + sprite_type, 0)
@@ -146,7 +147,7 @@ class Drawer:
                 self.drawSprite(oldx + i * dx, oldy + i * dy,
                     ram_location + sprite_type + 1, 0)
             sleep(0.05)
-        self.drawSprite(oldx, oldy, oldTile.sprite.value)
+        self.drawSprite(oldx, oldy, oldTile.sprite)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):
@@ -197,13 +198,10 @@ class Drawer:
         return
     
     def movePlayer(self, character, oldx, oldy, newx, newy):
-        self.gameMap.tiles[oldx][oldy].occupiedBy = 0
         if newx == -1 or newy == -1 or newx == MAP_SIZE or newy == MAP_SIZE:
             return
         self.animate(character.animationSprite, oldx, oldy, newx,
             newy)
-        character.position = self.gameMap.tiles[newx][newy]
-        self.gameMap.tiles[newx][newy].occupiedBy = character
         self.drawSprite(newx, newy, character.standingSprite)
 	
     def loadTurn(self, playerTurn):

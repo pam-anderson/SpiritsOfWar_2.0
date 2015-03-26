@@ -73,22 +73,22 @@ class Game:
             character.characterClass.movement, False)
         for move in validMoves:
             # Highlight potential moves
-            self.draw.drawSprite(move.x, move.y, move.sprite.value | 0x100 )
+            move.sprite = move.sprite | 0x100
+            self.draw.drawSprite(move.x, move.y, move.sprite)
             #self.draw.drawCharacters()
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
             self.draw.movePlayer(character, oldTile.x, oldTile.y, newTile.x, newTile.y)
-            #character.position = newTile
-            #character.move = Turn.Attack
-            #oldTile.occupiedBy = 0
-            #newTile.occupiedBy = character
-            #self.draw.animate(0, oldTile.x, oldTile.y, newTile.x,
-            #     newTile.y)
+            character.position = newTile
+            character.move = Turn.Attack
+            oldTile.occupiedBy = 0
+            newTile.occupiedBy = character
 
         for move in validMoves:
             # Unhighlight potential moves
-            self.draw.drawSprite(move.x, move.y, move.sprite.value)
+            move.sprite = move.sprite & 0xFF
+            self.draw.drawSprite(move.x, move.y, move.sprite)
             #self.draw.drawCharacters()
             move.distance = 1000
 
@@ -105,7 +105,8 @@ class Game:
             character.characterClass.movement, True)
         for move in validMoves:
             # Highlight potential moves
-            self.draw.drawSprite(move.x, move.y, move.sprite.value | 0x200)
+            move.sprite = move.sprite | 0x200
+            self.draw.drawSprite(move.x, move.y, move.sprite)
             #self.draw.drawCharacters()
 
         newTile = self.selectSpace(character, validMoves)
@@ -124,7 +125,8 @@ class Game:
 
         for move in validMoves:
             # Highlight potential moves
-            self.draw.drawSprite(move.x, move.y, move.sprite.value)
+            move.sprite = move.sprite & 0xFF
+            self.draw.drawSprite(move.x, move.y, move.sprite)
             #self.draw.drawCharacters()
             move.distance = 1000
  

@@ -14,14 +14,14 @@ class MapTile:
     def __init__(self, x, y, sprite):
         self.x = x
         self.y = y
-        self.sprite = sprite
+        self.sprite = sprite.value
         self.distance = 1000
         self.explored = False
         self.occupiedBy = 0 
 
     def tileIsValid(self, teamId, attackable):
         if not self.explored and self.occupiedBy == 0 and \
-            self.sprite == Sprite.Grass:
+            self.sprite == Sprite.Grass.value:
             return True
         if attackable and not self.explored and self.occupiedBy != 0 and \
             self.occupiedBy.team != teamId:
