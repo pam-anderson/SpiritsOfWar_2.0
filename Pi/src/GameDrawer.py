@@ -101,7 +101,7 @@ class Drawer:
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
         self.boardIsReady()
-        out = ((oldX << 3 | oldY) << 3 | newX) << 3 | newY
+        out = (newX << 3) | newY
         self.setMessagePins(Message.Cursor)
         self.setDataPins(out, 12)
         return

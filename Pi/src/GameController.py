@@ -83,6 +83,7 @@ class Game:
 
         for move in validMoves:
             self.draw.drawSprite(move.x, move.y, 0) # unhighlight moves
+            move.distance = 1000
 
     def attackCharacter(self, team, character):
         print "attackChar"
@@ -115,6 +116,7 @@ class Game:
 
         for move in validMoves:
             self.draw.drawSprite(move.x, move.y, 0) # unhighlight attacks
+            move.distance = 1000
  
     def doPlayerTurn(self, team):
         print "doPlayerTurn"
