@@ -143,6 +143,8 @@ class Game:
                 for character in self.players[team].characters:
                     if character.move == move and move != Turn.Done:
                         character.move += 1
+                    self.draw.drawCursor( character.position.x,
+                        character.position.y, -1, -1)
                 return True
             elif keypress == Input.Enter:
                 if self.players[team].characters[charId].move == Turn.Move:

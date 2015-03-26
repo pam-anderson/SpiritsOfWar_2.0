@@ -117,6 +117,8 @@ class Drawer:
             self.drawSprite(oldX, oldY, oldTile.occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
+        if newX < 0 or newY < 0:
+            return
         self.boardIsReady()
         out = (newX << 3) | newY
         self.setMessagePins(Message.Cursor)
