@@ -16,5 +16,5 @@ class Sound:
         self.sfx.append(pygame.mixer.Sound("die.wav"))
 
     def play_sfx(self, sfx_num):
-        sfx[sfx_num].play(0) #0 for repeat once 
+        self.sfx[sfx_num].play(0) #0 for repeat once 
 	

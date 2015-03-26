@@ -32,20 +32,18 @@ class Drawer:
     def drawMap(self):
         for y in range(MAP_SIZE):
             for x in range(MAP_SIZE):
-                self.drawSprite(x << 4 + START_PIXEL_X, y << 4 + START_PIXEL_Y,
+                self.drawSprite((x << 4) + START_PIXEL_X, (y << 4) + START_PIXEL_Y,
                     self.gameMap.tiles[x][y].sprite.value)
         self.drawCharacters()
         return
 
     def setMessagePins(self, message):
-        GPIO.setmode(GPIO.BOARD)
         for pin in range(3):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
 
     def setDataPins(self, data, length):
-        GPIO.setmode(GPIO.BOARD)
         for pin in range(length):
             mask = 1 << pin
             out = 1 if mask & data > 0 else 0
@@ -62,55 +60,57 @@ class Drawer:
 
     #9bits for x, 8 bits for y, 6 bits for memory
     def drawSprite(self, x, y, memory):
+        print x
         self.boardIsReady()
         out = x
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 9)
         self.boardIsReady()
-        out = memory << 8 | y
+        out = (memory << 8) | y
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 14)
         return
     
     def drawHealthbar(self, character):
         self.boardIsReady()
-        out = character.team << 10 | character.characterId << 8 | \
-                character.currentHp << 4 | character.characterClass.maxHp
+        out = (character.team << 10) | (character.characterId << 8) | \
+                (character.currentHp << 4) | character.characterClass.maxHp
         self.setMessagePins(Message.Health)
         self.setDataPins(out, 11)
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
         self.boardIsReady()
-        out = newX << 3 | newY
+        out = (newX << 3) | newY
         self.setMessagePins(Message.Cursor)
         self.setDataPins(out, 6) 
+        print newX, newY, out
         return
     
     def drawCharacters(self):
         for p in self.players:
             for c in p.characters:
-                self.drawSprite(c.position.x << 4 + START_PIXEL_X,
-                    c.position.y << 4 + START_PIXEL_Y, c.standingSprite)
+                self.drawSprite((c.position.x << 4) + START_PIXEL_X,
+                    (c.position.y << 4) + START_PIXEL_Y, c.standingSprite)
         return
     
     def animateToTile(self,ram_location, dx, dy, oldx, oldy, newx, newy,
             sprite_type):
         for i in range(16):
-            self.drawSprite(oldx << 4 + START_PIXEL_X, oldy << 4 + START_PIXEL_Y,
+            self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
                 self.gameMap.tiles[oldx][oldy].sprite.value)
-            self.drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
+            self.drawSprite((newx << 4) + START_PIXEL_X, (newy << 4) + START_PIXEL_Y,
                 self.gameMap.tiles[newx][newy].sprite.value)
             if i % 8 <= 3:
-                self.drawSprite(oldx << 4 + i * dx + START_PIXEL_X,
-                    oldy << 4 + i * dy +
+                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
+                    (oldy << 4) + i * dy +
                     START_PIXEL_Y, ram_location + sprite_type)
             else:
-                self.drawSprite(oldx << 4 + i * dx + START_PIXEL_X,
-                    oldy << 4 + i * dy + 
+                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
+                    (oldy << 4) + i * dy + 
                     START_PIXEL_Y, ram_location + sprite_type + 1)
             #wait some time
-        self.drawSprite(oldx << 4 + START_PIXEL_X, oldy << 4 + START_PIXEL_Y,
+        self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
             self.gameMap.tiles[oldx][oldy].sprite.value)
         return
     
@@ -169,7 +169,7 @@ class Drawer:
             newy)
         character.position = self.gameMap.tiles[newx][newy]
         self.gameMap.tiles[newx][newy].occupiedBy = character
-        self.drawSprite(newx << 4 + START_PIXEL_X, newy << 4 + START_PIXEL_Y,
+        self.drawSprite((newx << 4) + START_PIXEL_X, (newy << 4) + START_PIXEL_Y,
             character.standingSprite)
 	
     def loadTurn(self, playerTurn):
