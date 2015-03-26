@@ -25,3 +25,6 @@ Communication Protocol between the Pi and DE2:
         Draw or clear exit menu (1 bit)
     9 Change Turn
         Team number (1 bit)
+    10 Change Writer
+        Current reader becomes writer, and writer becomes reader, after
+        successful message.
