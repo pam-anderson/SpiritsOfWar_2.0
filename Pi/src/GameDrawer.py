@@ -6,7 +6,7 @@ MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit, Turn = range(10)
+        RecordVideo, Sprite, Exit, Turn, Writer = range(11)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -17,6 +17,13 @@ class Drawer:
         self.messagePins = [7, 8, 10, 11]
         self.dataPins = [12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
             36, 37, 38, 40]
+        self.setGpios()
+
+    def __del__(self):
+        print "drawer cleanup"
+        GPIO.cleanup()
+
+    def setGpios(self):
         GPIO.setmode(GPIO.BOARD)
         for pin in self.messagePins:
             GPIO.setup(pin, GPIO.OUT)
@@ -24,10 +31,6 @@ class Drawer:
             GPIO.setup(pin, GPIO.OUT)
         GPIO.setup(self.readyPin, GPIO.OUT)
         GPIO.setup(self.donePin, GPIO.IN)
-
-    def __del__(self):
-        print "drawer cleanup"
-        GPIO.cleanup()
 
     def drawMap(self):
         for y in range(MAP_SIZE):
@@ -58,8 +61,18 @@ class Drawer:
             pass
         return
 
-    #9bits for x, 8 bits for y, 6 bits for memory
+    def changeWriter(self):
+        self.boardIsReady()
+        self.setmessagePins(Message.Writer)
+        self.setDataPins(0, 0)
+        self.boardIsReady()
+        GPIO.cleanup()
+        # Pi is now a reader until the DE2 passes the changeWriter message
+
     def drawSprite(self, x, y, memory):
+        # 1st Set of Data = [x pixel]
+        # 2nd Set of Data = [Memory | y pixel]
+        #                     MSB       LSB
         print x
         self.boardIsReady()
         out = x
