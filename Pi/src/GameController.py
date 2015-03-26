@@ -1,5 +1,5 @@
 from Player import initializePlayers, initializeCharacterPositions, Turn
-from Map import Map
+from Map import Map, Sprite
 from GameDrawer import Drawer, START_PIXEL_X, START_PIXEL_Y
 from Player import CHARS_PER_PLAYER
 from enum import Enum
@@ -118,7 +118,9 @@ class Game:
                 if newTile.occupiedBy.currentHp <= 0:
 #                    self.sound.play_sfx(4)
                     newTile.occupiedBy.currentHp = 0
-                    self.draw.drawSprite(newTile.x, newTile.y, Tile.Grass)
+                    newTile.occupiedBy = 0
+                    self.draw.drawSprite(newTile.x, newTile.y,
+                        Sprite.Grass.value)
                     self.players[team].charactersRemaining -= 1
         self.highlightTiles(validMoves, 0)
         for move in validMoves:
