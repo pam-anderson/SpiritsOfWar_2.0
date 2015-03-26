@@ -90,15 +90,22 @@ void load_sprite(char *filename, int* sprite) {
 void sprite_init() {
 	int i = 0, j = 0;
 	sprites = (int **) calloc(57, sizeof(int *));
-	sprites[0] = grass;
+	//sprites[0] = grass;
 	 
-	 sprites[1] = water;
+	//sprites[1] = water;
 
-	sprites[2] = rock;
+	//sprites[2] = rock;
 
-	for(i = 3; i < 57; i++) {
+	for(i = 0; i < 57; i++) {
 		sprites[i] = (int *) calloc(256, sizeof(int));
-		load_sprite(filenames[i], sprites[i]);
+		if(i < 3) {
+			for(j = 0; j < 256; j++) {
+				if(i == 0) sprites[i][j] = grass[j];
+				if(i == 1) sprites[i][j] = water[j];
+				if(i == 2) sprites[i][j] = rock[j];
+			}
+		}
+		else load_sprite(filenames[i - 3], sprites[i]);
 	}
 }
 

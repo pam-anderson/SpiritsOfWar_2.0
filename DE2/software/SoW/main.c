@@ -6,6 +6,12 @@ void menu_init() {
 	alt_up_char_buffer_init(char_buffer);
 	alt_up_char_buffer_clear(char_buffer);
 	pixel_buffer = alt_up_pixel_buffer_dma_open_dev("/dev/pixel_buffer_dma");
+	
+	alt_up_pixel_buffer_dma_change_back_buffer_address(pixel_buffer, PIXEL_BUFFER_BASE);
+	alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
+
+	while (alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
 }
 
 int main(void) {
@@ -19,6 +25,7 @@ int main(void) {
 	hardware_init();
 	menu_init();
 	initialize_players();
+	load_turn(0);
 	
 	while(1) {
 		get_input(&instruction, &data);
@@ -32,7 +39,7 @@ int main(void) {
 				// Draw specified screen (instruction, game, start, etc)
 				break;
 			case 2:
-				draw_cursor((data & 0x38 >> 3) << 4, (data & 0x7) << 4);
+				draw_cursor((data & 0x38) << 1, (data & 0x7) << 4);
 				break;
 			case 3:
 				//highlight_characters(data);
