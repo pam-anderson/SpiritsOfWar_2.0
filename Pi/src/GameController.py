@@ -4,7 +4,7 @@ from GameDrawer import Drawer, START_PIXEL_X, START_PIXEL_Y
 from Player import CHARS_PER_PLAYER
 from enum import Enum
 from Sounds import Sound
-import sys
+from getch import getch
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
@@ -25,7 +25,7 @@ class Game:
         self.draw.drawCharacters()
 
     def getPlayerInput(self):
-        keypress = sys.stdin.read(1)
+        keypress = getch()
         if keypress == 'a' or keypress == 'A':
             return Input.Left
         elif keypress == 'd' or keypress == 'D':
@@ -114,7 +114,7 @@ class Game:
                     newTile.occupiedBy is not 0:
                 print "Successful hit"
                 newTile.occupiedBy.currentHp -= character.characterClass.attack
-                self.draw.drawHealthbar(character)
+                self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
 #                    self.sound.play_sfx(4)
                     newTile.occupiedBy.currentHp = 0

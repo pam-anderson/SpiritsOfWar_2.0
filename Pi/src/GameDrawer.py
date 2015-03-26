@@ -6,7 +6,7 @@ START_PIXEL_Y = 40
 MAP_SIZE = 8
 
 class Message:
-    Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
+    Health, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
         RecordVideo, Sprite, Exit, Turn, Menu = range(11)
 
 class Drawer:
