@@ -54,6 +54,8 @@ class Drawer:
         return
     
     def drawHealthbar(self, character):
+        # Data = [team ID | char ID | current HP | max HP]
+        #           MSB                             LSB
         self.boardIsReady()
         out = character.team << 12 | character.characterId << 10 | \
                 character.currentHp << 5 | character.characterClass.maxHp
@@ -62,8 +64,10 @@ class Drawer:
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
+        # Data = [oldX | oldY | newX | newY]
+        #         MSB                   LSB
         self.boardIsReady()
-        out = newX << 4 | newY
+        out = ((oldX << 4 | oldY) << 4 | newX) << 4 | newY
         self.setMessagePins(Message.Cursor, out)
         return
     
