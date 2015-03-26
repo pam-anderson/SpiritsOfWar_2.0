@@ -16,21 +16,24 @@ port (
 end gpio_com;
 
 architecture rtl of gpio_com is
-    signal saved_value : std_logic_vector(15 downto 0);
-	 signal message : std_logic_vector(4 downto 0);
-	 signal ready : std_logic_vector(0 downto 0);
+    signal saved_value : std_logic_vector(18 downto 0);
+	-- signal message : std_logic_vector(4 downto 0);
+	 signal ready, done : std_logic_vector(0 downto 0);
 begin
-	 -- serialdata = [Data][Message Type][Ready]
-	 --				  21 - 6    5 - 1        0
-	 ready <= std_logic_vector(serialdata(0 downto 0));
+	 -- serialdata = [Data][Message Type][Done][Ready]
+	 --				  20 - 6    5 - 2        1		0
+	 ready <= serialdata(0 downto 0);
+	 saved_value <= serialdata(20 downto 2);
+	 serialdata(1 downto 1) <= done;
 	 
     process (clk)
     begin
         if rising_edge(clk) then
             if (reset_n = '0') then
-                saved_value <= (others => '0');
-					-- serialdata(0 downto 0) <= "0";
-  			 end if;
+					 done <= "0";
+				elsif(wr_en = '1' and addr = "00") then
+					done <= writedata(0 downto 0);
+				end if;
         end if;
     end process;
     
@@ -38,11 +41,11 @@ begin
     begin
         readdata <= (others => '-');
         if (rd_en = '1') then
-            if ((addr = "01") and (ready = "1")) then
+				if (addr = "00") then
+					readdata <= "0000000000000000000000000000000" & ready;
+            elsif (addr = "01") then
 					 -- Send [MSG TYPE][DATA]
-                readdata <= "000000000000" & serialdata(20 downto 1);
-					 -- Clear ready flag	
-					 serialdata(0 downto 0) <= "1";
+                readdata <= "0000000000000" & saved_value;
             end if;
         end if;
     end process;

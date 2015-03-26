@@ -4,41 +4,55 @@
 #define GPIO_ADDRESS 0x4440
 
 void get_input(int *instruction, int *data) {
-	int i = 0;
-	char c = 0;
-	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 0);
-	i = IORD_32DIRECT(GPIO_ADDRESS, 4);
-//	*instruction = IORD_32DIRECT(GPIO_ADDRESS, 4);
-//	*data = IORD_32DIRECT(0x4440, 4);
+	int gpio = 0;
+	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 0){
+		// Wait for ready to be set
+	}
+	gpio = IORD_32DIRECT(GPIO_ADDRESS, 4);
+	// Set done flag
 	IOWR_32DIRECT(GPIO_ADDRESS, 0, 1);
-	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 1);
+	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 1){
+		// Wait for ready to be cleared
+	}
+	// Clear done flag
 	IOWR_32DIRECT(GPIO_ADDRESS, 0, 0);
-	*instruction = i & 0x1F;
-	*data = i & 0xFFFE0 >> 5;
+	*instruction = gpio & 0x1F;
+	*data = gpio & 0xFFFE0 >> 5;
 }
 
+void menu_init() {
+	// Initialize character and pixel buffers
+	char_buffer = alt_up_char_buffer_open_dev("/dev/char_drawer");
+	alt_up_char_buffer_init(char_buffer);
+	alt_up_char_buffer_clear(char_buffer);
+	pixel_buffer = alt_up_pixel_buffer_dma_open_dev("/dev/pixel_buffer_dma");
+}
 
 int main(void) {
+	int instruction;
+	int data;
+	int data2; // Used when we need to perform 2 reads in a row
+
 	sdcard_init();
 	sprite_init();
 	hardware_init();
-	int instruction;
-	int data;
-	int data2;
 	menu_init();
 	initialize_players();
 	
 	while(1) {
 		get_input(&instruction, &data);
-		switch(instuction) {
+		switch(instruction) {
 			case 0:
-				update_health(data & 0x400 >> 10, data & 0x300 >> 8, data & 0xF0 >> 4, data & 0xF);
+				// Update health bar of specific character
+				update_healthbar((data & 0x400) >> 10, (data & 0x300) >> 8, (data & 0xF0) >> 4,
+						data & 0xF);
 				break;
 			case 1:
-				//update_screen(data);
+				// Draw specified screen (instruction, game, start, etc)
 				break;
 			case 2:
-				draw_cursor(data & 0x38 >> 3, data & 0x7);
+				// Draw cursor in new position and clear at old position
+				draw_cursor((data & 0x38) >> 3, data & 0x7);
 				break;
 			case 3:
 				//highlight_characters(data);
@@ -51,7 +65,7 @@ int main(void) {
 				break;
 			case 7:
 				get_input(&instruction, &data2);
-				draw_sprite(data & 0x1FF, data2 & 0xFF, data2 & 0x3F00 >> 8);
+				draw_sprite(data & 0x1FF, data2 & 0xFF, (data2 & 0x3F00) >> 8);
 				break;
 			case 8:
 				//exit_menu(data);
@@ -59,7 +73,10 @@ int main(void) {
 			case 9:
 				load_turn(data & 0x1);
 				break;
-			case default:
+			case 10:
+				// DE2 is now WRITER. Send data from mic.
+				break;
+			default:
 				break;
 		}
 	}

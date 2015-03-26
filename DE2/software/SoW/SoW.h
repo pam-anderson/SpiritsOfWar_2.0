@@ -89,6 +89,8 @@ void music_enable_ISR(void);
 void audio_isr(void * context, alt_u32 id);
 void music_file_load(void);
 void music_GO(void);
+void menu_init(void);
+void update_healthbar(int, int, int, int);
 
 void play_game(void);
 keypress get_player_input(int);
