@@ -185,6 +185,7 @@ class Game:
                     return
             self.players[currPlayer].resetTurn()
             currPlayer = not currPlayer
+            self.draw.loadTurn(currPlayer)
 
 
 
