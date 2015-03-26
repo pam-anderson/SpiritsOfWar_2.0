@@ -3,6 +3,7 @@ from Map import Map
 from GameDrawer import Drawer
 from Player import CHARS_PER_PLAYER
 from enum import Enum
+from Sounds import Sound
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
@@ -12,11 +13,14 @@ class Game:
         # Draw map and initialize players here
         self.players = initializePlayers()
         self.gameMap = Map()
-        self.draw = Drawer(self.gameMap())
+        self.draw = Drawer(self.gameMap, self.players)
+        self.sound = Sound()
         initializeCharacterPositions(0, self.players[0].characters,
             self.gameMap.tiles)
         initializeCharacterPositions(1, self.players[1].characters,
             self.gameMap.tiles)
+        self.draw.drawMap()
+        self.draw.drawCharacters()
 
     def getPlayerInput(self):
         keypress = raw_input("")
@@ -60,6 +64,7 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
+        self.sound.play_sfx(3)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, False)
@@ -73,7 +78,7 @@ class Game:
             character.move = Turn.Attack
             oldTile.occupiedBy = 0
             newTile.occupiedBy = character
-            self.draw.animate(self.gameMap, 0, oldTile.x, oldTile.y, newTile.x,
+            self.draw.animate(0, oldTile.x, oldTile.y, newTile.x,
                  newTile.y)
 
         for move in validMoves:
@@ -81,6 +86,12 @@ class Game:
 
     def attackCharacter(self, team, character):
         print "attackChar"
+        if character.characterClass == "warrior":
+            self.sound.play_sfx(0)
+        elif character.characterClass == "ranger":
+            self.sound.play_sfx(1)
+        elif character.characterClass == "mage":
+            self.sound.play_sfx(2)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, True)
@@ -97,6 +108,7 @@ class Game:
                 newTile.occupiedBy.currentHp -= character.characterClass.attack
                 self.draw.drawHealthbar(character)
                 if newTile.occupiedBy.currentHp <= 0:
+                    self.sound.play_sfx(4)
                     newTile.occupiedBy.currentHp = 0
                     self.draw.drawSprite(newTile.x, newTile.y, Tile.Grass)
                     self.players[team].charactersRemaining -= 1
@@ -171,4 +183,6 @@ class Game:
                     return
             self.players[currPlayer].resetTurn()
             currPlayer = not currPlayer
+
+
 
