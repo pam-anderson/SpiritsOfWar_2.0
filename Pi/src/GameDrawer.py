@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from time import sleep
 
 START_PIXEL_X = 32
 START_PIXEL_Y = 40
@@ -21,6 +22,10 @@ class Drawer:
 
     def __del__(self):
         print "drawer cleanup"
+        for pin in self.messagePins:
+            GPIO.output(pin, 0)
+        for pin in self.dataPins:
+            GPIO.output(pin, 0)
         GPIO.cleanup()
 
     def setGpios(self):
@@ -35,8 +40,7 @@ class Drawer:
     def drawMap(self):
         for y in range(MAP_SIZE):
             for x in range(MAP_SIZE):
-                self.drawSprite((x << 4) + START_PIXEL_X, (y << 4) + START_PIXEL_Y,
-                    self.gameMap.tiles[x][y].sprite.value)
+                self.drawSprite(x, y, self.gameMap.tiles[x][y].sprite.value)
         self.drawCharacters()
         return
 
@@ -72,17 +76,25 @@ class Drawer:
         self.setMessagePins(Message.Exit)
         self.setDataPins(sel, 1)
 
-    def drawSprite(self, x, y, memory):
+    def drawSprite(self, x, y, memory, tileCoords = 1):
+        # If tileCoords == 0, x and y args are in pixel coords
         # 1st Set of Data = [x pixel]
         # 2nd Set of Data = [Memory | y pixel]
         #                     MSB       LSB
-        print x, y, memory
         self.boardIsReady()
-        out = x
+        if tileCoords is 1:
+            print (x << 4) + START_PIXEL_X, (y << 4) + START_PIXEL_Y, memory
+            out = (x << 4) + START_PIXEL_X
+        else:
+            print x, y, memory
+            out = x
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 9)
         self.boardIsReady()
-        out = (memory << 8) | y
+        if tileCoords is 1:
+            out = (memory << 8) | ((y << 4) + START_PIXEL_Y)
+        else:
+            out = (memory << 8) | y
         self.setMessagePins(Message.Sprite)
         self.setDataPins(out, 18)
         return
@@ -98,12 +110,10 @@ class Drawer:
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
-        oldXpix = (oldX << 4) + START_PIXEL_X
-        oldYpix = (oldY << 4) + START_PIXEL_Y
-        self.drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
+        oldTile = self.gameMap.tiles[oldX][oldY]
+        self.drawSprite(oldX, oldY, oldTile.sprite.value)
         if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
-            self.drawSprite(oldXpix, oldYpix,
-                self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
+            self.drawSprite(oldX, oldY, oldTile.occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
         self.boardIsReady()
@@ -115,27 +125,28 @@ class Drawer:
     def drawCharacters(self):
         for p in self.players:
             for c in p.characters:
-                self.drawSprite((c.position.x << 4) + START_PIXEL_X,
-                    (c.position.y << 4) + START_PIXEL_Y, c.standingSprite)
+                self.drawSprite(c.position.x, c.position.y, c.standingSprite)
         return
     
     def animateToTile(self,ram_location, dx, dy, oldx, oldy, newx, newy,
             sprite_type):
-        x1 = (oldx << 4) + START_PIXEL_X
-        y1 = (oldy << 4) + START_PIXEL_Y
-        x2 = (newx << 4) + START_PIXEL_X
-        y2 = (newy << 4) + START_PIXEL_Y
+        newTile = self.gameMap.tiles[newx][newy]
+        oldTile = self.gameMap.tiles[oldx][oldy]
+        oldx = (oldx << 4) + START_PIXEL_X
+        oldy = (oldy << 4) + START_PIXEL_Y
+        newx = (newx << 4) + START_PIXEL_X
+        newy = (newy << 4) + START_PIXEL_Y
         for i in range(16):
-            self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
-            self.drawSprite(x2, y2, self.gameMap.tiles[newx][newy].sprite.value)
+            self.drawSprite(oldx, oldy, oldTile.sprite.value, 0)
+            self.drawSprite(newx, newy, newTile.sprite.value, 0)
             if i % 8 <= 3:
-                self.drawSprite(x1 + i * dx, y1 + i * dy,
-                    ram_location + sprite_type)
+                self.drawSprite(oldx + i * dx, oldy + i * dy,
+                    ram_location + sprite_type, 0)
             else:
-                self.drawSprite(x1 + i * dx, y1 + i * dy,
-                    ram_location + sprite_type + 1)
-            #wait some time
-        self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
+                self.drawSprite(oldx + i * dx, oldy + i * dy,
+                    ram_location + sprite_type + 1, 0)
+            sleep(0.05)
+        self.drawSprite(oldx, oldy, oldTile.sprite.value)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):
@@ -193,8 +204,7 @@ class Drawer:
             newy)
         character.position = self.gameMap.tiles[newx][newy]
         self.gameMap.tiles[newx][newy].occupiedBy = character
-        self.drawSprite((newx << 4) + START_PIXEL_X, (newy << 4) + START_PIXEL_Y,
-            character.standingSprite)
+        self.drawSprite(newx, newy, character.standingSprite)
 	
     def loadTurn(self, playerTurn):
         self.boardIsReady()

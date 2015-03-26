@@ -1,6 +1,6 @@
 from Player import initializePlayers, initializeCharacterPositions, Turn
 from Map import Map
-from GameDrawer import Drawer
+from GameDrawer import Drawer, START_PIXEL_X, START_PIXEL_Y
 from Player import CHARS_PER_PLAYER
 from enum import Enum
 from Sounds import Sound
@@ -46,6 +46,7 @@ class Game:
         oldY = character.position.y 
         while(True):
             keypress = self.getPlayerInput()
+            #TODO: Boundary checking
             if keypress == Input.Up:
                 self.draw.drawCursor(oldX, oldY, oldX, oldY - 1)
                 oldY -= 1
@@ -71,11 +72,9 @@ class Game:
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, False)
         for move in validMoves:
-            print move.x, move.y
-            self.gameMap.tiles[move.x][move.y].sprite.value = \
-                self.gameMap.tiles[move.x][move.y].sprite.value|0x100
-            self.draw.drawSprite(move.x, move.y,
-                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
+            # Highlight potential moves
+            self.draw.drawSprite(move.x, move.y, move.sprite.value | 0x100 )
+            #self.draw.drawCharacters()
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -88,10 +87,9 @@ class Game:
             #     newTile.y)
 
         for move in validMoves:
-            self.gameMap.tiles[move.x][move.y].sprite.value = \
-                self.gameMap.tiles[move.x][move.y].sprite.value & 0x0FF
-            self.draw.drawSprite(move.x, move.y,
-                self.gameMap.tiles[move.x][move.y].sprite.value) #unhighlight potential moves
+            # Unhighlight potential moves
+            self.draw.drawSprite(move.x, move.y, move.sprite.value)
+            #self.draw.drawCharacters()
             move.distance = 1000
 
     def attackCharacter(self, team, character):
@@ -106,11 +104,9 @@ class Game:
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, True)
         for move in validMoves:
-            print move.x, move.y
-            self.gameMap.tiles[move.x][move.y].sprite.value = \
-                self.gameMap.tiles[move.x][move.y].sprite.value|0x200
-            self.draw.drawSprite(move.x, move.y,
-                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
+            # Highlight potential moves
+            self.draw.drawSprite(move.x, move.y, move.sprite.value | 0x200)
+            #self.draw.drawCharacters()
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -127,10 +123,9 @@ class Game:
                     self.players[team].charactersRemaining -= 1
 
         for move in validMoves:
-            self.gameMap.tiles[move.x][move.y].sprite.value = \
-                self.gameMap.tiles[move.x][move.y].sprite.value & 0x0FF
-            self.draw.drawSprite(move.x, move.y,
-                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
+            # Highlight potential moves
+            self.draw.drawSprite(move.x, move.y, move.sprite.value)
+            #self.draw.drawCharacters()
             move.distance = 1000
  
     def doPlayerTurn(self, team):
