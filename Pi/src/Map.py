@@ -47,25 +47,25 @@ class Map:
         for level in range(levels):
             for node in queue:
                 for direction in Direction:
-                    if direction == Direction.Left and x > 0 and \
+                    if direction == Direction.Left and node.x > 0 and \
                           self.tiles[node.x - 1][node.y].tileIsValid(teamId, attackable):
                         self.tiles[node.x - 1][node.y].explored = True
                         neighbours.append(self.tiles[node.x - 1][node.y])
                         validMoves.append(self.tiles[node.x - 1][node.y])                        
                         self.tiles[node.x - 1][node.y].distance = level + 1
-                    elif direction == Direction.Right and x < MAP_SIZE - 1 and \
+                    elif direction == Direction.Right and node.x < MAP_SIZE - 1 and \
                           self.tiles[node.x + 1][node.y].tileIsValid(teamId, attackable):
                         self.tiles[node.x + 1][node.y].explored = True
                         neighbours.append(self.tiles[node.x + 1][node.y])
                         validMoves.append(self.tiles[node.x + 1][node.y])
                         self.tiles[node.x + 1][node.y].distance = level + 1
-                    elif direction == Direction.Up and y > 0 and \
+                    elif direction == Direction.Up and node.y > 0 and \
                           self.tiles[node.x][node.y - 1].tileIsValid(teamId, attackable):
                         self.tiles[node.x][node.y - 1].explored = True
                         neighbours.append(self.tiles[node.x][node.y - 1])
                         validMoves.append(self.tiles[node.x][node.y - 1])
                         self.tiles[node.x][node.y - 1].distance = level + 1
-                    elif direction == Direction.Down and y < MAP_SIZE - 1:
+                    elif direction == Direction.Down and node.y < MAP_SIZE - 1:
                         if self.tiles[node.x][node.y + 1].tileIsValid(teamId, attackable):
                             self.tiles[node.x][node.y + 1].explored = True
                             neighbours.append(self.tiles[node.x][node.y + 1])
