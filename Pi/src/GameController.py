@@ -65,18 +65,25 @@ class Game:
             elif keypress == Input.Esc:
                 return False                
 
+    def highlightTiles(self, tiles, highlight):
+        for move in tiles:
+            # Highlight potential moves
+            if not highlight:
+                move.sprite = move.sprite & 0xFF
+            else:
+                move.sprite = move.sprite | (highlight << 8)
+            self.draw.drawSprite(move.x, move.y, move.sprite)
+            if move.occupiedBy:
+                self.draw.drawSprite(move.x, move.y,
+                    move.occupiedBy.standingSprite)
+
     def moveCharacter(self, character):
         print "moveChar"
 #        self.sound.play_sfx(3)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, False)
-        for move in validMoves:
-            # Highlight potential moves
-            move.sprite = move.sprite | 0x100
-            self.draw.drawSprite(move.x, move.y, move.sprite)
-            #self.draw.drawCharacters()
-
+        self.highlightTiles(validMoves, 1)
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
             self.draw.movePlayer(character, oldTile.x, oldTile.y, newTile.x, newTile.y)
@@ -84,12 +91,8 @@ class Game:
             character.move = Turn.Attack
             oldTile.occupiedBy = 0
             newTile.occupiedBy = character
-
+        self.highlightTiles(validMoves, 0)
         for move in validMoves:
-            # Unhighlight potential moves
-            move.sprite = move.sprite & 0xFF
-            self.draw.drawSprite(move.x, move.y, move.sprite)
-            #self.draw.drawCharacters()
             move.distance = 1000
 
     def attackCharacter(self, team, character):
@@ -103,12 +106,7 @@ class Game:
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character,
             character.characterClass.movement, True)
-        for move in validMoves:
-            # Highlight potential moves
-            move.sprite = move.sprite | 0x200
-            self.draw.drawSprite(move.x, move.y, move.sprite)
-            #self.draw.drawCharacters()
-
+        self.highlightTiles(validMoves, 2)
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
             character.move = Turn.Done
@@ -122,12 +120,8 @@ class Game:
                     newTile.occupiedBy.currentHp = 0
                     self.draw.drawSprite(newTile.x, newTile.y, Tile.Grass)
                     self.players[team].charactersRemaining -= 1
-
+        self.highlightTiles(validMoves, 0)
         for move in validMoves:
-            # Highlight potential moves
-            move.sprite = move.sprite & 0xFF
-            self.draw.drawSprite(move.x, move.y, move.sprite)
-            #self.draw.drawCharacters()
             move.distance = 1000
  
     def doPlayerTurn(self, team):
