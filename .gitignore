@@ -1,0 +1,6 @@
+DE2/*
+!DE2/*.qsys
+!DE2/*.tcl
+!DE2/*.vhd
+!DE2/software/SoW/*.c
+!DE2/software/SoW/*.h
