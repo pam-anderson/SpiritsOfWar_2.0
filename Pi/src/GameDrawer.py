@@ -81,6 +81,9 @@ class Drawer:
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
+        drawSprite(oldX, oldY, self.gameMap.tiles[oldX][oldY].sprite.value)
+        if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
+            drawSprite(oldX, oldY, self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
         self.boardIsReady()
         out = newX << 3 | newY
         self.setMessagePins(Message.Cursor)

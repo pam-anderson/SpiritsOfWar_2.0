@@ -38,7 +38,7 @@ int main(void) {
 				//update_screen(data);
 				break;
 			case 2:
-				draw_cursor(data & 0x38 >> 3, data & 0x7);
+				draw_cursor((data & 0x38 >> 3) << 4, (data & 0x7) << 4);
 				break;
 			case 3:
 				//highlight_characters(data);

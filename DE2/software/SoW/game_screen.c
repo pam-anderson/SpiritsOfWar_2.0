@@ -73,8 +73,8 @@ void draw_characters() {
  * @param new_y The new y coordinate of the cursor
  */
 void draw_cursor(int new_x, int new_y) {
-	alt_up_pixel_buffer_dma_draw_rectangle(pixel_buffer, new_x + MAP_CORNER_X, new_y + MAP_CORNER_X,
-			new_x + SIZE_OF_TILE - 1 + MAP_CORNER_X, new_y + SIZE_OF_TILE - 1 + MAP_CORNER_X, 0xF81F, 0);
+	alt_up_pixel_buffer_dma_draw_rectangle(pixel_buffer, new_x + MAP_CORNER_X, new_y + MAP_CORNER_Y,
+			new_x + SIZE_OF_TILE - 1 + MAP_CORNER_X, new_y + SIZE_OF_TILE - 1 + MAP_CORNER_Y, 0xF81F, 0);
 }
 
 /*

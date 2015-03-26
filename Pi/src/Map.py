@@ -15,7 +15,7 @@ class MapTile:
         self.x = x
         self.y = y
         self.sprite = sprite
-        self.distance = 0
+        self.distance = 1000
         self.explored = False
         self.occupiedBy = 0 
 
@@ -43,6 +43,7 @@ class Map:
         queue = [self.tiles[x][y]]
         neighbours = []
         validMoves = [self.tiles[x][y]]
+        self.tiles[x][y].distance = 0
         for level in range(levels):
             for node in queue:
                 for direction in Direction:
@@ -50,25 +51,30 @@ class Map:
                           self.tiles[x - 1][y].tileIsValid(teamId, attackable):
                         self.tiles[x - 1][y].explored = True
                         neighbours.append(self.tiles[x - 1][y])
-                        validMoves.append(self.tiles[x - 1][y])
+                        validMoves.append(self.tiles[x - 1][y])                        
+                        self.tiles[x - 1][y].distance = level
                     elif direction == Direction.Right and x < MAP_SIZE - 1 and \
                           self.tiles[x + 1][y].tileIsValid(teamId, attackable):
                         self.tiles[x + 1][y].explored = True
                         neighbours.append(self.tiles[x + 1][y])
                         validMoves.append(self.tiles[x + 1][y])
+                        self.tiles[x + 1][y].distance = level
                     elif direction == Direction.Up and y > 0 and \
                           self.tiles[x][y - 1].tileIsValid(teamId, attackable):
                         self.tiles[x][y - 1].explored = True
                         neighbours.append(self.tiles[x][y - 1])
                         validMoves.append(self.tiles[x][y - 1])
+                        self.tiles[x][y - 1].distance = level
                     elif direction == Direction.Down and y < MAP_SIZE - 1:
                         if self.tiles[x][y + 1].tileIsValid(teamId, attackable):
                             self.tiles[x][y + 1].explored = True
                             neighbours.append(self.tiles[x][y + 1])
                             validMoves.append(self.tiles[x][y + 1])
+                            self.tiles[x][y + 1].distance = level
                         queue.remove(node) 
             queue = list(neighbours)
             neighbours = []
         for node in validMoves:
             node.explored = False
+            node.distance = 1000
         return validMoves
