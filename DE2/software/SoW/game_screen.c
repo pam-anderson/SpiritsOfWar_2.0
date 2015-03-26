@@ -61,20 +61,10 @@ void draw_cursor(int new_x, int new_y) {
  */
 int draw_exit_screen(int player_id) {
 	// Use player id for input
-	keypress key;
 	alt_up_char_buffer_clear(char_buffer);
 	alt_up_char_buffer_string(char_buffer, "Are you sure you want to quit?", 25, 23);
 	alt_up_char_buffer_string(char_buffer, "[A] - Yes     [D] - No", 30, 25);
-	while(1) {
-		//key = get_player_input(player_id);
-		if (key == LEFT) {
-			alt_up_char_buffer_clear(char_buffer);
-			return 0;
-		} else if (key == RIGHT) {
-			alt_up_char_buffer_clear(char_buffer);
-			return 1;
-		}
-	}
+	// TODO: Get input from Pi
 }
 
 /*
@@ -99,18 +89,14 @@ void healthbar_init(int player_id, int character_id, int x, int y) {
 void initialize_players() {
 	int i;
 	int j;
-	int x;
-	int y;
 
-	for(i = 0; i < 2; i++) {
-		for(j = 0; j < 3; j++) {
+	for(i = 0; i < NUM_PLAYERS; i++) {
+		for(j = 0; j < CHARS_PER_PLAYER; j++) {
 			//draw_sprite(0, 0, i * 3 + 3 + j); draw characters at x and y
 			healthbar_init(i, j, healthbar_pos[i][j][0], healthbar_pos[i][j][1]);
 		}
 	}
 }
-
-
 
 void update_healthbar(int player_id, int character_id, int hp, int max_hp) {
 	// Black out health lost

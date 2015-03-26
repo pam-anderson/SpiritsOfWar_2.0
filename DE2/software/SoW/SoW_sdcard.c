@@ -1,9 +1,3 @@
-/*
- * SoW_sdcard.c
- *
- *  Created on: 2015-01-27
- *      Author: Arjan
- */
 #include "SoW.h"
 #include "SoW_game_screen.h"
 

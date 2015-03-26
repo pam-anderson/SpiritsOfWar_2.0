@@ -16,37 +16,58 @@ port (
 end gpio_com;
 
 architecture rtl of gpio_com is
-    signal saved_value : std_logic_vector(18 downto 0);
-	-- signal message : std_logic_vector(4 downto 0);
+	  -- Message and Data from GPIO
+    --signal read_value : std_logic_vector(18 downto 0);
+	 --signal write_value : std_logic_vector(15 downto 0);
 	 signal ready, done : std_logic_vector(0 downto 0);
+	  -- DE2 is reader = 1, DE2 is writer = 0
+	 signal reader : std_logic_vector(0 downto 0) := "1";
 begin
+	 -- WHEN DE2 IS A READER (reader = 1):
 	 -- serialdata = [Data][Message Type][Done][Ready]
 	 --				  20 - 6    5 - 2        1		0
-	 ready <= serialdata(0 downto 0);
-	 saved_value <= serialdata(20 downto 2);
-	 serialdata(1 downto 1) <= done;
+	 -- WHEN DE2 IS A WRITER (reader = 0):
+	 -- serialdata = [Data][Ready][Done]
+	 --              20 - 2   1     0
+	 ready <= serialdata(0 downto 0); -- Get READY flag
+	 serialdata(1 downto 1) <= done;  -- Set DONE flag
+	 
+	-- read_value <= serialdata(20 downto 2);
 	 
     process (clk)
     begin
         if rising_edge(clk) then
             if (reset_n = '0') then
 					 done <= "0";
+					 reader <= "1";
 				elsif(wr_en = '1' and addr = "00") then
+					-- Setting the DONE flag
 					done <= writedata(0 downto 0);
+				elsif(wr_en = '1' and addr = "01") then
+					-- Changing communication directions
+					-- READY flag will become DONE, and
+					-- DONE flag will become READY.
+					reader <= writedata(0 downto 0);
+				elsif(wr_en = '1' and addr = "10" and reader = "0") then
+					-- Setting the DATA to transmit
+					-- Since we are transmitting sound, only need 16 bits
+					serialdata(17 downto 2) <= writedata(15 downto 0);
 				end if;
         end if;
     end process;
     
-    process (rd_en, addr, saved_value)
+    process (rd_en, addr)
     begin
         readdata <= (others => '-');
         if (rd_en = '1') then
 				if (addr = "00") then
+					 -- Read READY flag
 					readdata <= "0000000000000000000000000000000" & ready;
-            elsif (addr = "01") then
-					 -- Send [MSG TYPE][DATA]
-                readdata <= "0000000000000" & saved_value;
+            elsif (addr = "01" and reader = "1") then
+					 -- Read [MSG TYPE][DATA]
+                readdata <= "0000000000000" & serialdata(20 downto 2);
             end if;
         end if;
     end process;
 end rtl;
+s

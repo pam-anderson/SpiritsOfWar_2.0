@@ -1,8 +1,10 @@
-#define NUM_SPRITE_TYPES 3
-#define SPRITES_PER_CHAR 9
+#define NUM_PLAYERS        2
+#define CHARS_PER_PLAYER   3
+#define NUM_SPRITE_TYPES   3
+#define SPRITES_PER_CHAR   9
 #define ANIMATION_HARDWARE 9
-#define HEALTHBAR_LEN   50
-#define SIZE_OF_TILE 16
+#define HEALTHBAR_LEN      50
+#define SIZE_OF_TILE       16
 
 #define MAP_CORNER_X 	32
 #define MAP_CORNER_Y 	40
