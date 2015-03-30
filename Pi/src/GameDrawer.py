@@ -95,10 +95,16 @@ class Drawer:
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
+        oldXpix = (oldX << 4) + START_PIXEL_X
+        oldYpix = (oldY << 4) + START_PIXEL_Y
+        drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
+        if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
+            drawSprite(oldXpix, oldYpix,
+                self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
         self.boardIsReady()
-        out = ((oldX << 3 | oldY) << 3 | newX) << 3 | newY
+        out = (newX << 3) | newY
         self.setMessagePins(Message.Cursor)
         self.setDataPins(out, 12)
         return

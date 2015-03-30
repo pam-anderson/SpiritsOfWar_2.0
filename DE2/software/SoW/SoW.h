@@ -1,35 +1,16 @@
 #include "altera_up_avalon_audio_and_video_config.h"
 #include "altera_up_avalon_audio.h"
-#include <altera_up_avalon_ps2.h>
-#include <altera_up_ps2_keyboard.h>
 #include "alt_types.h"
-#include <sys/alt_irq.h>
-#include "altera_up_avalon_rs232.h"
 #include "altera_up_avalon_video_pixel_buffer_dma.h"
 #include "altera_up_avalon_video_character_buffer_with_dma.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "io.h"
-#include "sys/alt_timestamp.h"
-#include "sys/alt_alarm.h"
 #include "Altera_UP_SD_Card_Avalon_Interface.h"
 
 /* Defines */
 #define	FALSE 0
 #define	TRUE 1
-
-/* Universal return constants */
-#define	OK 1 /* system call ok */
-#define	SYSERR -1 /* system call failed */
-#define	TIMEOUT -3 /* time out (usu. recvtim) */
-
-/* IRQ ID */
-#define SERIAL_IRQ 8
-#define KEYBOARD_IRQ 7
-#define AUDIO_IRQ	9
-
-/* SYSTEM NAMES*/
-#define RS232_NAME "/dev/rs232_0"
 
 /* MEMORY LOCATIONS */
 #define SERIAL_DATA_LOC (alt_u8 *) 0x0
@@ -38,58 +19,26 @@
 #define SERIAL_BASE (volatile int *) 0x4070
 #define KEY_BASE 0x4078
 #define TIMER_BASE 0x4000
-#define GPIO_BASE 0x4440
-
-
-typedef enum {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	ENTER,
-	ESC,
-	NEXT
-} keypress;
-
-/* Functions defined by startup code */
-void keyboard_init(void);
-
-void audio_init(void);
-void audio_play(void);
-
-int serial_write(alt_u8);
-void serial_read();
-void serial_read_ISR(void* context, alt_u32 id);
-void draw_menu(void);
-void move_arrow(int curr_position, int new_position);
-void show_instructions(void);
-void show_menu(void);
-void show_game(void);
-void animate(int, int, int, int, int);
-void animate_to_tile(int, int, int, int, int, int, int, int);
-void get_path(int, int, int*);
-void init_timer(void);
-
-void sdcard_init() ;
-int sdcard_write_file(char* file_name, alt_u8* buffer, int size) ;
-int sdcard_read_file(char* file_name, alt_u8* buffer, int size);
-void load_sprite(char *, int *);
+#define GPIO_ADDRESS 0x4440
 
 alt_up_char_buffer_dev *char_buffer;
 alt_up_pixel_buffer_dma_dev* pixel_buffer;
-static alt_alarm alarm;
 
+/* SoW_sdcard.c */
+void sdcard_init() ;
+void load_sprite(char *, int *);
 
-void music_load(char * File);
-void music_init(void);
-void audio_init(void);
-void music_open(char *file);
-void music_file_size(void);
-void music_enable_ISR(void);
-void audio_isr(void * context, alt_u32 id);
-void music_file_load(void);
-void music_GO(void);
+/* game_screen.c */
+void update_healthbar(int, int, int, int);
+void draw_sprite(int, int, int);
+void draw_healthbar(int, int, int, int);
+void draw_cursor(int, int);
+int draw_exit_screen(int);
+void healthbar_init(int, int, int, int);
+void initialize_players(void);
 
-void play_game(void);
-keypress get_player_input(int);
+/* gpio.c */
+void get_input(int *, int *);
+int transmit_data(int);
+void switch_to_writer(void);
 
