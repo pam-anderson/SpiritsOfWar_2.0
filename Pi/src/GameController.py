@@ -70,7 +70,10 @@ class Game:
             character.characterClass.movement, False)
         for move in validMoves:
             print move.x, move.y
-            self.draw.drawSprite(move.x, move.y, 0) #highlight potential moves
+            self.gameMap.tiles[move.x][move.y].sprite.value = \
+                self.gameMap.tiles[move.x][move.y].sprite.value|0x100
+            self.draw.drawSprite(move.x, move.y,
+                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -82,7 +85,10 @@ class Game:
                  newTile.y)
 
         for move in validMoves:
-            self.draw.drawSprite(move.x, move.y, 0) # unhighlight moves
+            self.gameMap.tiles[move.x][move.y].sprite.value = \
+                self.gameMap.tiles[move.x][move.y].sprite.value & 0x0FF
+            self.draw.drawSprite(move.x, move.y,
+                self.gameMap.tiles[move.x][move.y].sprite.value) #unhighlight potential moves
             move.distance = 1000
 
     def attackCharacter(self, team, character):
@@ -98,7 +104,10 @@ class Game:
             character.characterClass.movement, True)
         for move in validMoves:
             print move.x, move.y
-            self.draw.drawSprite(move.x, move.y, 0) # highlight attacks
+            self.gameMap.tiles[move.x][move.y].sprite.value = \
+                self.gameMap.tiles[move.x][move.y].sprite.value|0x200
+            self.draw.drawSprite(move.x, move.y,
+                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
@@ -115,7 +124,10 @@ class Game:
                     self.players[team].charactersRemaining -= 1
 
         for move in validMoves:
-            self.draw.drawSprite(move.x, move.y, 0) # unhighlight attacks
+            self.gameMap.tiles[move.x][move.y].sprite.value = \
+                self.gameMap.tiles[move.x][move.y].sprite.value & 0x0FF
+            self.draw.drawSprite(move.x, move.y,
+                self.gameMap.tiles[move.x][move.y].sprite.value) #highlight potential moves
             move.distance = 1000
  
     def doPlayerTurn(self, team):

@@ -81,7 +81,7 @@ class Drawer:
         self.boardIsReady()
         out = (memory << 8) | y
         self.setMessagePins(Message.Sprite)
-        self.setDataPins(out, 14)
+        self.setDataPins(out, 18)
         return
     
     def drawHealthbar(self, character):
