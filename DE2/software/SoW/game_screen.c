@@ -118,3 +118,26 @@ void update_healthbar(int player_id, int character_id, int hp, int max_hp) {
 			healthbar_pos[player_id][character_id][0] + SIZE_OF_TILE/2 + 8 + pixel_health,
 			healthbar_pos[player_id][character_id][1] + SIZE_OF_TILE/2 - 1, 0xF822, 0);
 }
+
+void record_video(int player_id, int character_id) {
+    int frames = 0, pixel = 0, index = player_id * 3 + character_id, int color, int message;
+    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
+        for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+            get_input(&message, &color);
+            videos[index][frames][pixel] = color;
+        }
+    }
+
+}
+
+void display_video(int player_id, int character_id) {
+    int frames = 0, pixel = 0, index = player_id * 3 + character_id;
+    int x = VIDEO_CORNER_X, y = VIDEO_CORNER_X;
+    for(frames = 0; frame < NUM_VIDEO_FRAMES; frames++) {
+        for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+            alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
+                y + (pixel / VIDEO_X_PIXELS), pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
+                y + (pixel / VIDEO_X_PIXELS), videos[indes][frame][pixel]);
+        }
+    }
+}

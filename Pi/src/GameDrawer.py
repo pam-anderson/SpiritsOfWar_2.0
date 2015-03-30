@@ -15,8 +15,8 @@ class Drawer:
         self.readyPin = 3
         self.donePin = 5
         self.messagePins = [7, 8, 10, 11]
-        self.dataPins = [12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35,
-            36, 37, 38, 40]
+        self.dataPins = [12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 29, 31, 32,
+            33, 35, 36, 37, 38, 40]
         self.setGpios()
 
     def __del__(self):
@@ -95,9 +95,12 @@ class Drawer:
         return
     
     def drawCursor(self,oldX, oldY, newX, newY):
-        drawSprite(oldX, oldY, self.gameMap.tiles[oldX][oldY].sprite.value)
+        oldXpix = (oldX << 4) + START_PIXEL_X
+        oldYpix = (oldY << 4) + START_PIXEL_Y
+        drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
         if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
-            drawSprite(oldX, oldY, self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
+            drawSprite(oldXpix, oldYpix,
+                self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
         self.boardIsReady()
