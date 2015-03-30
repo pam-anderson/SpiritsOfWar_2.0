@@ -69,6 +69,7 @@ int main(void) {
 	
 	while(1) {
 		get_input(&instruction, &data);
+		printf("inst: %d, data:%d\n", instruction, data);
 		switch(instruction) {
 			case 0:
 				// Update health bar of specific character
@@ -92,6 +93,7 @@ int main(void) {
 				break;
 			case 7:
 				get_input(&instruction, &data2);
+                printf("x:%d, y:%d\n", (data&0x1FF), (data2&0xFF));
 				draw_sprite(data & 0x1FF, data2 & 0xFF, (data2 & 0x3FF00) >> 8);
 				break;
 			case 8:
@@ -99,17 +101,6 @@ int main(void) {
 				break;
 			case 9:
 				load_turn(data & 0x1);
-				break;
-			case 10:
-				// DE2 is now WRITER. Send data from mic.
-				switch_to_writer();
-				do {
-					// TODO: Get sound data here
-					data = 0x34;
-					transmit_data(data);
-					i--;
-				} while(i > 0);
-				transmit_data(0xFFFF);
 				break;
 			default:
 				break;
