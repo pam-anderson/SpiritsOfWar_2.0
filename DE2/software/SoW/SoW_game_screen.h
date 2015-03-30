@@ -8,6 +8,11 @@
 
 #define MAP_CORNER_X 	32
 #define MAP_CORNER_Y 	40
+#define NUM_VIDEO_FRAMES 48
+#define VIDEO_X_PIXELS 320
+#define VIDEO_Y_PIXELS 240
+#define VIDEO_CORNER_X 0
+#define VIDEO_CORNER_Y 0
 
 //0. Grass					0
 //1. Water					1
@@ -28,5 +33,6 @@
 
 
 int **sprites;
+int videos[6][NUM_VIDEO_FRAMES][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 
 //char blinker = 0xFFFF;

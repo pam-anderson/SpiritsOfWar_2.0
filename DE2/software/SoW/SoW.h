@@ -36,6 +36,8 @@ void draw_cursor(int, int);
 int draw_exit_screen(int);
 void healthbar_init(int, int, int, int);
 void initialize_players(void);
+void record_video(int, int);
+void display_video(int, int);
 
 /* gpio.c */
 void get_input(int *, int *);

@@ -1,5 +1,7 @@
 #include "SoW.h"
 
+int frames[24][320 * 240];
+
 void menu_init() {
 	// Initialize character and pixel buffers
 	char_buffer = alt_up_char_buffer_open_dev("/dev/char_drawer");
@@ -14,6 +16,42 @@ void menu_init() {
 	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
 }
 
+void test_sprites() {
+	int i = 0, x = 0, y = 0;
+	for(i = 1; i <= 40; i++) {
+		if(i % 10 == 0) {
+			y += 16;
+			x = 0;
+		}
+		draw_sprite(x + 32, y + 40, i - 1);
+		x += 16;
+}
+
+void test_video_init() {
+    int frame = 0, pixel = 0;
+    for(frame = 0; frame < 24; frame++) {
+        for(pixel = 0; pixel < 320 * 240; pixel++) {
+            if(frame % 2 == 0) frames[frame][pixel] = 0xFF00FF;
+            else frames[frame][pixel] = 0xFFFFFF;
+        }
+    }
+}
+
+void test_draw_frame(int frame) {
+    int pixel = 0;
+    for(pixel = 0; pixel < 320 * 240; pixel++) {
+        alt_up_pixel_buffer_dma_draw_box(pixel_buffer, pixel % 320, pixel / 320, pixel % 320,
+			pixel / 320, frames[frame][pixel]);
+    }
+}
+
+void test_draw_video() {
+    int frame = 0;
+    for(frame = 0; frame < 24; frame++) {
+        test_draw_frame(frame);
+    }
+}
+
 int main(void) {
 	int instruction;
 	int data;
@@ -26,6 +64,8 @@ int main(void) {
 	menu_init();
 	initialize_players();
 	load_turn(0);
+    test_video_init();
+    test_draw_video();
 	
 	while(1) {
 		get_input(&instruction, &data);
@@ -45,10 +85,10 @@ int main(void) {
 				//highlight_characters(data);
 				break;
 			case 4:
-				//play_video(data);
+				display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 6:
-				//record_video(data);
+				record_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 7:
 				get_input(&instruction, &data2);
