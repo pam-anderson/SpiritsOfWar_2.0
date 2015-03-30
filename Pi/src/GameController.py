@@ -77,12 +77,13 @@ class Game:
 
         newTile = self.selectSpace(character, validMoves)
         if newTile is not False:
-            character.position = newTile
-            character.move = Turn.Attack
-            oldTile.occupiedBy = 0
-            newTile.occupiedBy = character
-            self.draw.animate(0, oldTile.x, oldTile.y, newTile.x,
-                 newTile.y)
+            self.draw.movePlayer(character, oldTile.x, oldTile.y, newTile.x, newTile.y)
+            #character.position = newTile
+            #character.move = Turn.Attack
+            #oldTile.occupiedBy = 0
+            #newTile.occupiedBy = character
+            #self.draw.animate(0, oldTile.x, oldTile.y, newTile.x,
+            #     newTile.y)
 
         for move in validMoves:
             self.gameMap.tiles[move.x][move.y].sprite.value = \
