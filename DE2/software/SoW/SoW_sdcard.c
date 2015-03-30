@@ -55,7 +55,7 @@ int rock[] = { 0x6920, 0x60e0, 0x60c0, 0x68e0, 0x70e0, 0x7100, 0x7900, 0x7100, 0
 		0x6940, 0x58e0, 0x58c0, 0x58c0, 0x58c0, 0x58c0, 0x60e0, 0x68e0, 0x68e0, 0x68e0, 0x60e0, 0x58e0, 0x58c0, 0x60c0, 0x60e0, 0x60c0};
 
 
-char **filenames[6][9] =
+char *filenames[54] =
 			{"p0c0s0.bmp", "p0c1s0.bmp", "p0c2s0.bmp", "p1c0s0.bmp", "p1c1s0.bmp", "p1c2s0.bmp", "p0c0s1.bmp", "p0c0s2.bmp", "p0c0s3.bmp",
 			"p0c0s4.bmp", "p0c0s5.bmp", "p0c0s6.bmp", "p0c0s7.bmp", "p0c0s8.bmp", "p0c1s1.bmp", "p0c1s2.bmp", "p0c1s3.bmp", "p0c1s4.bmp",
 			"p0c1s5.bmp", "p0c1s6.bmp", "p0c1s7.bmp", "p0c1s8.bmp", "p0c2s1.bmp", "p0c2s2.bmp", "p0c2s3.bmp", "p0c2s4.bmp", "p0c2s5.bmp",
