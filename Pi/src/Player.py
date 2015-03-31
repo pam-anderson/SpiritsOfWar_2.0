@@ -91,9 +91,9 @@ def initializeCharacters(team):
 
 def initializeCharacterPositions(team, characters, gameMap):
     if team == 0:
-        characters[0].position = gameMap[3][3]
-        characters[1].position = gameMap[3][1]
-        characters[2].position = gameMap[3][0]
+        characters[0].position = gameMap[0][0]
+        characters[1].position = gameMap[0][1]
+        characters[2].position = gameMap[1][0]
         gameMap[0][0].occupiedBy = characters[0]
         gameMap[0][1].occupiedBy = characters[1]
         gameMap[1][0].occupiedBy = characters[2]

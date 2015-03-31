@@ -91,8 +91,8 @@ void play_game() {
 				break;
 			case 7:
 				get_input(&instruction, &data2);
-				printf("x:%d, y:%d\n", (data&0x1FF), (data2&0xFF));
-				draw_sprite(data & 0x1FF, data2 & 0xFF, (data2 & 0x3F00) >> 8);
+                printf("x:%d, y:%d\n", (data&0x1FF), (data2&0xFF));
+				draw_sprite(data & 0x1FF, data2 & 0xFF, (data2 & 0x3FF00) >> 8);
 				break;
 			case 8:
 				if (!draw_exit_screen()) {

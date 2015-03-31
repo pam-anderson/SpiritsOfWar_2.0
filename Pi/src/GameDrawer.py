@@ -6,7 +6,7 @@ MAP_SIZE = 8
 
 class Message:
     Healh, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
-        RecordVideo, Sprite, Exit, Turn, Writer = range(11)
+        RecordVideo, Sprite, Exit, Turn, Menu = range(11)
 
 class Drawer:
     def __init__(self, gameMap, players):
@@ -41,7 +41,7 @@ class Drawer:
         return
 
     def setMessagePins(self, message):
-        for pin in range(3):
+        for pin in range(len(self.messagePins)):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
             GPIO.output(self.messagePins[pin], out)
@@ -61,19 +61,22 @@ class Drawer:
             pass
         return
 
-    def changeWriter(self):
+    def navigateMenu(self, sel):
         self.boardIsReady()
-        self.setmessagePins(Message.Writer)
-        self.setDataPins(0, 0)
-        self.boardIsReady()
-        GPIO.cleanup()
+        self.setMessagePins(Message.Menu)
+        self.setDataPins(sel, 2)
         # Pi is now a reader until the DE2 passes the changeWriter message
+
+    def exitMenu(self, sel):
+        self.boardIsReady()
+        self.setMessagePins(Message.Exit)
+        self.setDataPins(sel, 1)
 
     def drawSprite(self, x, y, memory):
         # 1st Set of Data = [x pixel]
         # 2nd Set of Data = [Memory | y pixel]
         #                     MSB       LSB
-        print x
+        print x, y, memory
         self.boardIsReady()
         out = x
         self.setMessagePins(Message.Sprite)
@@ -81,7 +84,7 @@ class Drawer:
         self.boardIsReady()
         out = (memory << 8) | y
         self.setMessagePins(Message.Sprite)
-        self.setDataPins(out, 14)
+        self.setDataPins(out, 18)
         return
     
     def drawHealthbar(self, character):
@@ -97,9 +100,9 @@ class Drawer:
     def drawCursor(self,oldX, oldY, newX, newY):
         oldXpix = (oldX << 4) + START_PIXEL_X
         oldYpix = (oldY << 4) + START_PIXEL_Y
-        drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
+        self.drawSprite(oldXpix, oldYpix, self.gameMap.tiles[oldX][oldY].sprite.value)
         if self.gameMap.tiles[oldX][oldY].occupiedBy != 0:
-            drawSprite(oldXpix, oldYpix,
+            self.drawSprite(oldXpix, oldYpix,
                 self.gameMap.tiles[oldX][oldY].occupiedBy.standingSprite)
         # Data = [oldX | oldY | newX | newY]
         #         MSB                   LSB
@@ -118,22 +121,21 @@ class Drawer:
     
     def animateToTile(self,ram_location, dx, dy, oldx, oldy, newx, newy,
             sprite_type):
+        x1 = (oldx << 4) + START_PIXEL_X
+        y1 = (oldy << 4) + START_PIXEL_Y
+        x2 = (newx << 4) + START_PIXEL_X
+        y2 = (newy << 4) + START_PIXEL_Y
         for i in range(16):
-            self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
-                self.gameMap.tiles[oldx][oldy].sprite.value)
-            self.drawSprite((newx << 4) + START_PIXEL_X, (newy << 4) + START_PIXEL_Y,
-                self.gameMap.tiles[newx][newy].sprite.value)
+            self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
+            self.drawSprite(x2, y2, self.gameMap.tiles[newx][newy].sprite.value)
             if i % 8 <= 3:
-                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
-                    (oldy << 4) + i * dy +
-                    START_PIXEL_Y, ram_location + sprite_type)
+                self.drawSprite(x1 + i * dx, y1 + i * dy,
+                    ram_location + sprite_type)
             else:
-                self.drawSprite((oldx << 4) + i * dx + START_PIXEL_X,
-                    (oldy << 4) + i * dy + 
-                    START_PIXEL_Y, ram_location + sprite_type + 1)
+                self.drawSprite(x1 + i * dx, y1 + i * dy,
+                    ram_location + sprite_type + 1)
             #wait some time
-        self.drawSprite((oldx << 4) + START_PIXEL_X, (oldy << 4) + START_PIXEL_Y,
-            self.gameMap.tiles[oldx][oldy].sprite.value)
+        self.drawSprite(x1, y1, self.gameMap.tiles[oldx][oldy].sprite.value)
         return
     
     def animate(self, ram_location, oldx, oldy, newx, newy):
@@ -198,4 +200,4 @@ class Drawer:
         self.boardIsReady()
         out = playerTurn
         self.setMessagePins(Message.Turn)
-        self.setDataPin(out, 1)
+        self.setDataPins(out, 1)
