@@ -124,19 +124,19 @@
          type = "String";
       }
    }
-   element pixel_drawer_0.avalon_slave_0
-   {
-      datum baseAddress
-      {
-         value = "18432";
-         type = "String";
-      }
-   }
    element gpio_com_0.avalon_slave_0
    {
       datum baseAddress
       {
          value = "17472";
+         type = "String";
+      }
+   }
+   element pixel_drawer_0.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "18432";
          type = "String";
       }
    }
@@ -268,35 +268,27 @@
          type = "int";
       }
    }
-   element timer_1.s1
-   {
-      datum baseAddress
-      {
-         value = "17504";
-         type = "String";
-      }
-   }
-   element timer_0.s1
-   {
-      datum baseAddress
-      {
-         value = "16384";
-         type = "String";
-      }
-   }
-   element switches.s1
-   {
-      datum baseAddress
-      {
-         value = "16480";
-         type = "String";
-      }
-   }
    element LEDs.s1
    {
       datum baseAddress
       {
          value = "16464";
+         type = "String";
+      }
+   }
+   element new_sdram_controller_0.s1
+   {
+      datum baseAddress
+      {
+         value = "16777216";
+         type = "String";
+      }
+   }
+   element timer_1.s1
+   {
+      datum baseAddress
+      {
+         value = "17504";
          type = "String";
       }
    }
@@ -308,11 +300,19 @@
          type = "boolean";
       }
    }
-   element new_sdram_controller_0.s1
+   element switches.s1
    {
       datum baseAddress
       {
-         value = "16777216";
+         value = "16480";
+         type = "String";
+      }
+   }
+   element timer_0.s1
+   {
+      datum baseAddress
+      {
+         value = "16384";
          type = "String";
       }
    }
@@ -395,7 +395,7 @@
  <parameter name="projectName" value="SoW.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1426718728781" />
+ <parameter name="timeStamp" value="1427835739773" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -1588,14 +1588,19 @@
   <parameter name="irqNumber" value="10" />
  </connection>
  <connection
-   kind="reset"
+   kind="clock"
    version="13.0"
-   start="clk_0.clk_reset"
-   end="gpio_com_0.reset" />
+   start="up_clocks_0.sys_clk"
+   end="gpio_com_0.clock" />
  <connection
    kind="reset"
    version="13.0"
    start="nios2_qsys_0.jtag_debug_module_reset"
+   end="gpio_com_0.reset" />
+ <connection
+   kind="reset"
+   version="13.0"
+   start="clk_0.clk_reset"
    end="gpio_com_0.reset" />
  <connection
    kind="avalon"
@@ -1606,11 +1611,6 @@
   <parameter name="baseAddress" value="0x4440" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection
-   kind="clock"
-   version="13.0"
-   start="up_clocks_0.sys_clk"
-   end="gpio_com_0.clock" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>
