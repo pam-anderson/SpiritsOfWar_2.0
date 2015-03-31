@@ -1,31 +1,59 @@
 import numpy as np
+import time
 import cv2
 
 cap = cv2.VideoCapture(0)
-print cap.isOpened()
-cap.set(3, 320)
-cap.set(4, 240)
-fgbg = cv2.BackgroundSubtractorMOG()
-# Define the codec and create VideoWriter object
+cap.set(3, 1920)
+cap.set(4, 1080)
+fgbg0 = cv2.BackgroundSubtractorMOG2()
+time.sleep(1)
+fgbg1 = cv2.BackgroundSubtractorMOG2()
+time.sleep(1)
+fgbg2 = cv2.BackgroundSubtractorMOG()
+time.sleep(1)
+fgbg3 = cv2.BackgroundSubtractorMOG2()
+
+#fgbg0 = cv2.resize(fgbg0, (128, 128), interpolation = cv2.INTER_AREA)
+#fgbg1 = cv2.resize(fgbg1, (128, 128), interpolation = cv2.INTER_AREA)
+#fgbg2 = cv2.resize(fgbg2, (128, 128), interpolation = cv2.INTER_AREA)
+#fgbg3 = cv2.resize(fgbg3, (128, 128), interpolation = cv2.INTER_AREA)
+
 fourcc = cv2.cv.CV_FOURCC(*'XVID')
-out = cv2.VideoWriter('output.avi',fourcc, 20.0, (320,240))
-#avg = [[[0]*3]*240]*320
+out = cv2.VideoWriter('area2.avi',fourcc, 20.0, (128,128))
+i = 0
 
 while(cap.isOpened()):
     ret, frame = cap.read()
     if ret==True:
         frame = cv2.flip(frame,1)
-	#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        fgmask = fgbg.apply(frame)
-        #fgmask = cv2.bitwise_not(fgmask)
+        frame = cv2.resize(frame, (128, 128), interpolation = cv2.INTER_AREA)
+        fgmask0 = fgbg0.apply(frame)
+        fgmask1 = fgbg1.apply(frame)
+        fgmask2 = fgbg2.apply(frame)
+        fgmask3 = fgbg3.apply(frame)
+
+        #fgmask0 = cv2.resize(fgmask0, (128, 128), interpolation = cv2.INTER_AREA)
+        #fgmask1 = cv2.resize(fgmask1, (128, 128), interpolation = cv2.INTER_AREA)
+        #fgmask2 = cv2.resize(fgmask2, (128, 128), interpolation = cv2.INTER_AREA)
+        #fgmask3 = cv2.resize(fgmask3, (128, 128), interpolation = cv2.INTER_AREA)
+
+        fg0 = cv2.bitwise_and(fgmask0, fgmask1)
+        fg1 = cv2.bitwise_and(fgmask0, fgmask2)
+        fg2 = cv2.bitwise_and(fgmask0, fgmask3)
+        fg3 = cv2.bitwise_and(fgmask1, fgmask2)
+        fg4 = cv2.bitwise_and(fgmask1, fgmask3)
+        fg5 = cv2.bitwise_and(fgmask2, fgmask3)
+        fgmask = cv2.bitwise_or(fg0, fg1)
+        fgmask = cv2.bitwise_or(fgmask, fg2)
+        fgmask = cv2.bitwise_or(fgmask, fg3)
+        fgmask = cv2.bitwise_or(fgmask, fg4)
+        fgmask = cv2.bitwise_or(fgmask, fg5)
+        #fgmask0 = fgbg0.apply(frame)
+        #fgmask1 = fgbg1.apply(frame)
+        #fgmask = cv2.bitwise_xor(fgmask0, fgmask1)
         frame = cv2.bitwise_and(frame, frame, mask = fgmask)
-        #out.write(frame)
-        #for x in range(0, 320):
-        #    for y in range (0, 240):
-        #        if fgmask[y][x] == 0:
-        #            frame[y][x] = [255, 0, 255]
         out.write(frame)
-        cv2.imshow('frame', frame)
+        cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     else:
