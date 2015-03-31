@@ -1,6 +1,7 @@
 #include "SoW.h"
+#include "SoW_game_screen.h"
 
-int frames[24][320 * 240];
+int frames[24][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 
 void menu_init() {
 	// Initialize character and pixel buffers
@@ -25,23 +26,30 @@ void test_sprites() {
 		}
 		draw_sprite(x + 32, y + 40, i - 1);
 		x += 16;
+	}
 }
 
 void test_video_init() {
-    int frame = 0, pixel = 0;
+    int frame = 0;
+    int pixel = 0;
     for(frame = 0; frame < 24; frame++) {
-        for(pixel = 0; pixel < 320 * 240; pixel++) {
-            if(frame % 2 == 0) frames[frame][pixel] = 0xFF00FF;
-            else frames[frame][pixel] = 0xFFFFFF;
+        for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+            if(frame % 2 == 0) {
+            	frames[frame][pixel] = 0xFF00FF;
+            }
+            else {
+            	frames[frame][pixel] = 0xFFFFFF;
+            }
         }
     }
 }
 
 void test_draw_frame(int frame) {
     int pixel = 0;
-    for(pixel = 0; pixel < 320 * 240; pixel++) {
-        alt_up_pixel_buffer_dma_draw_box(pixel_buffer, pixel % 320, pixel / 320, pixel % 320,
-			pixel / 320, frames[frame][pixel]);
+    for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+        alt_up_pixel_buffer_dma_draw_box(pixel_buffer, pixel % VIDEO_X_PIXELS,
+        	pixel / VIDEO_X_PIXELS, pixel % VIDEO_X_PIXELS,
+			pixel / VIDEO_X_PIXELS, frames[frame][pixel], 0);
     }
 }
 
@@ -52,21 +60,11 @@ void test_draw_video() {
     }
 }
 
-int main(void) {
+void play_game() {
 	int instruction;
 	int data;
 	int data2; // Used when we need to perform 2 reads in a row
 	int i = 5;
-
-	sdcard_init();
-	sprite_init();
-	hardware_init();
-	menu_init();
-	initialize_players();
-	load_turn(0);
-    test_video_init();
-    test_draw_video();
-	
 	while(1) {
 		get_input(&instruction, &data);
 		printf("inst: %d, data:%d\n", instruction, data);
@@ -97,7 +95,9 @@ int main(void) {
 				draw_sprite(data & 0x1FF, data2 & 0xFF, (data2 & 0x3F00) >> 8);
 				break;
 			case 8:
-				//exit_menu(data);
+				if (!draw_exit_screen()) {
+					return;
+				}
 				break;
 			case 9:
 				load_turn(data & 0x1);
@@ -106,4 +106,22 @@ int main(void) {
 				break;
 		}
 	}
+}
+
+int main(void) {
+	sdcard_init();
+	sprite_init();
+	hardware_init();
+	menu_init();
+
+	while(1) {
+		show_menu();
+		initialize_players();
+		load_turn(0);
+		play_game();
+	}
+    //test_video_init();
+    //test_draw_video();
+
+	return 0;
 }

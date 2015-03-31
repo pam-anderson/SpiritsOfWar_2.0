@@ -59,12 +59,22 @@ void draw_cursor(int new_x, int new_y) {
  * @param player_id Player id
  * @return 0 if player chose to exit, 1 if player did not choose to exit
  */
-int draw_exit_screen(int player_id) {
+int draw_exit_screen(void) {
 	// Use player id for input
+	int key;
 	alt_up_char_buffer_clear(char_buffer);
 	alt_up_char_buffer_string(char_buffer, "Are you sure you want to quit?", 25, 23);
 	alt_up_char_buffer_string(char_buffer, "[A] - Yes     [D] - No", 30, 25);
-	// TODO: Get input from Pi
+	get_input(0, key);
+	if (key == 0) {
+		// EXIT
+		alt_up_char_buffer_clear(char_buffer);
+		return 0;
+	} else {
+		// DO NOT EXIT
+		alt_up_char_buffer_clear(char_buffer);
+		return 1;
+	}
 }
 
 /*
@@ -120,7 +130,11 @@ void update_healthbar(int player_id, int character_id, int hp, int max_hp) {
 }
 
 void record_video(int player_id, int character_id) {
-    int frames = 0, pixel = 0, index = player_id * 3 + character_id, int color, int message;
+    int frames = 0;
+    int pixel = 0;
+    int index = player_id * 3 + character_id;
+    int color;
+    int message;
     for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
         for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
             get_input(&message, &color);
@@ -133,11 +147,11 @@ void record_video(int player_id, int character_id) {
 void display_video(int player_id, int character_id) {
     int frames = 0, pixel = 0, index = player_id * 3 + character_id;
     int x = VIDEO_CORNER_X, y = VIDEO_CORNER_X;
-    for(frames = 0; frame < NUM_VIDEO_FRAMES; frames++) {
+    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
         for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
             alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
                 y + (pixel / VIDEO_X_PIXELS), pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
-                y + (pixel / VIDEO_X_PIXELS), videos[indes][frame][pixel]);
+                y + (pixel / VIDEO_X_PIXELS), videos[index][frames][pixel]);
         }
     }
 }

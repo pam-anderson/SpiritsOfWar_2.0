@@ -33,14 +33,17 @@ void update_healthbar(int, int, int, int);
 void draw_sprite(int, int, int);
 void draw_healthbar(int, int, int, int);
 void draw_cursor(int, int);
-int draw_exit_screen(int);
 void healthbar_init(int, int, int, int);
 void initialize_players(void);
 void record_video(int, int);
 void display_video(int, int);
+int draw_exit_screen(void);
 
 /* gpio.c */
 void get_input(int *, int *);
 int transmit_data(int);
 void switch_to_writer(void);
+
+/* menu.c */
+void show_menu();
 

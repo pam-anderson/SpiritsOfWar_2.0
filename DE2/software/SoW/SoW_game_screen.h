@@ -9,8 +9,8 @@
 #define MAP_CORNER_X 	32
 #define MAP_CORNER_Y 	40
 #define NUM_VIDEO_FRAMES 48
-#define VIDEO_X_PIXELS 320
-#define VIDEO_Y_PIXELS 240
+#define VIDEO_X_PIXELS 10
+#define VIDEO_Y_PIXELS 10
 #define VIDEO_CORNER_X 0
 #define VIDEO_CORNER_Y 0
 

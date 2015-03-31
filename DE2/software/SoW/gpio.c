@@ -4,12 +4,14 @@ void get_input(int *instruction, int *data) {
 	int gpio = 0;
 	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 0){
 		// Wait for READY to be set
+		//printf("wait for rdy set\n");
 	}
 	gpio = IORD_32DIRECT(GPIO_ADDRESS, 4);
 	// Set DONE flag
 	IOWR_32DIRECT(GPIO_ADDRESS, 0, 1);
 	while(IORD_32DIRECT(GPIO_ADDRESS, 0) == 1){
 		// Wait for READY to be cleared
+		//printf("wait for rdy clr\n");
 	}
 	// Clear DONE flag
 	IOWR_32DIRECT(GPIO_ADDRESS, 0, 0);
