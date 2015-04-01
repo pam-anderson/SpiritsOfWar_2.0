@@ -1,12 +1,16 @@
 import RPi.GPIO as GPIO
 from time import sleep
+import numpy as np
+import time
+import cv2
 
 START_PIXEL_X = 32
 START_PIXEL_Y = 40
 MAP_SIZE = 8
+NUM_FRAMES = 50
 
 class Message:
-    Health, Screen, Cursor, AliveCharacters, PlayVideo, CalibrateVideo, \
+    Health, Screen, Cursor, AliveCharacters, PlayVideo, SendVideo, \
         RecordVideo, Sprite, Exit, Turn, Menu = range(11)
 
 class Drawer:
@@ -209,3 +213,23 @@ class Drawer:
         out = playerTurn
         self.setMessagePins(Message.Turn)
         self.setDataPins(out, 1)
+
+    #name of video to send as parameter
+    #use test.avi for testing
+    def sendVideo(self, name):
+        cap = cv2.VideoCapture(name)
+        i = 0
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            for y in range(0, 128):
+                for x in range(0, 128):
+                    out = ((frame[y][x][2] & 0xf8) << 8)| \
+                        ((frame[y][x][1] & 0xfC) << 3)|(frame[y][x][0] & 0xf8 >> 3)
+                    self.boardIsReady()
+                    self.setMessagePins(Message.SendVideo)
+                    self.setDataPins(out, 16)
+            i += 1
+            if (cv2.waitKey(0) & 0xFF == ord('q')) or i == NUM_FRAMES: 
+                break
+        cap.release()
+        cv2.destroyAllWindows()
