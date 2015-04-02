@@ -207,9 +207,9 @@ class Game:
                     self.players[1].mode = 1
                 if cursor is 3:
                     break
-                   # appVid = gui.guiVideoRec()
+                   # appVid = vidGui.guiVideoRec()
                    # appVid.createButton()
-                   # appSnd = gui.guiSoundRec()
+                   # appSnd = sndGui.guiSoundRec()
                    # appSnd.createButton()                    
                 return
 
