@@ -33,8 +33,8 @@ class guiVideoRec():
         mainloop()
 
 
-app = guiVideoRec()
-app.createButton()
+#app = guiVideoRec()
+#app.createButton()
 
 class guiSoundRec():
     def recWar(self):
@@ -58,5 +58,5 @@ class guiSoundRec():
         rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack(); rec_die.pack()
         mainloop()
 
-app2 = guiSoundRec()
-app2.createButton()
+#app2 = guiSoundRec()
+#app2.createButton()
