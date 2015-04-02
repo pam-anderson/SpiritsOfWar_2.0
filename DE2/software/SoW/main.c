@@ -1,7 +1,7 @@
 #include "SoW.h"
 #include "SoW_game_screen.h"
 
-int frames[24][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
+//int frames[24][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 
 void menu_init() {
 	// Initialize character and pixel buffers
@@ -32,31 +32,45 @@ void test_sprites() {
 void test_video_init() {
     int frame = 0;
     int pixel = 0;
-    for(frame = 0; frame < 24; frame++) {
-        for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
-            if(frame % 2 == 0) {
-            	frames[frame][pixel] = 0xFF00FF;
-            }
-            else {
-            	frames[frame][pixel] = 0xFFFFFF;
-            }
-        }
+    int index = 0;
+    for(index = 0; index < 3; index++) {
+		for(frame = 0; frame < 24; frame++) {
+			for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
+				if(frame % 2 == 0) {
+					if(index == 0)
+						videos[index][frame][pixel] = 0xF81F;
+					if(index == 1) {
+						videos[index][frame][pixel] = 0x001F;
+					}
+					if(index == 2) {
+						videos[index][frame][pixel] = 0xF800;
+					}
+				}
+				else {
+					videos[index][frame][pixel] = 0xFFFF;
+				}
+			}
+		}
     }
 }
 
-void test_draw_frame(int frame) {
+void test_draw_frame(int *frame) {
     int pixel = 0;
     for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
         alt_up_pixel_buffer_dma_draw_box(pixel_buffer, pixel % VIDEO_X_PIXELS,
         	pixel / VIDEO_X_PIXELS, pixel % VIDEO_X_PIXELS,
-			pixel / VIDEO_X_PIXELS, frames[frame][pixel], 0);
+			pixel / VIDEO_X_PIXELS, frame[pixel], 0);
     }
 }
 
 void test_draw_video() {
     int frame = 0;
-    for(frame = 0; frame < 24; frame++) {
-        test_draw_frame(frame);
+    printf("draw video\n");
+    int index = 0;
+    for(index = 0; index < 3; index++) {
+		for(frame = 0; frame < NUM_VIDEO_FRAMES; frame++) {
+			test_draw_frame(videos[index][frame]);
+		}
     }
 }
 
@@ -64,7 +78,6 @@ void play_game() {
 	int instruction;
 	int data;
 	int data2; // Used when we need to perform 2 reads in a row
-	int i = 5;
 	while(1) {
 		get_input(&instruction, &data);
 		printf("inst: %d, data:%d\n", instruction, data);
@@ -86,8 +99,8 @@ void play_game() {
 			case 4:
 				display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
-			case 6:
-				display_video((data & 0x4) >> 2, (data & 0x3));
+			case 5:
+				record_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 7:
 				get_input(&instruction, &data2);
@@ -116,6 +129,10 @@ int main(void) {
 	sprite_init();
 	hardware_init();
 	menu_init();
+	record_video(0,0);
+	display_video(0,0);
+	//test_video_init();
+	//test_draw_video();
 
 	while(1) {
 		show_menu();
