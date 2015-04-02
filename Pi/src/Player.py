@@ -12,7 +12,7 @@ WARRIOR_MVMNT = 2
 
 MAGE_HP = 12
 MAGE_ATK = 6
-MAGE_DEF = 4
+MAGE_DEF = 3
 MAGE_RANGE = 3
 MAGE_MVMNT = 2
 
@@ -51,9 +51,9 @@ class Character:
 
 class Player:
     def __init__(self, characters):
+        self.mode = 0 # Set to 1 if controlled by CPU
         self.characters = characters
         self.charactersRemaining = CHARS_PER_PLAYER
-        self.cursor = [0, 0]
 
     def isTurnDone(self):
         for character in self.characters:
