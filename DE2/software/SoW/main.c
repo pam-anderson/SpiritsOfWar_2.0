@@ -87,7 +87,7 @@ void play_game() {
 				display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 6:
-				record_video((data & 0x4) >> 2, (data & 0x3));
+				display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 7:
 				get_input(&instruction, &data2);
@@ -97,6 +97,8 @@ void play_game() {
 				break;
 			case 8:
 				if (!draw_exit_screen()) {
+					alt_up_char_buffer_clear(char_buffer);
+					alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
 					return;
 				}
 				break;
