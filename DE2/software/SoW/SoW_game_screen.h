@@ -5,6 +5,7 @@
 #define ANIMATION_HARDWARE 9
 #define HEALTHBAR_LEN      50
 #define SIZE_OF_TILE       16
+#define SIZE_OF_MAP		   8
 
 #define MAP_CORNER_X 	32
 #define MAP_CORNER_Y 	40
