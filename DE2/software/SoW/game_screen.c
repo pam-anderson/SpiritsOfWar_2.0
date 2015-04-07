@@ -135,11 +135,12 @@ void record_video(int player_id, int character_id) {
     int index = player_id * 3 + character_id;
     int color;
     int message;
-    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
+    for(frames = 0; frames < 20; frames++) {
         for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
             get_input(&message, &color);
             videos[index][frames][pixel] = color;
         }
+        printf("record %d\n", frames);
     }
 
 }
@@ -148,12 +149,12 @@ void display_video(int player_id, int character_id) {
     int frames = 0, pixel = 0, index = player_id * 3 + character_id;
     int message, color;
     int x = VIDEO_CORNER_X, y = VIDEO_CORNER_X;
-    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
+    for(frames = 0; frames < 20; frames++) {
         for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
-        	get_input(&message, &color);
-            alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
-                y + (pixel / VIDEO_X_PIXELS), pixel_buffer, x + (pixel % VIDEO_X_PIXELS),
-                y + (pixel / VIDEO_X_PIXELS), videos[index][frames][pixel]);
+            alt_up_pixel_buffer_dma_draw_box(pixel_buffer,(pixel % VIDEO_X_PIXELS) + x,
+            	(pixel / VIDEO_Y_PIXELS) + y, (pixel % VIDEO_X_PIXELS) + x,
+    			(pixel / VIDEO_Y_PIXELS) + y, videos[index][frames][pixel], 0);
         }
+        printf("display\n");
     }
 }

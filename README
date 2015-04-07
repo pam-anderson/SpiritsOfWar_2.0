@@ -28,3 +28,45 @@ Communication Protocol between the Pi and DE2:
     10 Change Writer
         Current reader becomes writer, and writer becomes reader, after
         successful message.
+        
+        
+AI Implementation 
+    Preferences : 
+        Attack Priorities : 
+            Archer = 0 
+            Mage = 1
+            Warrior = 2
+            
+        Closer Enemies :
+            Closest = 0
+            Mid = 1 
+            Farthest = 2
+            
+        If within threshhold distances & has lowest health -1 
+        
+        If there is a tie :
+            Go for the lowest health
+            If still a tie : 
+                Go for the lowest defence
+                
+    Special Conditions : 
+        If within attacking range of an opponent and your attack range is greater than the opponents
+        move out of attacking range of the enemy and attack the enemy. 
+        
+    class ComputerPlayer
+        map, self, opponent
+        
+        findNextAttack
+            return character to move towards/attack
+            
+        findPath 
+            return path to get to the opponent 
+            
+        - get closer to the opponent, at worst maintain distance. 
+        
+        - avoid stopping within enemy attack distance if possible. 
+            DFS around each opponent to depth of threshhold, add 1 to each tile found in the DFS. 
+            DFS from current character to depth of the movement in last level of search, choose 
+            lowest value tile (if applicable, else go to lower level)
+            
+        - keep distance values, choose path w/lowest distance. 
