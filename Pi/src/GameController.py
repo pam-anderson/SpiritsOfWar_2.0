@@ -28,6 +28,9 @@ fncs = {'select' : 0,
         'move'   : 1,
         'attack' : 2}
 
+soundSel = { 'Move' : 3, 'Die' : 4 }
+
+
 class Game:
     def __init__(self):
         # Draw map and initialize players here
@@ -98,7 +101,7 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
-#        self.sound.play_sfx(Sound.Move)
+#        self.sound.play_sfx(soundSel['Move'])
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
@@ -133,7 +136,7 @@ class Game:
                     character.characterClass.attack)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
-#                    self.sound.play_sfx(Sound.Die)
+#                    self.sound.play_sfx(soundSel['Die'])
                     newTile.occupiedBy.currentHp = 0
                     newTile.occupiedBy = 0
                     self.draw.drawSprite(newTile.x, newTile.y,
