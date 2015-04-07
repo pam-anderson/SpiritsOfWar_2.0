@@ -14,7 +14,7 @@ class ComputerPlayer:
     def planTurn(self, character):
         classPrio = {'ranger' : 0, 'mage' : 1, 'warrior' : 2}
         opponents = [self.opponent.characters[0]]
-        self.priority = []
+        priority = []
         # Set distance values to determine closeness of opponents
         moves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team, MAP_SIZE * 2, 1)
@@ -44,7 +44,7 @@ class ComputerPlayer:
         for move in moves:
             move.distance = 1000
         print"calling make priority"
-        self.priority.sort(key=operator.itemgetter(1), reverse=False)
+        #self.priority.sort(key=operator.itemgetter(1), reverse=False)
 
 
         
