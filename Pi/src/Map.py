@@ -68,7 +68,7 @@ class Map:
             elif newy > 0 and self.tiles[newx][newy].distance > \
                     self.tiles[newx][newy - 1].distance:
                 newy -= 1
-                path[distance] = Direciton.Up
+                path[distance] = Direction.Up
             elif newy < MAP_SIZE - 1 and self.tiles[newx][newy].distance > \
                     self.tiles[newx][newy + 1].distance:
                 newy += 1
