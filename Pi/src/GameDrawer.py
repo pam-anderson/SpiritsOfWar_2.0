@@ -1,5 +1,6 @@
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 from time import sleep
+from Map import Direction
 import numpy as np
 import time
 #import cv2
@@ -27,19 +28,23 @@ class Drawer:
     def __del__(self):
         print "drawer cleanup"
         for pin in self.messagePins:
-            GPIO.output(pin, 0)
+            #GPIO.output(pin, 0)
+            pass
         for pin in self.dataPins:
-            GPIO.output(pin, 0)
-        GPIO.cleanup()
+            pass
+        #    GPIO.output(pin, 0)
+        #GPIO.cleanup()
 
     def setGpios(self):
-        GPIO.setmode(GPIO.BOARD)
+        #GPIO.setmode(GPIO.BOARD)
         for pin in self.messagePins:
-            GPIO.setup(pin, GPIO.OUT)
+         #   GPIO.setup(pin, GPIO.OUT)
+            pass
         for pin in self.dataPins:
-            GPIO.setup(pin, GPIO.OUT)
-        GPIO.setup(self.readyPin, GPIO.OUT)
-        GPIO.setup(self.donePin, GPIO.IN)
+         #   GPIO.setup(pin, GPIO.OUT)
+            pass
+        #GPIO.setup(self.readyPin, GPIO.OUT)
+        #GPIO.setup(self.donePin, GPIO.IN)
 
     def drawMap(self):
         for y in range(MAP_SIZE):
@@ -52,21 +57,21 @@ class Drawer:
         for pin in range(len(self.messagePins)):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
-            GPIO.output(self.messagePins[pin], out)
+            #GPIO.output(self.messagePins[pin], out)
 
     def setDataPins(self, data, length):
         for pin in range(length):
             mask = 1 << pin
             out = 1 if mask & data > 0 else 0
-            GPIO.output(self.dataPins[pin], out)
-        GPIO.output(self.readyPin, 1)
-        while not GPIO.input(self.donePin):
-            pass
-        GPIO.output(self.readyPin, 0)
+            #GPIO.output(self.dataPins[pin], out)
+        #GPIO.output(self.readyPin, 1)
+       # while not GPIO.input(self.donePin):
+       #     pass
+       # GPIO.output(self.readyPin, 0)
 
     def boardIsReady(self):
-        while GPIO.input(self.donePin):
-            pass
+        #while GPIO.input(self.donePin):
+        #    pass
         return
 
     def navigateMenu(self, sel):
@@ -158,47 +163,25 @@ class Drawer:
         dist = 1
         #movement music
         path = [0] * (self.gameMap.tiles[newx][newy].distance + 1)
-        self.getPath(newx, newy, path)
+        self.gameMap.getPath(newx, newy, path)
         while dist <= self.gameMap.tiles[newx][newy].distance:
-            if path[dist] == 0:
+            if path[dist] == Direction.Left:
                 self.animateToTile(ram_location, 1, 0, oldx, oldy,
                     oldx + 1, oldy, 0)
                 oldx += 1
-            elif path[dist] == 1:
+            elif path[dist] == Direction.Right:
                 self.animateToTile(ram_location, -1, 0, oldx, oldy,
                     oldx - 1, oldy, 2)
                 oldx -= 1
-            elif path[dist] == 2:
+            elif path[dist] == Direction.Up:
                 self.animateToTile(ram_location, 0, 1, oldx, oldy,
                     oldx, oldy + 1, 4)
                 oldy += 1
-            else:
+            else: # Direction.Down
                 self.animateToTile(ram_location, 0, -1, oldx, oldy,
                     oldx, oldy - 1, 6)
                 oldy -= 1
             dist += 1
-        return
-    
-    def getPath(self, newx, newy, path):
-        distance = self.gameMap.tiles[newx][newy].distance
-        while self.gameMap.tiles[newx][newy].distance != 0:
-            if newx > 0 and self.gameMap.tiles[newx][newy].distance > \
-                    self.gameMap.tiles[newx - 1][newy].distance:
-                newx -= 1
-                path[distance] = 0
-            elif newx < MAP_SIZE - 1 and self.gameMap.tiles[newx][newy].distance > \
-                    self.gameMap.tiles[newx + 1][newy].distance:
-                newx += 1
-                path[distance] = 1
-            elif newy > 0 and self.gameMap.tiles[newx][newy].distance > \
-                    self.gameMap.tiles[newx][newy - 1].distance:
-                newy -= 1
-                path[distance] = 2
-            elif newy < MAP_SIZE - 1 and self.gameMap.tiles[newx][newy].distance > \
-                    self.gameMap.tiles[newx][newy + 1].distance:
-                newy += 1
-                path[distance] = 3
-            distance -= 1
         return
     
     def movePlayer(self, character, oldx, oldy, newx, newy):

@@ -6,6 +6,8 @@ class ComputerPlayer:
         self.gameMap = gameMap
         self.cpu = cpu
         self.opponent = opponent
+        self.currentPath = []
+        self.currentPriority = []
 
     # Determine which opponents are a priority
     def planTurn(self, character):
@@ -35,7 +37,9 @@ class ComputerPlayer:
             prioVal = dist + \
                       classPrio[opp.characterClass.className] + nearby
             priority.append((opp, prioVal))
-#            print priority[opponents.index(opp)]
+            self.currentPriority = priority
+        print "priority", len(priority), priority
+        self.findPath()
         for move in moves:
             move.distance = 1000
 
@@ -45,6 +49,12 @@ class ComputerPlayer:
 
     # Determine where to move
     def findPath(self):
+        x = self.currentPriority[0][0].position.x
+        y = self.currentPriority[0][0].position.y
+        path = [0] * (self.currentPriority[0][0].position.distance + 1)
+        self.gameMap.getPath(x, y, path)
+        self.currentPath = path[1:]
+        print "path", path
         pass
 
     def doTurn(self, cursorx, cursory):

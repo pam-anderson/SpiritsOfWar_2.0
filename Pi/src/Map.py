@@ -54,6 +54,28 @@ class Map:
             y = randint(0, MAP_SIZE - 1)
             self.tiles[x][y].sprite = Sprite.Rock.value
     
+    def getPath(self, newx, newy, path):
+        distance = self.tiles[newx][newy].distance
+        while self.tiles[newx][newy].distance != 0:
+            if newx > 0 and self.tiles[newx][newy].distance > \
+                    self.tiles[newx - 1][newy].distance:
+                newx -= 1
+                path[distance] = Direction.Left
+            elif newx < MAP_SIZE - 1 and self.tiles[newx][newy].distance > \
+                    self.tiles[newx + 1][newy].distance:
+                newx += 1
+                path[distance] = Direction.Right
+            elif newy > 0 and self.tiles[newx][newy].distance > \
+                    self.tiles[newx][newy - 1].distance:
+                newy -= 1
+                path[distance] = Direciton.Up
+            elif newy < MAP_SIZE - 1 and self.tiles[newx][newy].distance > \
+                    self.tiles[newx][newy + 1].distance:
+                newy += 1
+                path[distance] = Direction.Down
+            distance -= 1
+        return
+    
     def depthFirstSearch(self, x, y, teamId, levels, attackable):
         queue = [self.tiles[x][y]]
         neighbours = []
