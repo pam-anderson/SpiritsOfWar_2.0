@@ -37,20 +37,12 @@ class ComputerPlayer:
                 dist = opponents.index(opp)
             prioVal = dist + \
                       classPrio[opp.characterClass.className] + nearby
-<<<<<<< HEAD
-            self.priority.append((opp, prioVal))
-            self.currentPriority = self.priority
-            print opp
+            priority.append((opp, prioVal))
+            self.currentPriority = priority
+        print priority
         self.findPath(0, False)
         self.findPath(self.findAttack(character.characterClass.attackRange), True)
 
-=======
-            priority.append((opp, prioVal))
-            self.currentPriority = priority
-        print priority 
-        self.findPath()
-        self.findAttack(character.characterClass.attackRange)
->>>>>>> a45aefe1bf9f469d16d2144fd1079cc2fdd36ab1
         for move in moves:
             move.distance = 1000
 
