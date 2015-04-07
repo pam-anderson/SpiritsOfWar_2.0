@@ -1,12 +1,12 @@
 from Map import MAP_SIZE
 from Player import Turn
-import operator
 
 class ComputerPlayer:
     def __init__(self, gameMap, cpu, opponent):
         self.gameMap = gameMap
         self.cpu = cpu
         self.opponent = opponent
+        self.currentCharacter = 0
         self.currentPath = []
         self.currentPriority = []
 
@@ -14,7 +14,7 @@ class ComputerPlayer:
     def planTurn(self, character):
         classPrio = {'ranger' : 0, 'mage' : 1, 'warrior' : 2}
         opponents = [self.opponent.characters[0]]
-        self.priority = []
+        priority = []
         # Set distance values to determine closeness of opponents
         moves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team, MAP_SIZE * 2, 1)
@@ -37,14 +37,22 @@ class ComputerPlayer:
                 dist = opponents.index(opp)
             prioVal = dist + \
                       classPrio[opp.characterClass.className] + nearby
+<<<<<<< HEAD
             self.priority.append((opp, prioVal))
             self.currentPriority = self.priority
             print opp
         self.findPath(0, False)
         self.findPath(self.findAttack(character.characterClass.attackRange), True)
 
+=======
+            priority.append((opp, prioVal))
+            self.currentPriority = priority
+        print priority 
+        self.findPath()
+        self.findAttack(character.characterClass.attackRange)
+>>>>>>> a45aefe1bf9f469d16d2144fd1079cc2fdd36ab1
         for move in moves:
-            move.distance = 1000        
+            move.distance = 1000
 
     # Determine who to attack
     # Finds the highest priority target within attack range and attacks.
@@ -52,14 +60,15 @@ class ComputerPlayer:
     def findAttack(self, charRange):
         index = 0
         for opp in range(0,3):
-            print ("The distance to target priority #", opp, "is", self.priority[opp][0].position.distance)
-            if self.priority[opp][0].position.distance <= charRange:
+            print "The distance to target priority #", opp, "is", \
+                    self.currentPriority[opp][0].position.distance
+            if self.currentPriority[opp][0].position.distance <= charRange:
                 break;
             else: index += 1      
         if index < 3:          
             return index
         else : return -1
-    
+
     # Determine where to move
     # charIndex select which char to move towards
     def findPath(self, charIndex, ifAttack):
@@ -72,13 +81,24 @@ class ComputerPlayer:
         else :
             self.currentAtkPath = path[1:] 
         print "path", path
+
+    def doAttack(self):
+        pass
+
+    def doMove(self):
         pass
 
     def doTurn(self, cursorx, cursory):
-        for character in self.cpu.characters:
-            if character.move is not Turn.Done:
-                break
+        if self.currentCharacter is not 0 and \
+                self.currentCharacter.move is not Turn.Done:
+            character = self.currentCharacter
+        else:
+            for character in self.cpu.characters:
+                if character.move is not Turn.Done:
+                    break
         if cursorx is character.position.x and cursory is character.position.y:
+            self.currentCharacter = character
+            self.planTurn(character)
             return ' '
         else:
             return 's'
