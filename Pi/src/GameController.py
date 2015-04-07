@@ -12,9 +12,10 @@ from Gui import guiSoundRec
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
-class Sound(Enum):
-    War, Mage, Arch, Move, Die = range(5)
-    
+
+
+#soundDictionary = { 'Move' : 3, 'Die' : 4 }
+
 
 class Game:
     def __init__(self):
@@ -84,7 +85,7 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
-#        self.sound.play_sfx(Sound.Move)
+#        self.sound.play_sfx(soundDictionary['Move'])
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
@@ -119,7 +120,7 @@ class Game:
                     character.characterClass.attack)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
-#                    self.sound.play_sfx(Sound.Die)
+#                    self.sound.play_sfx(soundDictionary['Die'])
                     newTile.occupiedBy.currentHp = 0
                     newTile.occupiedBy = 0
                     self.draw.drawSprite(newTile.x, newTile.y,
