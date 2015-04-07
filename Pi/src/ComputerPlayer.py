@@ -40,8 +40,9 @@ class ComputerPlayer:
             self.priority.append((opp, prioVal))
             self.currentPriority = self.priority
             print opp
-        self.findPath()
-        self.findAttack(character.characterClass.attackRange)
+        self.findPath(0, False)
+        self.findPath(self.findAttack(character.characterClass.attackRange), True)
+
         for move in moves:
             move.distance = 1000        
 
@@ -60,12 +61,16 @@ class ComputerPlayer:
         else : return -1
     
     # Determine where to move
-    def findPath(self):
-        x = self.currentPriority[0][0].position.x
-        y = self.currentPriority[0][0].position.y
-        path = [0] * (self.currentPriority[0][0].position.distance + 1)
+    # charIndex select which char to move towards
+    def findPath(self, charIndex, ifAttack):
+        x = self.currentPriority[charIndex][0].position.x
+        y = self.currentPriority[charIndex][0].position.y
+        path = [0] * (self.currentPriority[charIndex][0].position.distance + 1)
         self.gameMap.getPath(x, y, path)
-        self.currentPath = path[1:]
+        if ifAttack == False : 
+            self.currentMovePath = path[1:]
+        else :
+            self.currentAtkPath = path[1:] 
         print "path", path
         pass
 
