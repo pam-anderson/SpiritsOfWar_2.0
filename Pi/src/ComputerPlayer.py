@@ -57,36 +57,35 @@ class ComputerPlayer:
 
     # Determine who to attack
     # Finds the highest priority target within attack range and attacks.
-    # Returns enemy index if within attack range, otherwise returns -1 
+    # Returns enemy index if within attack range, otherwise returns false
     def findAttack(self, charRange):
-        index = 0
-        for opp in range(0,3):
+        for opp in range(3):
             print "The distance to target priority #", opp, "is", \
                     self.currentPriority[opp][0].position.distance
             if self.currentPriority[opp][0].position.distance <= charRange:
-                break;
-            else: index += 1      
-        if index < 3:          
-            return index
-        else : return -1
+                return opp     
+        return
 
     # Determine where to move
     # charIndex select which char to move towards
     def findPath(self, charIndex, attack):
-        character = self.currentPriority[charIndex][0]
-        x = character.position.x
-        y = character.position.y
-        path = [0] * (self.currentPriority[charIndex][0].position.distance + 1)
-        self.gameMap.getPath(x, y, path)
-        if attack == False:
-            rng = character.characterClass.movement
-            self.movePath = path[1:rng]
-            print "move", self.movePath
-        else:
-            rng = character.characterClass.attackRange
-            self.attackPath = path[1:rng]
-            print "atk", self.attackPath
-        print "path", path
+        if(charIndex != None):
+            character = self.currentPriority[charIndex][0]
+            x = character.position.x
+            y = character.position.y
+            path = [0] * (self.currentPriority[charIndex][0].position.distance + 1)
+            self.gameMap.getPath(x, y, path)
+            if attack == False:
+                rng = character.characterClass.movement
+                self.movePath = path[1:rng]
+                print "move", self.movePath
+            else:
+                rng = character.characterClass.attackRange
+                self.attackPath = path[1:rng]
+                print "atk", self.attackPath
+            print "path", path
+        else:   
+            self.attackPath = []
 
     def doAttack(self):
         if len(self.attackPath) is 0:
