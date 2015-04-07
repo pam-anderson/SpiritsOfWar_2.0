@@ -62,9 +62,7 @@ class ComputerPlayer:
         if index < 3:          
             return index
         else : return -1
-
-                
-        pass             
+    
     # Determine where to move
     def findPath(self):
         x = self.currentPriority[0][0].position.x
