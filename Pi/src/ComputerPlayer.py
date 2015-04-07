@@ -1,12 +1,12 @@
 from Map import MAP_SIZE, Direction
 from Player import Turn
 
-class ComputerPlayer:
-    sel = { Direction.Up    : 'w',
-            Direction.Down  : 's',
-            Direction.Left  : 'a',
-            Direction.Right : 'd'}
+sel = { Direction.Up    : 's',
+        Direction.Down  : 'w',
+        Direction.Left  : 'd',
+        Direction.Right : 'a'}
 
+class ComputerPlayer:
     def __init__(self, gameMap, cpu, opponent):
         self.gameMap = gameMap
         self.cpu = cpu
@@ -46,8 +46,6 @@ class ComputerPlayer:
             priority.append((opp, prioVal))
             self.currentPriority = priority
         print "prio", priority
-        for move in moves:
-            print move.distance
         # Get movement path
         self.findPath(0, False)
         # Get attack path
@@ -105,14 +103,18 @@ class ComputerPlayer:
         if self.currentCharacter is not 0 and \
                 self.currentCharacter.move is not Turn.Done:
             character = self.currentCharacter
+            print cursorx, cursory, character.position.x, character.position.y
+            if cursorx is character.position.x and cursory is character.position.y:
+                return ' '
+            else:
+                return 'd'
         else:
             for character in self.cpu.characters:
                 if character.move is not Turn.Done:
                     break
-        print character
-        if cursorx is character.position.x and cursory is character.position.y:
-            self.currentCharacter = character
-            self.planTurn(character)
-            return ' '
-        else:
-            return 's'
+            if cursorx is character.position.x and cursory is character.position.y:
+                self.currentCharacter = character
+                self.planTurn(character)
+                return ' '
+            else:
+                return 'd'
