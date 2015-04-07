@@ -37,26 +37,22 @@ class ComputerPlayer:
                 dist = opponents.index(opp)
             prioVal = dist + \
                       classPrio[opp.characterClass.className] + nearby
-            priority.append((opp, prioVal))
-            self.currentPriority = priority
-        print "priority", len(priority), priority
+            self.priority.append((opp, prioVal))
+            self.currentPriority = self.priority
+            print opp
         self.findPath()
+        self.findAttack(character.characterClass.attackRange)
         for move in moves:
-            move.distance = 1000
-        print"calling make priority"
-        self.priority.sort(key=operator.itemgetter(1), reverse=False)
-
-
-        
+            move.distance = 1000        
 
     # Determine who to attack
     # Finds the highest priority target within attack range and attacks.
     # Returns enemy index if within attack range, otherwise returns -1 
     def findAttack(self, charRange):
         index = 0
-        opponents = [self.opponent.characters[0]]
-        for opp in self.opponent.characters[0:]:
-            if opp.position.distance <= charRange:
+        for opp in range(0,3):
+            print ("The distance to target priority #", opp, "is", self.priority[opp][0].position.distance)
+            if self.priority[opp][0].position.distance <= charRange:
                 break;
             else: index += 1      
         if index < 3:          
