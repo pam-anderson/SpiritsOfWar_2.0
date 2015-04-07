@@ -248,7 +248,7 @@ class Game:
     def playGame(self):
         print "playGame"
         self.cpu = ComputerPlayer(self.gameMap, self.players[1], self.players[0])
-        self.cpu.planTurn(self.players[1].characters[1])
+        #self.cpu.planTurn(self.players[1].characters[1])
         self.drawMenu();
         self.draw.drawMap()
         self.draw.drawCharacters()

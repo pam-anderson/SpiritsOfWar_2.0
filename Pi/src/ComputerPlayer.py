@@ -1,13 +1,19 @@
-from Map import MAP_SIZE
+from Map import MAP_SIZE, Direction
 from Player import Turn
 
 class ComputerPlayer:
+    sel = { Direction.Up    : 'w',
+            Direction.Down  : 's',
+            Direction.Left  : 'a',
+            Direction.Right : 'd'}
+
     def __init__(self, gameMap, cpu, opponent):
         self.gameMap = gameMap
         self.cpu = cpu
         self.opponent = opponent
         self.currentCharacter = 0
-        self.currentPath = []
+        self.movePath = []
+        self.attackPath = []
         self.currentPriority = []
 
     # Determine which opponents are a priority
@@ -39,10 +45,13 @@ class ComputerPlayer:
                       classPrio[opp.characterClass.className] + nearby
             priority.append((opp, prioVal))
             self.currentPriority = priority
-        print priority
+        print "prio", priority
+        for move in moves:
+            print move.distance
+        # Get movement path
         self.findPath(0, False)
+        # Get attack path
         self.findPath(self.findAttack(character.characterClass.attackRange), True)
-
         for move in moves:
             move.distance = 1000
 
@@ -63,22 +72,35 @@ class ComputerPlayer:
 
     # Determine where to move
     # charIndex select which char to move towards
-    def findPath(self, charIndex, ifAttack):
-        x = self.currentPriority[charIndex][0].position.x
-        y = self.currentPriority[charIndex][0].position.y
+    def findPath(self, charIndex, attack):
+        character = self.currentPriority[charIndex][0]
+        x = character.position.x
+        y = character.position.y
         path = [0] * (self.currentPriority[charIndex][0].position.distance + 1)
         self.gameMap.getPath(x, y, path)
-        if ifAttack == False : 
-            self.currentMovePath = path[1:]
-        else :
-            self.currentAtkPath = path[1:] 
+        if attack == False:
+            rng = character.characterClass.movement
+            self.movePath = path[1:rng]
+            print "move", self.movePath
+        else:
+            rng = character.characterClass.attackRange
+            self.attackPath = path[1:rng]
+            print "atk", self.attackPath
         print "path", path
 
     def doAttack(self):
-        pass
+        if len(self.attackPath) is 0:
+            return ' '
+        else:
+            move = self.attackPath.pop(0)
+            return sel[move]
 
     def doMove(self):
-        pass
+        if len(self.movePath) is 0:
+            return ' '
+        else:
+            move = self.movePath.pop(0)
+            return sel[move]
 
     def doTurn(self, cursorx, cursory):
         if self.currentCharacter is not 0 and \
@@ -88,6 +110,7 @@ class ComputerPlayer:
             for character in self.cpu.characters:
                 if character.move is not Turn.Done:
                     break
+        print character
         if cursorx is character.position.x and cursory is character.position.y:
             self.currentCharacter = character
             self.planTurn(character)
