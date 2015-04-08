@@ -4,6 +4,7 @@ from Map import Direction
 import numpy as np
 import time
 #import cv2
+#import subprocess
 
 START_PIXEL_X = 32
 START_PIXEL_Y = 40
@@ -196,6 +197,21 @@ class Drawer:
         out = playerTurn
         self.setMessagePins(Message.Turn)
         self.setDataPins(out, 1)
+
+    def sendVideo(self, name):
+        cap = cv2.VideoCapture(name)
+        i = 0
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            #cv2.imshow('frame', frame)
+            image = cv2.imencode('.bmp', frame)
+            cv2.imwrite('frame.bmp', frame)
+            subprocess.call(['sudo','./pins'])
+            i = i + 1
+            if cv2.waitKey(1) & 0xFF == ord('q') or i == 20:
+                break
+        cap.release()
+        cv2.destroyAllWindows()
 
     #name of video to send as parameter
     #use test.avi for testing
