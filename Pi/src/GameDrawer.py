@@ -176,11 +176,11 @@ class Drawer:
                 oldx -= 1
             elif path[dist] == Direction.Up:
                 self.animateToTile(ram_location, 0, 1, oldx, oldy,
-                    oldx, oldy + 1, 0)
+                    oldx, oldy + 1, 4)
                 oldy += 1
             else: # Direction.Down
                 self.animateToTile(ram_location, 0, -1, oldx, oldy,
-                    oldx, oldy - 1, 4)
+                    oldx, oldy - 1, 0)
                 oldy -= 1
             dist += 1
         return
