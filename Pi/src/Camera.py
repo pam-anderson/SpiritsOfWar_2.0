@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import cv2
+import subprocess
 
 def recordVideo(name):
     cap = cv2.VideoCapture(0)
@@ -75,15 +76,15 @@ def sendVideo(name):
         cv2.imshow('frame', frame)
         image = cv2.imencode('.bmp', frame)
         cv2.imwrite('frame.bmp', frame)
-        #call c function to send frame here subprocess.call...
+        subprocess.call(['sudo','./pins'])
         i = i + 1
-        if cv2.waitKey(50) & 0xFF == ord('q') or i == 60:
+        if cv2.waitKey(1) & 0xFF == ord('q') or i == 20:
             break
     cap.release()
     cv2.destroyAllWindows()
         
 
-
+sendVideo('test.avi')
 
 
 
