@@ -4,6 +4,7 @@ from Map import Direction
 import numpy as np
 import time
 #import cv2
+#import subprocess
 
 START_PIXEL_X = 32
 START_PIXEL_Y = 40
@@ -167,7 +168,7 @@ class Drawer:
         while dist <= self.gameMap.tiles[newx][newy].distance:
             if path[dist] == Direction.Left:
                 self.animateToTile(ram_location, 1, 0, oldx, oldy,
-                    oldx + 1, oldy, 0)
+                    oldx + 1, oldy, 6)
                 oldx += 1
             elif path[dist] == Direction.Right:
                 self.animateToTile(ram_location, -1, 0, oldx, oldy,
@@ -175,11 +176,11 @@ class Drawer:
                 oldx -= 1
             elif path[dist] == Direction.Up:
                 self.animateToTile(ram_location, 0, 1, oldx, oldy,
-                    oldx, oldy + 1, 4)
+                    oldx, oldy + 1, 0)
                 oldy += 1
             else: # Direction.Down
                 self.animateToTile(ram_location, 0, -1, oldx, oldy,
-                    oldx, oldy - 1, 6)
+                    oldx, oldy - 1, 4)
                 oldy -= 1
             dist += 1
         return
@@ -196,6 +197,21 @@ class Drawer:
         out = playerTurn
         self.setMessagePins(Message.Turn)
         self.setDataPins(out, 1)
+
+    def sendVideo(self, name):
+        cap = cv2.VideoCapture(name)
+        i = 0
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            #cv2.imshow('frame', frame)
+            image = cv2.imencode('.bmp', frame)
+            cv2.imwrite('frame.bmp', frame)
+            subprocess.call(['sudo','./pins'])
+            i = i + 1
+            if cv2.waitKey(1) & 0xFF == ord('q') or i == 20:
+                break
+        cap.release()
+        cv2.destroyAllWindows()
 
     #name of video to send as parameter
     #use test.avi for testing
