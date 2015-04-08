@@ -84,7 +84,7 @@ def sendVideo(name):
     cv2.destroyAllWindows()
         
 
-sendVideo('test.avi')
+#sendVideo('test.avi')
 
 
 
