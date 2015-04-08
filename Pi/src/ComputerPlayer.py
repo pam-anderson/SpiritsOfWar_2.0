@@ -47,9 +47,13 @@ class ComputerPlayer:
             self.currentPriority = priority
         print "prio", priority
         # Get movement path
-        self.findPath(0, False)
+        self.findPath()
+        #for move in moves:
+        #    move.distance = 1000
         # Get attack path
-        self.findPath(self.findAttack(character.characterClass.attackRange), True)
+        #moves = self.gameMap.depthFirstSearch(character.position.x,
+        #    character.position.y, character.team, character.characterClass.attackRange, 1)
+        self.findAttack(character.characterClass.attackRange)
         for move in moves:
             move.distance = 1000
 
@@ -57,33 +61,46 @@ class ComputerPlayer:
     # Finds the highest priority target within attack range and attacks.
     # Returns enemy index if within attack range, otherwise returns false
     def findAttack(self, charRange):
-        for opp in range(3):
+        character = None
+        for opp in self.currentPriority:
             print "The distance to target priority #", opp, "is", \
-                    self.currentPriority[opp][0].position.distance
-            if self.currentPriority[opp][0].position.distance <= charRange:
-                return opp     
-        return
+                    opp[0].position.distance
+            if opp[0].position.distance <= charRange:
+                character = opp[0]
+                break
+        if character is not None:
+            x = character.position.x
+            y = character.position.y
+            path = [0] * (character.position.distance + 1)
+            self.gameMap.getPath(character.position.x, character.position.y, path)
+            rng = character.characterClass.attackRange
+            self.attackPath = path[1:rng]
+            print "atk", self.attackPath
+        else:   
+            self.attackPath = []
 
     # Determine where to move
     # charIndex select which char to move towards
-    def findPath(self, charIndex, attack):
-        if(charIndex != None):
-            character = self.currentPriority[charIndex][0]
-            x = character.position.x
-            y = character.position.y
-            path = [0] * (self.currentPriority[charIndex][0].position.distance + 1)
-            self.gameMap.getPath(x, y, path)
-            if attack == False:
-                rng = character.characterClass.movement
-                self.movePath = path[1:rng]
-                print "move", self.movePath
-            else:
-                rng = character.characterClass.attackRange
-                self.attackPath = path[1:rng]
-                print "atk", self.attackPath
-            print "path", path
-        else:   
-            self.attackPath = []
+    def findPath(self):
+        character = self.currentPriority[0][0]
+        x = character.position.x
+        y = character.position.y
+        if self.currentCharacter.characterClass.attackRange >= character.position.distance:
+            movePath = []
+            return
+        start = self.gameMap.findStartingPoint(character)
+        while start is False:
+            for char in self.currentPriority:
+                start = self.gameMap.findStartingPoint(char[0])
+                if start is not False:
+                    break
+        print "start", start.x, start.y
+        path = [0] * (start.distance + 1)
+        self.gameMap.getPath(start.x, start.y, path)
+        rng = character.characterClass.movement
+        self.movePath = path[1:rng]
+        print "move", self.movePath
+        print "path", path
 
     def doAttack(self):
         if len(self.attackPath) is 0:
@@ -93,7 +110,7 @@ class ComputerPlayer:
             return sel[move]
 
     def doMove(self):
-        if len(self.movePath) is 0:
+        if len(self.movePath) is 0 or self.movePath[0] is 0:
             return ' '
         else:
             move = self.movePath.pop(0)

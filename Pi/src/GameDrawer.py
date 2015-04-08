@@ -1,4 +1,4 @@
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from time import sleep
 from Map import Direction
 import numpy as np
@@ -28,23 +28,23 @@ class Drawer:
     def __del__(self):
         print "drawer cleanup"
         for pin in self.messagePins:
-            #GPIO.output(pin, 0)
+            GPIO.output(pin, 0)
             pass
         for pin in self.dataPins:
             pass
-        #    GPIO.output(pin, 0)
-        #GPIO.cleanup()
+            GPIO.output(pin, 0)
+        GPIO.cleanup()
 
     def setGpios(self):
-        #GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BOARD)
         for pin in self.messagePins:
-         #   GPIO.setup(pin, GPIO.OUT)
+            GPIO.setup(pin, GPIO.OUT)
             pass
         for pin in self.dataPins:
-         #   GPIO.setup(pin, GPIO.OUT)
+            GPIO.setup(pin, GPIO.OUT)
             pass
-        #GPIO.setup(self.readyPin, GPIO.OUT)
-        #GPIO.setup(self.donePin, GPIO.IN)
+        GPIO.setup(self.readyPin, GPIO.OUT)
+        GPIO.setup(self.donePin, GPIO.IN)
 
     def drawMap(self):
         for y in range(MAP_SIZE):
@@ -57,21 +57,21 @@ class Drawer:
         for pin in range(len(self.messagePins)):
             mask = 1 << pin
             out = 1 if mask & message > 0 else 0
-            #GPIO.output(self.messagePins[pin], out)
+            GPIO.output(self.messagePins[pin], out)
 
     def setDataPins(self, data, length):
         for pin in range(length):
             mask = 1 << pin
             out = 1 if mask & data > 0 else 0
-            #GPIO.output(self.dataPins[pin], out)
-        #GPIO.output(self.readyPin, 1)
-       # while not GPIO.input(self.donePin):
-       #     pass
-       # GPIO.output(self.readyPin, 0)
+            GPIO.output(self.dataPins[pin], out)
+        GPIO.output(self.readyPin, 1)
+        while not GPIO.input(self.donePin):
+            pass
+        GPIO.output(self.readyPin, 0)
 
     def boardIsReady(self):
-        #while GPIO.input(self.donePin):
-        #    pass
+        while GPIO.input(self.donePin):
+            pass
         return
 
     def navigateMenu(self, sel):

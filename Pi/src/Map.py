@@ -45,7 +45,7 @@ class Map:
         lakeY = randint(2, MAP_SIZE - 3)
         lakeTiles = self.depthFirstSearch(lakeX, lakeY, 0, size, 0)
         for tile in lakeTiles:
-            tile.sprite = Sprite.Water.value
+           # tile.sprite = Sprite.Water.value
             tile.distance = 1000
         # Generate random rocks on map
         rocks = randint(5, 10)
@@ -75,7 +75,29 @@ class Map:
                 path[distance] = Direction.Down
             distance -= 1
         return
-    
+
+    def findStartingPoint(self, character):
+    # Return where a walkable path to character should begin
+        x = character.position.x
+        y = character.position.y
+        possible = []
+        if x > 0 and self.tiles[x-1][y].occupiedBy is 0:
+            possible.append(self.tiles[x-1][y])
+        if x < MAP_SIZE - 1 and self.tiles[x+1][y].occupiedBy is 0:
+            possible.append(self.tiles[x+1][y])
+        if y > 0 and self.tiles[x][y-1].occupiedBy is 0:
+            possible.append(self.tiles[x][y-1])
+        if y < MAP_SIZE - 1 and self.tiles[x][y+1].occupiedBy is 0:
+            possible.append(self.tiles[x][y+1])
+        if len(possible) > 0:
+            start = possible[0]
+        else:
+            return False
+        for move in possible:
+            if move.distance < start.distance:
+                start = move
+        return move
+ 
     def depthFirstSearch(self, x, y, teamId, levels, attackable):
         queue = [self.tiles[x][y]]
         neighbours = []

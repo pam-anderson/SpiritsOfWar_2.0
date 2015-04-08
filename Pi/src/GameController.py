@@ -4,7 +4,7 @@ from GameDrawer import Drawer, START_PIXEL_X, START_PIXEL_Y
 from Player import CHARS_PER_PLAYER
 from enum import Enum
 from Sounds import Sound
-#from getch import getch
+from getch import getch
 import sys
 from ComputerPlayer import ComputerPlayer
 from Gui import guiVideoRec
@@ -48,8 +48,8 @@ class Game:
 
     def getPlayerInput(self, team, function, cursorx = 0, cursory = 0):
         if self.players[team].mode is 0:
-            keypress = sys.stdin.read(1)
-            #keypress = getch()
+            #keypress = sys.stdin.read(1)
+            keypress = getch()
         else:
             # Look at fncs dictionary
             if function is fncs['select']:
@@ -59,7 +59,7 @@ class Game:
             elif function is fncs['attack']:
                 keypress = self.cpu.doAttack()
         try:
-            print keypress
+        #    print keypress
             return keys[keypress]
         except KeyError as exception:
             return
