@@ -168,11 +168,11 @@ class Drawer:
         while dist <= self.gameMap.tiles[newx][newy].distance:
             if path[dist] == Direction.Left:
                 self.animateToTile(ram_location, 1, 0, oldx, oldy,
-                    oldx + 1, oldy, 6)
+                    oldx + 1, oldy, 2)
                 oldx += 1
             elif path[dist] == Direction.Right:
                 self.animateToTile(ram_location, -1, 0, oldx, oldy,
-                    oldx - 1, oldy, 2)
+                    oldx - 1, oldy, 6)
                 oldx -= 1
             elif path[dist] == Direction.Up:
                 self.animateToTile(ram_location, 0, 1, oldx, oldy,
