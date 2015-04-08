@@ -70,21 +70,29 @@ void boardIsReady() {
     return;
 }
 
+
 void readframe(char* name) {
     FILE* fp = fopen(name, "r");
-    int frame[FRAME_SIZE];
+    //int frame[FRAME_SIZE];
     fseek(fp, FILE_OFFSET, SEEK_SET);
-    fread(frame, 3, FRAME_SIZE, fp);
+    //fread(frame, 3, 256, fp);
     int i = 0;
     int colour;
     for(i = 0; i < FRAME_SIZE; i++) {
-        colour = ((frame[i] & 0xf80000) >> 8);
-        colour |= ((frame[i] & 0xfC00) >> 5);
-        colour |= ((frame[i] & 0xf8) >> 3);
+        colour = fgetc(fp) >> 3;
+        colour |= ((fgetc(fp) >> 2) << 5);
+        colour |= ((fgetc(fp) >> 3) << 11); 
+        //colour = ((frame[i] & 0xf80000) >> 8);
+        //colour |= ((frame[i] & 0xfC00) >> 5);
+        //colour |= ((frame[i] & 0xf8) >> 3);
+//        if(i % 16 == 0)
+ //           printf("\n");
+  //      printf("%x ", colour);
         boardIsReady();
         setMessagePins(5);
         setDataPins(colour);
     }
+    printf("\n");
 
     fclose(fp);
 

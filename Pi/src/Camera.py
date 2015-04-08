@@ -83,9 +83,7 @@ def sendVideo(name):
     cap.release()
     cv2.destroyAllWindows()
         
-
-#sendVideo('test.avi')
-
+sendVideo('test.avi')
 
 
 
