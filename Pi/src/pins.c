@@ -74,31 +74,24 @@ void boardIsReady() {
 void readframe(char* background) {
     FILE* fp = fopen("frame.bmp", "r");
     FILE* bg = fopen(background, "r");
-    //int frame[FRAME_SIZE];
     fseek(fp, FILE_OFFSET, SEEK_SET);
-    //fread(frame, 3, 256, fp);
     int i = 0;
     int colour;
+
     for(i = 0; i < FRAME_SIZE; i++) {
         colour = fgetc(fp) >> 3;
         colour |= ((fgetc(fp) >> 2) << 5);
         colour |= ((fgetc(fp) >> 3) << 11);
         if(colour == 0) {
-            fseek(bg, FILE_OFFSET + i * 3, SEEK_SET);
+            fseek(bg, FILE_OFFSET + (i * 3), SEEK_SET);
             colour = fgetc(bg) >> 3;
             colour |= ((fgetc(bg) >> 2) << 5);
             colour |= ((fgetc(bg) >> 3) << 11);
         }
-        //colour = ((frame[i] & 0xf80000) >> 8);
-        //colour |= ((frame[i] & 0xfC00) >> 5);
-        //colour |= ((frame[i] & 0xf8) >> 3);
-        //if(i < 200)
-        //    printf("%x ", colour);
         boardIsReady();
         setMessagePins(5);
         setDataPins(colour);
     }
-    printf("\n");
 
     fclose(fp);
 
