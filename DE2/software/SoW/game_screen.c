@@ -160,7 +160,9 @@ void record_video() {
         //display_frame();
         //printf("record %d\n", frames);
     }
-    display_frame();
+	display_frame();
+    alt_up_pixel_buffer_dma_draw_box(pixel_buffer,VIDEO_CORNER_X, VIDEO_CORNER_Y,
+    	VIDEO_X_PIXELS + VIDEO_CORNER_X, VIDEO_Y_PIXELS + VIDEO_CORNER_Y, 0, 0);
 }
 
 /*void display_video() {

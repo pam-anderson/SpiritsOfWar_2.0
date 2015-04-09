@@ -33,8 +33,7 @@ class guiVideoRec():
         t1_header.insert(END, "    Team One")
         t2_header.insert(END, "    Team Two")
         t1_header.pack(); t1_war.pack(); t1_arch.pack(); t1_mage.pack(); 
-        t2_header.pack(); t2_war.pack(); t2_arch.pack(); t2_mage.pack(); 
-        Button(master, text="Quit", command=quit).pack() 
+        t2_header.pack(); t2_war.pack(); t2_arch.pack(); t2_mage.pack();  
         mainloop()
 
 
