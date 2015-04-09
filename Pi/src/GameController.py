@@ -184,7 +184,7 @@ class Game:
     def drawMenu(self):
         # Draw Main Menu
         print "drawMenu"
-        opts = {'1P' : 0, '2P' : 1, 'Inst' : 2, 'AV' : 3}
+        opts = {'1P' : 0, '2P' : 1, 'Demo' : 2, 'AV' : 3}
         cursor = 0
         while True:
             keypress = self.getPlayerInput(0, 0)
@@ -201,8 +201,16 @@ class Game:
             elif keypress == Input.Enter:
                 self.draw.navigateMenu(4)
                 if cursor is 0:
+                    self.cpu[1] = ComputerPlayer(self.gameMap, self.players[1],
+                        self.players[0])
+                    self.players[1].mode = 1
+                if cursor is 2:
                     self.players[0].mode = 1
                     self.players[1].mode = 1
+                    self.cpu[0] = ComputerPlayer(self.gameMap, self.players[0],
+                        self.players[1])
+                    self.cpu[1] = ComputerPlayer(self.gameMap, self.players[1],
+                        self.players[0])
                 if cursor is 3:
                     self.vidGui.createButton()
                     self.sndGui.createButton()                    
@@ -224,9 +232,6 @@ class Game:
 
     def playGame(self):
         print "playGame"
-        self.cpu[0] = ComputerPlayer(self.gameMap, self.players[0], self.players[1])
-        self.cpu[1] = ComputerPlayer(self.gameMap, self.players[1], self.players[0])
-        #self.cpu.planTurn(self.players[1].characters[1])
         self.drawMenu();
         self.draw.drawMap()
         self.draw.drawCharacters()
