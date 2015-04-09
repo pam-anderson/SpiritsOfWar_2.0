@@ -7,6 +7,7 @@ NUM_FRAMES = 50
 
 class Camera:
     def recordVideo(self, name):
+        print "hello!!!"
         cap = cv2.VideoCapture(0)
         cap.set(3, 480)
         cap.set(4, 480)
@@ -55,6 +56,7 @@ class Camera:
                 break
 
         # Release everything if job is finished
+        print "Hello#2"
         cap.release()
         out.release()
         cv2.destroyAllWindows()

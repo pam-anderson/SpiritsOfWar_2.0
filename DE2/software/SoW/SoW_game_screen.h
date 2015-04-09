@@ -35,7 +35,7 @@
 
 
 int **sprites;
-int videos[VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
+int videos[NUM_VIDEO_FRAMES][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 //alt_u16 videos[1][NUM_VIDEO_FRAMES][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 
 //char blinker = 0xFFFF;
