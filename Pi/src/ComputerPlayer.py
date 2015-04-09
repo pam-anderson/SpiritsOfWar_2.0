@@ -35,7 +35,7 @@ class ComputerPlayer:
                     character.characterClass.attackRange
         for opp in opponents:
 #            print opp.characterClass.className, opp.position.distance
-            nearby = 1 if opp.position.distance > threshold else i
+            nearby = 3 if opp.position.distance > threshold else 0
             if opponents[opponents.index(opp) - 1].position.distance == \
                 opp.position.distance:
                 dist = opponents.index(opp) - 1
