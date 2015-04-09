@@ -38,7 +38,7 @@ class Game:
         self.players = initializePlayers()
         self.gameMap = Map()
         self.draw = Drawer(self.gameMap, self.players)
-        self.cpu = 0
+        self.cpu = [0,0]
         #self.sound = Sound()
         self.vidGui = guiVideoRec()
         self.sndGui = guiSoundRec()
@@ -54,11 +54,11 @@ class Game:
         else:
             # Look at fncs dictionary
             if function is fncs['select']:
-                keypress = self.cpu.doTurn(cursorx, cursory)
+                keypress = self.cpu[team].doTurn(cursorx, cursory)
             elif function is fncs['move']:
-                keypress = self.cpu.doMove()
+                keypress = self.cpu[team].doMove()
             elif function is fncs['attack']:
-                keypress = self.cpu.doAttack()
+                keypress = self.cpu[team].doAttack()
         try:
         #    print keypress
             return keys[keypress]
@@ -201,6 +201,7 @@ class Game:
             elif keypress == Input.Enter:
                 self.draw.navigateMenu(4)
                 if cursor is 0:
+                    self.players[0].mode = 1
                     self.players[1].mode = 1
                 if cursor is 3:
                     self.vidGui.createButton()
@@ -223,7 +224,8 @@ class Game:
 
     def playGame(self):
         print "playGame"
-        self.cpu = ComputerPlayer(self.gameMap, self.players[1], self.players[0])
+        self.cpu[0] = ComputerPlayer(self.gameMap, self.players[0], self.players[1])
+        self.cpu[1] = ComputerPlayer(self.gameMap, self.players[1], self.players[0])
         #self.cpu.planTurn(self.players[1].characters[1])
         self.drawMenu();
         self.draw.drawMap()
