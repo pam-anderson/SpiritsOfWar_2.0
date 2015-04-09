@@ -9,6 +9,7 @@ import sys
 from ComputerPlayer import ComputerPlayer
 from Gui import guiVideoRec
 from Gui import guiSoundRec
+from itertools import cycle
 
 class Input(Enum):
     Up, Down, Left, Right, Esc, Next, Enter = range(7)
@@ -138,72 +139,46 @@ class Game:
                 if newTile.occupiedBy.currentHp <= 0:
 #                    self.sound.play_sfx(soundSel['Die'])
                     newTile.occupiedBy.currentHp = 0
+                    self.players[not team].characters.remove(newTile.occupiedBy)
                     newTile.occupiedBy = 0
                     self.draw.drawSprite(newTile.x, newTile.y,
                         Sprite.Grass.value)
-                    self.players[team].charactersRemaining -= 1
         self.highlightTiles(validMoves, 0)
         for move in validMoves:
             move.distance = 1000
  
     def doPlayerTurn(self, team):
         print "doPlayerTurn"
-        charId = 0
-        self.draw.drawCursor(0, 0,
-            self.players[team].characters[charId].position.x,
-            self.players[team].characters[charId].position.y)
+        characters = cycle(self.players[team].characters)
+        character = characters.next()
+        self.draw.drawCursor(0, 0, character.position.x, character.position.y)
         while True:
             keypress = self.getPlayerInput(team, fncs['select'],
-                self.players[team].characters[charId].position.x,
-                self.players[team].characters[charId].position.y)
+                character.position.x, character.position.y)
             if keypress == Input.Esc:
                 # Draw exit screen
                 if self.exitMenu():
                     return False
             elif keypress == Input.Next:
                 move = self.players[team].currentMove()
-                for character in self.players[team].characters:
-                    if character.move == move and move != Turn.Done:
-                        character.move += 1
-                    self.draw.drawCursor( character.position.x,
-                        character.position.y, -1, -1)
+                for char in self.players[team].characters:
+                    if char.move == move and move != Turn.Done:
+                        char.move += 1
+                    self.draw.drawCursor( char.position.x,
+                        char.position.y, -1, -1)
                 return True
             elif keypress == Input.Enter:
-                if self.players[team].characters[charId].move == Turn.Move:
-                    self.moveCharacter(self.players[team].characters[charId])
+                if character.move == Turn.Move:
+                    self.moveCharacter(character)
                     return True
-                elif self.players[team].characters[charId].move == Turn.Attack:
-                    self.attackCharacter(team,
-                        self.players[team].characters[charId])
+                elif character.move == Turn.Attack:
+                    self.attackCharacter(team, character)
                     return True
-            elif keypress == Input.Left:
-                oldId = charId
-                while True:
-                    if charId > 0:
-                        charId -= 1
-                    else:
-                        charId = CHARS_PER_PLAYER - 1
-                    if self.players[team].characters[charId].currentHp > 0:
-                        break
-                self.draw.drawCursor(
-                    self.players[team].characters[oldId].position.x,
-                    self.players[team].characters[oldId].position.y,
-                    self.players[team].characters[charId].position.x,
-                    self.players[team].characters[charId].position.y)
-            elif keypress == Input.Right:
-                oldId = charId
-                while True:
-                    if charId < CHARS_PER_PLAYER - 1:
-                        charId += 1
-                    else:
-                        charId = 0
-                    if self.players[team].characters[charId].currentHp > 0:
-                        break
-                self.draw.drawCursor(
-                    self.players[team].characters[oldId].position.x,
-                    self.players[team].characters[oldId].position.y,
-                    self.players[team].characters[charId].position.x,
-                    self.players[team].characters[charId].position.y)
+            elif keypress == Input.Left or keypress == Input.Right:
+                oldChar = character
+                character = characters.next()
+                self.draw.drawCursor(oldChar.position.x, oldChar.position.y,
+                    character.position.x, character.position.y)
  
     def drawMenu(self):
         # Draw Main Menu
@@ -255,7 +230,7 @@ class Game:
         currPlayer = 0
         while True:
             while not self.players[currPlayer].isTurnDone():
-                if self.players[currPlayer].charactersRemaining == 0:
+                if len(self.players[currPlayer].characters) is 0:
                     print "Game over"
                     return
                 if not self.doPlayerTurn(currPlayer):
