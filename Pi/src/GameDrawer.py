@@ -202,6 +202,9 @@ class Drawer:
         cap = cv2.VideoCapture(name)
         i = 0
         while(cap.isOpened()):
+            while i < 30:
+                ret, frame = cap.read()
+                i = i + 1
             ret, frame = cap.read()
             image = cv2.imencode('.bmp', frame)
             cv2.imwrite('frame.bmp', frame)
