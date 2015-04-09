@@ -146,12 +146,12 @@ void display_frame() {
 void record_video(int data) {
     int frames = 0;
     int pixel = 1;
-    video[pixel] = data;
+    videos[pixel] = data;
     //int index = player_id * 3 + character_id;
     int color;
     int message;
     for(frames = 0; frames < 60; frames++) {
-        for(pixel; pixel < NUM_VIDEO_PIXELS; pixel++) {
+        for(pixel = 0; pixel < NUM_VIDEO_PIXELS; pixel++) {
             get_input(&message, &color);
             videos[pixel] = color;
         }
@@ -162,7 +162,7 @@ void record_video(int data) {
 
 }
 
-void display_video() {
+/*void display_video() {
     int frames = 0, pixel = 0, index = player_id * 3 + character_id;
     int message, color;
     int x = VIDEO_CORNER_X, y = VIDEO_CORNER_X;
@@ -177,7 +177,7 @@ void display_video() {
 }
 
 
-/*void record_video(int player_id, int character_id) {
+void record_video(int player_id, int character_id) {
     int frames = 0;
     int pixel = 0;
     int index = player_id * 3 + character_id;
