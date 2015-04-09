@@ -204,30 +204,18 @@ class Drawer:
         self.boardIsReady();
         self.setMessagePins(5);
         self.setDataPins(0);
-        while(cap.isOpened()):
-            while i < 30:
-                ret, frame = cap.read()
-                i = i + 1
-            ret, frame = cap.read()
-            image = cv2.imencode('.bmp', frame)
-            cv2.imwrite('frame.bmp', frame)
-            subprocess.call(['sudo','./pins'])
-            i = i + 1
-            if cv2.waitKey(1) & 0xFF == ord('q') or i == NUM_FRAMES:
-                break
-        cap.release()
-        cv2.destroyAllWindows()
+        subprocess.call(['sudo','./pins', name])
 
     def Video(self, team, character):
         if team == 0 and character.characterId == 0:
-            self.sendVideo('p0c0.avi')
+            self.sendVideo('p0c0')
         elif team == 0 and character.characterId == 1:
-            self.sendVideo('p0c1.avi')
+            self.sendVideo('p0c1')
         elif team == 0 and character.characterId == 2:
-            self.sendVideo('p0c2.avi')
+            self.sendVideo('p0c2')
         elif team == 1 and character.characterId == 0:
-            self.sendVideo('p1c0.avi')
+            self.sendVideo('p1c0')
         elif team == 1 and character.characterId == 1:
-            self.sendVideo('p1c1.avi')
+            self.sendVideo('p1c1')
         elif team == 1 and character.characterId == 2:
-            self.sendVideo('p1c2.avi')
+            self.sendVideo('p1c2')

@@ -10,6 +10,7 @@
 #include <wiringPi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
  
 #define MESSAGE_PINS 4
 #define DATA_PINS 20
@@ -71,8 +72,8 @@ void boardIsReady() {
 }
 
 
-void readframe(char* background) {
-    FILE* fp = fopen("frame.bmp", "r");
+void readframe(char* frame, char* background) {
+    FILE* fp = fopen(frame, "r");
     FILE* bg = fopen(background, "r");
     fseek(fp, FILE_OFFSET, SEEK_SET);
     int i = 0;
@@ -94,17 +95,24 @@ void readframe(char* background) {
     }
 
     fclose(fp);
-
+    fclose(bg);
 }
  
 int main(int argc, char **argv)
 {
     // Set up gpi pointer for direct register access
     setGPIOs();
-    boardIsReady();
-    setMessagePins(5);
-    setDataPins(0);
-    readframe("background.bmp");   
+    int i = 0;
+    char framenum[20];
+    for(i = 0; i < 4; i++) {
+        framenum[i] = argv[1][i];
+    }
+    framenum[4] = '/';
+    for(i = 30; i < 50; i++) {
+        sprintf(framenum + 5, "%d", i);
+        char* frame = strcat(framenum, ".bmp");
+        readframe(frame,"background.bmp");   
+    }
     return 0;
  
 }

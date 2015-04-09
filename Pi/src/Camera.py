@@ -62,7 +62,6 @@ class Camera:
                 break
 
         # Release everything if job is finished
-        print "Hello#2"
         cap.release()
         out.release()
         cv2.destroyAllWindows()
