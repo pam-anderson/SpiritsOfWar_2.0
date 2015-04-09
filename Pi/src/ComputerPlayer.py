@@ -71,6 +71,7 @@ class ComputerPlayer:
             print "The distance to target priority #", opp, "is", \
                     opp[0].position.distance
             if opp[0].position.distance <= charRange:
+                raw_input("Press Enter to Continue")
                 character = opp[0]
                 break
         if character is not None:
@@ -78,8 +79,8 @@ class ComputerPlayer:
             y = character.position.y
             path = [0] * (character.position.distance + 1)
             self.gameMap.getPath(character.position.x, character.position.y, path)
-            rng = character.characterClass.attackRange
-            self.attackPath = path[1:rng]
+            rng = self.currentCharacter.characterClass.attackRange
+            self.attackPath = path[1:rng + 1]
             print "atk", self.attackPath
         else:   
             self.attackPath = []
@@ -90,7 +91,8 @@ class ComputerPlayer:
         character = self.currentPriority[0][0]
         x = character.position.x
         y = character.position.y
-        if self.currentCharacter.characterClass.attackRange >= character.position.distance:
+        if self.currentCharacter.characterClass.attackRange > character.position.distance:
+            print "within range of an opponent. not moving"
             movePath = []
             return
         for move in moves:
@@ -106,15 +108,17 @@ class ComputerPlayer:
         print "start", start.x, start.y
         path = [0] * (start.distance + 1)
         self.gameMap.getPath(start.x, start.y, path)
-        rng = character.characterClass.movement
-        self.movePath = path[1:rng]
+        rng = self.currentCharacter.characterClass.movement
+        self.movePath = path[1:rng + 1]
         for move in moves:
             move.distance = 1000
         print "move", self.movePath
         print "path", path
 
     def doAttack(self):
+        self.currentCharacter = 0
         if len(self.attackPath) is 0:
+            raw_input("Press Enter to Continue...")
             return ' '
         else:
             move = self.attackPath.pop(0)
