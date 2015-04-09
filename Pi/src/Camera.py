@@ -7,7 +7,6 @@ NUM_FRAMES = 50
 
 class Camera:
     def recordVideo(self, name):
-        print "hello!!!"
         cap = cv2.VideoCapture(0)
         cap.set(3, 480)
         cap.set(4, 480)
@@ -15,7 +14,7 @@ class Camera:
         #time.sleep(1)
         #fgbg1 = cv2.BackgroundSubtractorMOG2()
         time.sleep(1)
-        fgbg2 = cv2.BackgroundSubtractorMOG()
+        fgbg2 = cv2.BackgroundSubtractorMOG2()
         #time.sleep(1)
         #fgbg3 = cv2.BackgroundSubtractorMOG()
 
@@ -48,7 +47,14 @@ class Camera:
 
                 frame = cv2.bitwise_and(frame, frame, mask = fgmask)
                 cv2.imshow('frame',frame)
-                out.write(cv2.flip(frame, 0))
+                frame = cv2.flip(frame, 0)
+                image = cv2.imencode('.bmp', frame)
+                imageName = name[0:4]
+                imageName += '/'
+                imageName += str(i)
+                imageName += '.bmp'
+                cv2.imwrite(imageName, frame)
+                out.write(frame)
                 i = i + 1
                 if cv2.waitKey(1) & 0xFF == ord('q') or i == NUM_FRAMES:
                     break
@@ -58,19 +64,4 @@ class Camera:
         # Release everything if job is finished
         cap.release()
         out.release()
-        cv2.destroyAllWindows()
-
-    def sendVideo(self, name):
-        cap = cv2.VideoCapture(name)
-        i = 0
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-            #cv2.imshow('frame', frame)
-            image = cv2.imencode('.bmp', frame)
-            cv2.imwrite('frame.bmp', frame)
-            subprocess.call(['sudo','./pins'])
-            i = i + 1
-            if cv2.waitKey(1) & 0xFF == ord('q') or i == NUM_FRAMES:
-                break
-        cap.release()
         cv2.destroyAllWindows()
