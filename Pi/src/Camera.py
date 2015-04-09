@@ -7,6 +7,7 @@ NUM_FRAMES = 50
 
 class Camera:
     def recordVideo(self, name):
+        print "hello!!!"
         cap = cv2.VideoCapture(0)
         cap.set(3, 480)
         cap.set(4, 480)
