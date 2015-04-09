@@ -125,7 +125,7 @@ class Game:
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
-            character.characterClass.movement, True)
+            character.characterClass.attackRange, True)
         self.highlightTiles(validMoves, 2)
         newTile = self.selectSpace(character, validMoves, fncs['attack'])
         if newTile is not False:

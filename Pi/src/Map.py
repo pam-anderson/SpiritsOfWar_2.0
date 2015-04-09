@@ -74,6 +74,8 @@ class Map:
                 newy += 1
                 path[distance] = Direction.Down
             distance -= 1
+            if distance < 0:
+                break
         return
 
     def findStartingPoint(self, character):
@@ -96,6 +98,8 @@ class Map:
         for move in possible:
             if move.distance < start.distance:
                 start = move
+        if move.distance is 1000:
+            return False
         return move
  
     def depthFirstSearch(self, x, y, teamId, levels, attackable):
@@ -103,6 +107,7 @@ class Map:
         neighbours = []
         validMoves = [self.tiles[x][y]]
         self.tiles[x][y].distance = 0
+        self.tiles[x][y].explored = True
         for level in range(levels):
             for node in queue:
                 for direction in Direction:

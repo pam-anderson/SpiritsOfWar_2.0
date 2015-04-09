@@ -75,10 +75,10 @@ def initializeClasses():
     classes = []
     classes.append(CharacterClass("warrior", WARRIOR_HP, WARRIOR_ATK,
         WARRIOR_DEF, WARRIOR_RANGE, WARRIOR_MVMNT))
-    classes.append(CharacterClass("mage", MAGE_HP, MAGE_ATK, MAGE_DEF,
-        MAGE_RANGE, MAGE_MVMNT))
     classes.append(CharacterClass("ranger", RANGER_HP, RANGER_ATK, RANGER_DEF,
         RANGER_RANGE, RANGER_MVMNT))
+    classes.append(CharacterClass("mage", MAGE_HP, MAGE_ATK, MAGE_DEF,
+        MAGE_RANGE, MAGE_MVMNT))
     return classes
 
 def initializeCharacters(team):

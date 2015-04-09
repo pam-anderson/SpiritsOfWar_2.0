@@ -50,14 +50,28 @@ class ComputerPlayer:
             self.currentPriority = priority
         print "prio", priority
         # Get movement path
+        for move in moves:
+            move.distance = 1000
         self.findPath(moves)
-        #for move in moves:
-        #    move.distance = 1000
         # Get attack path
         #moves = self.gameMap.depthFirstSearch(character.position.x,
         #    character.position.y, character.team, character.characterClass.attackRange, 1)
-        moves = self.gameMap.depthFirstSearch(character.position.x,
-            character.position.y, character.team, character.characterClass.attackRange, 1)
+        futurex = character.position.x
+        futurey = character.position.y
+        for move in self.movePath:
+            if move == Direction.Up:
+                futurey += 1
+            elif move == Direction.Down:
+                futurey -= 1
+            elif move == Direction.Left:
+                futurex += 1
+            elif move == Direction.Right:
+                futurex -= 1
+
+        moves = self.gameMap.depthFirstSearch(futurex,
+            futurey, character.team, character.characterClass.attackRange, 1)
+        print "future", futurex, futurey, self.gameMap.tiles[futurex][futurey].distance, \
+                character.characterClass.className, character.characterClass.attackRange
         self.findAttack(character.characterClass.attackRange)
         for move in moves:
             move.distance = 1000
@@ -68,10 +82,10 @@ class ComputerPlayer:
     def findAttack(self, charRange):
         character = None
         for opp in self.currentPriority:
-            print "The distance to target priority #", opp, "is", \
+            print "The distance to target priority #", opp[1], "is", \
                     opp[0].position.distance
             if opp[0].position.distance <= charRange:
-                raw_input("Press Enter to Continue")
+#                raw_input("Press Enter to Continue")
                 character = opp[0]
                 break
         if character is not None:
@@ -81,7 +95,7 @@ class ComputerPlayer:
             self.gameMap.getPath(character.position.x, character.position.y, path)
             rng = self.currentCharacter.characterClass.attackRange
             self.attackPath = path[1:rng + 1]
-            print "atk", self.attackPath
+            print "atk", path, self.attackPath
         else:   
             self.attackPath = []
 
@@ -95,8 +109,6 @@ class ComputerPlayer:
             print "within range of an opponent. not moving"
             movePath = []
             return
-        for move in moves:
-            move.distance = 1000
         moves = self.gameMap.depthFirstSearch(self.currentCharacter.position.x,
             self.currentCharacter.position.y, self.currentCharacter.team, 2 * MAP_SIZE, 0)
         start = self.gameMap.findStartingPoint(character)
@@ -105,6 +117,7 @@ class ComputerPlayer:
                 start = self.gameMap.findStartingPoint(char[0])
                 if start is not False:
                     break
+            start = self.currentCharacter.position
         print "start", start.x, start.y
         path = [0] * (start.distance + 1)
         self.gameMap.getPath(start.x, start.y, path)
@@ -118,7 +131,7 @@ class ComputerPlayer:
     def doAttack(self):
         self.currentCharacter = 0
         if len(self.attackPath) is 0:
-            raw_input("Press Enter to Continue...")
+#             raw_input("Press Enter to Continue...")
             return ' '
         else:
             move = self.attackPath.pop(0)
