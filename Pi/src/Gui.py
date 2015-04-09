@@ -1,18 +1,22 @@
 from Tkinter import *
+from Recording import recordSnd
+from Camera import Camera 
 
 class guiVideoRec():
+    def __init__(self):    
+        self.vid = Camera()
     def team_one_warrior(self):
-        recordVideo('p0c0.avi')
+        self.vid.recordVideo('p0c0.avi')
     def team_one_archer(self):
-        recordVideo('p0c1.avi')
+        self.vid.recordVideo('p0c1.avi')
     def team_one_mage(self):
-        recordVideo('p0c.avi')    
+        self.vid.recordVideo('p0c.avi')    
     def team_two_warrior(self):
-        recordVideo('p1c0.avi')
+        self.vid.recordVideo('p1c0.avi')
     def team_two_archer(self):
-        recordVideo('p1c1.avi')
+        self.vid.recordVideo('p1c1.avi')
     def team_two_mage(self): 
-        recordVideo('p1c2.avi')
+        self.vid.recordVideo('p1c2.avi')
     def done_recording(self):
         self.quitButton.grid()
     def createButton(self):
@@ -29,7 +33,8 @@ class guiVideoRec():
         t1_header.insert(END, "    Team One")
         t2_header.insert(END, "    Team Two")
         t1_header.pack(); t1_war.pack(); t1_arch.pack(); t1_mage.pack(); 
-        t2_header.pack(); t2_war.pack(); t2_arch.pack(); t2_mage.pack();  
+        t2_header.pack(); t2_war.pack(); t2_arch.pack(); t2_mage.pack(); 
+        Button(master, text="Quit", command=quit).pack() 
         mainloop()
 
 
@@ -37,16 +42,18 @@ class guiVideoRec():
 #app.createButton()
 
 class guiSoundRec():
+    def __init__(self):
+        self.sound = recordSnd()
     def recWar(self):
-        recordSound('rec_war.wav')
+        self.sound.recordSound('rec_war.wav')
     def recArch(self):
-        recordSound('rec_arch.wav')
+        self.sound.recordSound('rec_arch.wav')
     def recMag(self):
-        recordSound('rec_mag.wav')
+        self.sound.recordSound('rec_mag.wav')
     def recMov(self):
-        recordSound('rec_mov.wav')
+        self.sound.recordSound('rec_mov.wav')
     def recDie(self):
-        recordSound('rec_die.wav')
+        self.sound.recordSound('rec_die.wav')
     def createButton(self):
         master = Tk()
         master.title('Sound Recording')
@@ -55,7 +62,8 @@ class guiSoundRec():
         rec_mage = Button(master, text="Mage Attack", command=self.recMag)
         rec_move = Button(master, text="Movement", command=self.recMov)
         rec_die = Button(master, text="Death", command= self.recDie)
-        rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack(); rec_die.pack()
+        rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack()
+        rec_die.pack(); Button(master, text="Quit", command=quit).pack()
         mainloop()
 
 #app2 = guiSoundRec()
