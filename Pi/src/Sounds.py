@@ -6,7 +6,7 @@ import os
 # sudo amixer cset numid=3 1
 # -------------------------------------------
 
-class Sound:
+class Sounds:
     def __init__(self):
         self.sfx = []
         # Load main music
@@ -18,12 +18,12 @@ class Sound:
         if (os.path.isfile("rec_war.wav") == False):
             self.sfx.append(pygame.mixer.Sound("war.wav"))
         else: self.sfx.append(pygame.mixer.Sound("rec_war.wav"))
-        if (os.path.isfile("rec_mag.wav") == False):
-            self.sfx.append(pygame.mixer.Sound("mag.wav"))
-        else: self.sfx.append(pygame.mixer.Sound("rec_mag.wav")) 
         if (os.path.isfile("rec_arch.wav") == False):
             self.sfx.append(pygame.mixer.Sound("arch.wav"))
         else: self.sfx.append(pygame.mixer.Sound("rec_arch.wav"))
+        if (os.path.isfile("rec_mag.wav") == False):
+            self.sfx.append(pygame.mixer.Sound("mag.wav"))
+        else: self.sfx.append(pygame.mixer.Sound("rec_mag.wav")) 
         if (os.path.isfile("rec_mov.wav") == False):
             self.sfx.append(pygame.mixer.Sound("mov.wav"))
         else: self.sfx.append(pygame.mixer.Sound("rec_mov.wav"))

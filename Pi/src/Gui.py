@@ -10,7 +10,7 @@ class guiVideoRec():
     def team_one_archer(self):
         self.vid.recordVideo('p0c1.avi')
     def team_one_mage(self):
-        self.vid.recordVideo('p0c.avi')    
+        self.vid.recordVideo('p0c2.avi')    
     def team_two_warrior(self):
         self.vid.recordVideo('p1c0.avi')
     def team_two_archer(self):

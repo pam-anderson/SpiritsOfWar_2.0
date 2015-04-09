@@ -3,7 +3,7 @@ from Map import Map, Sprite
 from GameDrawer import Drawer, START_PIXEL_X, START_PIXEL_Y
 from Player import CHARS_PER_PLAYER
 from enum import Enum
-from Sounds import Sound
+from Sounds import Sounds
 from getch import getch
 import sys
 from ComputerPlayer import ComputerPlayer
@@ -39,7 +39,7 @@ class Game:
         self.gameMap = Map()
         self.draw = Drawer(self.gameMap, self.players)
         self.cpu = [0,0]
-        #self.sound = Sound()
+        self.sound = Sounds()
         self.vidGui = guiVideoRec()
         self.sndGui = guiSoundRec()
         initializeCharacterPositions(0, self.players[0].characters,
@@ -102,13 +102,14 @@ class Game:
 
     def moveCharacter(self, character):
         print "moveChar"
-#        self.sound.play_sfx(soundSel['Move'])
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
             character.characterClass.movement, False)
         self.highlightTiles(validMoves, 1)
         newTile = self.selectSpace(character, validMoves, fncs['move'])
+        if newTile is not oldTile:
+            self.sound.play_sfx(soundSel['Move'])
         if newTile is not False:
             self.draw.movePlayer(character, oldTile.x, oldTile.y, newTile.x, newTile.y)
             character.position = newTile
@@ -121,7 +122,6 @@ class Game:
 
     def attackCharacter(self, team, character):
         print "attackChar"
-#       self.sound.play_sfx(character.characterId)
         oldTile = character.position
         validMoves = self.gameMap.depthFirstSearch(character.position.x,
             character.position.y, character.team,
@@ -132,13 +132,14 @@ class Game:
             character.move = Turn.Done
             if newTile.occupiedBy is not character and \
                     newTile.occupiedBy is not 0:
+                self.sound.play_sfx(character.characterId)
                 newTile.occupiedBy.currentHp = max(0,
                     newTile.occupiedBy.currentHp - \
                     character.characterClass.attack)
                 self.draw.Video(team, character)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
-#                    self.sound.play_sfx(soundSel['Die'])
+                    self.sound.play_sfx(soundSel['Die'])
                     newTile.occupiedBy.currentHp = 0
                     self.players[not team].characters.remove(newTile.occupiedBy)
                     newTile.occupiedBy = 0

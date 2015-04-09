@@ -1,5 +1,4 @@
 from GameController import Game
-from Sounds import Sound
 
 def main():
     game = Game()
