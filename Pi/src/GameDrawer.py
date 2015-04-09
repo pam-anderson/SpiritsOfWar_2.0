@@ -3,8 +3,8 @@ from time import sleep
 from Map import Direction
 import numpy as np
 import time
-#import cv2
-#import subprocess
+import cv2
+import subprocess
 
 START_PIXEL_X = 32
 START_PIXEL_Y = 40
@@ -203,32 +203,25 @@ class Drawer:
         i = 0
         while(cap.isOpened()):
             ret, frame = cap.read()
-            #cv2.imshow('frame', frame)
             image = cv2.imencode('.bmp', frame)
             cv2.imwrite('frame.bmp', frame)
             subprocess.call(['sudo','./pins'])
             i = i + 1
-            if cv2.waitKey(1) & 0xFF == ord('q') or i == 20:
+            if cv2.waitKey(1) & 0xFF == ord('q') or i == NUM_FRAMES:
                 break
         cap.release()
         cv2.destroyAllWindows()
 
-    #name of video to send as parameter
-    #use test.avi for testing
-#    def sendVideo(self, name):
-#        cap = cv2.VideoCapture(name)
-#        i = 0
-#        while(cap.isOpened()):
-#            ret, frame = cap.read()
-#            for y in range(0, 128):
-#                for x in range(0, 128):
-#                    out = ((frame[y][x][2] & 0xf8) << 8)| \
-#                        ((frame[y][x][1] & 0xfC) << 3)|(frame[y][x][0] & 0xf8 >> 3)
-#                    self.boardIsReady()
-#                    self.setMessagePins(Message.SendVideo)
-#                    self.setDataPins(out, 16)
-#            i += 1
-#            if (cv2.waitKey(0) & 0xFF == ord('q')) or i == NUM_FRAMES: 
-#                break
-#        cap.release()
-#        cv2.destroyAllWindows()
+    def Video(self, team, character):
+        if team == 0 and character.characterId == 0:
+            self.sendVideo('p0c0.avi')
+        elif team == 0 and character.characterId == 1:
+            self.sendVideo('p0c1.avi')
+        elif team == 0 and character.characterId == 2:
+            self.sendVideo('p0c2.avi')
+        elif team == 1 and character.characterId == 0:
+            self.sendVideo('p1c0.avi')
+        elif team == 1 and character.characterId == 1:
+            self.sendVideo('p1c1.avi')
+        elif team == 1 and character.characterId == 2:
+            self.sendVideo('p1c2.avi')
