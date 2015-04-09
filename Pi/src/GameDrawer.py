@@ -202,8 +202,8 @@ class Drawer:
         cap = cv2.VideoCapture(name)
         i = 0
         self.boardIsReady();
-        self.setMessagePins(5);
-        self.setDataPins(0);
+        self.setMessagePins(Message.SendVideo);
+        self.setDataPins(0, 1);
         subprocess.call(['sudo','./pins', name])
 
     def Video(self, team, character):
