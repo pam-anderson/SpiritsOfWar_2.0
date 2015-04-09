@@ -66,12 +66,12 @@ def sendVideo(name):
         cv2.imwrite('frame.bmp', frame)
         subprocess.call(['sudo','./pins'])
         i = i + 1
-        if cv2.waitKey(1) & 0xFF == ord('q') or i == 20:
+        if cv2.waitKey(1) & 0xFF == ord('q') or i == 60:
             break
     cap.release()
     cv2.destroyAllWindows()
         
-#recordVideo('test.avi')
+recordVideo('test.avi')
 sendVideo('test.avi')
 
 

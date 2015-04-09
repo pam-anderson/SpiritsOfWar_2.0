@@ -1,5 +1,6 @@
 from Map import MAP_SIZE, Direction
 from Player import Turn
+from operator import itemgetter
 
 sel = { Direction.Up    : 's',
         Direction.Down  : 'w',
@@ -35,6 +36,7 @@ class ComputerPlayer:
                     character.characterClass.attackRange
         for opp in opponents:
 #            print opp.characterClass.className, opp.position.distance
+            # Prioritize opponents by distance from character
             nearby = 3 if opp.position.distance > threshold else 0
             if opponents[opponents.index(opp) - 1].position.distance == \
                 opp.position.distance:
@@ -44,15 +46,18 @@ class ComputerPlayer:
             prioVal = dist + \
                       classPrio[opp.characterClass.className] + nearby
             priority.append((opp, prioVal))
+            priority.sort(key=itemgetter(1))
             self.currentPriority = priority
         print "prio", priority
         # Get movement path
-        self.findPath()
+        self.findPath(moves)
         #for move in moves:
         #    move.distance = 1000
         # Get attack path
         #moves = self.gameMap.depthFirstSearch(character.position.x,
         #    character.position.y, character.team, character.characterClass.attackRange, 1)
+        moves = self.gameMap.depthFirstSearch(character.position.x,
+            character.position.y, character.team, character.characterClass.attackRange, 1)
         self.findAttack(character.characterClass.attackRange)
         for move in moves:
             move.distance = 1000
@@ -81,13 +86,17 @@ class ComputerPlayer:
 
     # Determine where to move
     # charIndex select which char to move towards
-    def findPath(self):
+    def findPath(self, moves):
         character = self.currentPriority[0][0]
         x = character.position.x
         y = character.position.y
         if self.currentCharacter.characterClass.attackRange >= character.position.distance:
             movePath = []
             return
+        for move in moves:
+            move.distance = 1000
+        moves = self.gameMap.depthFirstSearch(self.currentCharacter.position.x,
+            self.currentCharacter.position.y, self.currentCharacter.team, 2 * MAP_SIZE, 0)
         start = self.gameMap.findStartingPoint(character)
         while start is False:
             for char in self.currentPriority:
@@ -99,6 +108,8 @@ class ComputerPlayer:
         self.gameMap.getPath(start.x, start.y, path)
         rng = character.characterClass.movement
         self.movePath = path[1:rng]
+        for move in moves:
+            move.distance = 1000
         print "move", self.movePath
         print "path", path
 
