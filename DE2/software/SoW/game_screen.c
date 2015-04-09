@@ -133,12 +133,16 @@ void display_frame() {
     int x = 0;
     int y = 0;
     int pixel = 0;
-    for(y = 0; y < VIDEO_Y_PIXELS; y++) {
-        for(x = 0; x < VIDEO_X_PIXELS; x++) {
-            alt_up_pixel_buffer_dma_draw_box(pixel_buffer,x + VIDEO_CORNER_X,
-            	y + VIDEO_CORNER_Y, x + VIDEO_CORNER_X, y + VIDEO_CORNER_Y,
-                videos[pixel], 0);
-            pixel++;
+    int frames = 0;
+    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
+        pixel = 0;
+        for(y = 0; y < VIDEO_Y_PIXELS; y++) {
+            for(x = 0; x < VIDEO_X_PIXELS; x++) {
+                alt_up_pixel_buffer_dma_draw_box(pixel_buffer,x + VIDEO_CORNER_X,
+                	y + VIDEO_CORNER_Y, x + VIDEO_CORNER_X, y + VIDEO_CORNER_Y,
+                    videos[frames][pixel], 0);
+                pixel++;
+            }
         }
     }
 }
@@ -151,12 +155,12 @@ void record_video() {
     for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
         for(pixel = 0; pixel < NUM_VIDEO_PIXELS; pixel++) {
             get_input(&message, &color);
-            videos[pixel] = color;
+            videos[frames][pixel] = color;
         }
-        display_frame();
+        //display_frame();
         //printf("record %d\n", frames);
     }
-
+    display_frame();
 }
 
 /*void display_video() {

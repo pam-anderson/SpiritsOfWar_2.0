@@ -9,7 +9,7 @@
 
 #define MAP_CORNER_X 	32
 #define MAP_CORNER_Y 	40
-#define NUM_VIDEO_FRAMES 50
+#define NUM_VIDEO_FRAMES 20
 #define VIDEO_X_PIXELS 128
 #define VIDEO_Y_PIXELS 128
 #define NUM_VIDEO_PIXELS 16384
@@ -35,7 +35,7 @@
 
 
 int **sprites;
-int videos[VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
+int videos[NUM_VIDEO_FRAMES][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 //alt_u16 videos[1][NUM_VIDEO_FRAMES][VIDEO_X_PIXELS * VIDEO_Y_PIXELS];
 
 //char blinker = 0xFFFF;
