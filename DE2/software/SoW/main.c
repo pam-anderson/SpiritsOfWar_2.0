@@ -29,7 +29,7 @@ void test_sprites() {
 	}
 }
 
-void test_video_init() {
+/*void test_video_init() {
     int frame = 0;
     int pixel = 0;
     int index = 0;
@@ -38,16 +38,16 @@ void test_video_init() {
 			for(pixel = 0; pixel < VIDEO_X_PIXELS * VIDEO_Y_PIXELS; pixel++) {
 				if(frame % 2 == 0) {
 					if(index == 0)
-						videos[index][frame][pixel] = 0xF81F;
+						videos[pixel] = 0xF81F;
 					if(index == 1) {
-						videos[index][frame][pixel] = 0x001F;
+						videos[[pixel] = 0x001F;
 					}
 					if(index == 2) {
-						videos[index][frame][pixel] = 0xF800;
+						videos[pixel] = 0xF800;
 					}
 				}
 				else {
-					videos[index][frame][pixel] = 0xFFFF;
+					videos[pixel] = 0xFFFF;
 				}
 			}
 		}
@@ -69,10 +69,10 @@ void test_draw_video() {
     int index = 0;
     for(index = 0; index < 3; index++) {
 		for(frame = 0; frame < NUM_VIDEO_FRAMES; frame++) {
-			test_draw_frame(videos[index][frame]);
+			test_draw_frame(videos);
 		}
     }
-}
+}*/
 
 void play_game() {
 	int instruction;
@@ -97,10 +97,10 @@ void play_game() {
 				//highlight_characters(data);
 				break;
 			case 4:
-				display_video((data & 0x4) >> 2, (data & 0x3));
+				//display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 5:
-				record_video(data);
+				record_video();
 				break;
 			case 7:
 				get_input(&instruction, &data2);
@@ -129,9 +129,6 @@ int main(void) {
 	sprite_init();
 	hardware_init();
 	menu_init();
-	//record_video(0);
-	//test_video_init();
-	//test_draw_video();
 
 	while(1) {
 		show_menu();

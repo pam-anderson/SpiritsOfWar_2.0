@@ -135,6 +135,7 @@ class Game:
                 newTile.occupiedBy.currentHp = max(0,
                     newTile.occupiedBy.currentHp - \
                     character.characterClass.attack)
+                self.draw.Video(team, character)
                 self.draw.drawHealthbar(newTile.occupiedBy)
                 if newTile.occupiedBy.currentHp <= 0:
 #                    self.sound.play_sfx(soundSel['Die'])
