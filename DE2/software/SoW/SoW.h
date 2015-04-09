@@ -35,7 +35,7 @@ void draw_healthbar(int, int, int, int);
 void draw_cursor(int, int);
 void healthbar_init(int, int, int, int);
 void initialize_players(void);
-void record_video(int);
+void record_video(void);
 void display_video(void);
 void display_frame(void);
 int draw_exit_screen(void);

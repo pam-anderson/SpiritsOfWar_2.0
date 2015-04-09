@@ -100,7 +100,7 @@ void play_game() {
 				//display_video((data & 0x4) >> 2, (data & 0x3));
 				break;
 			case 5:
-				record_video(data);
+				record_video();
 				break;
 			case 7:
 				get_input(&instruction, &data2);
@@ -129,9 +129,6 @@ int main(void) {
 	sprite_init();
 	hardware_init();
 	menu_init();
-	record_video(0);
-	//test_video_init();
-	//test_draw_video();
 
 	while(1) {
 		show_menu();

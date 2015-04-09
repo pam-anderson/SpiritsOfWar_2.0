@@ -143,21 +143,18 @@ void display_frame() {
     }
 }
 
-void record_video(int data) {
+void record_video() {
     int frames = 0;
-    int pixel = 1;
-    videos[pixel] = data;
-    //int index = player_id * 3 + character_id;
+    int pixel = 0;
     int color;
     int message;
-    for(frames = 0; frames < 60; frames++) {
+    for(frames = 0; frames < NUM_VIDEO_FRAMES; frames++) {
         for(pixel = 0; pixel < NUM_VIDEO_PIXELS; pixel++) {
             get_input(&message, &color);
             videos[pixel] = color;
         }
         display_frame();
-        printf("record %d\n", frames);
-        pixel = 0;
+        //printf("record %d\n", frames);
     }
 
 }
