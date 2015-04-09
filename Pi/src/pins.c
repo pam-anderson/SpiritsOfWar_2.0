@@ -101,6 +101,9 @@ int main(int argc, char **argv)
 {
     // Set up gpi pointer for direct register access
     setGPIOs();
+    boardIsReady();
+    setMessagePins(5);
+    setDataPins(0);
     readframe("background.bmp");   
     return 0;
  
