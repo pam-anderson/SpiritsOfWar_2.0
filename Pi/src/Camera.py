@@ -4,17 +4,18 @@ import cv2
 import subprocess
 
 NUM_FRAMES = 50
+THRESHOLD = 30
 
 class Camera:
     def recordVideo(self, name):
         cap = cv2.VideoCapture(0)
         cap.set(3, 480)
         cap.set(4, 480)
-        fgbg0 = cv2.BackgroundSubtractorMOG2()
+        #fgbg0 = cv2.BackgroundSubtractorMOG2()
         #time.sleep(1)
         #fgbg1 = cv2.BackgroundSubtractorMOG2()
         time.sleep(1)
-        fgbg2 = cv2.BackgroundSubtractorMOG2()
+        #fgbg2 = cv2.BackgroundSubtractorMOG2()
         #time.sleep(1)
         #fgbg3 = cv2.BackgroundSubtractorMOG()
 
@@ -24,21 +25,25 @@ class Camera:
 
         while(cap.isOpened()):
             ret, frame = cap.read()
+            if i == 0:
+                frame1 = frame
             if ret==True:
-                frame = cv2.flip(frame,1)
-                frame = cv2.resize(frame, (128, 128), interpolation = cv2.INTER_AREA)
-                fgmask0 = fgbg0.apply(frame)
+                diff = cv2.absdiff(frame, frame1)
+                #frame = cv2.flip(frame,1)
+                #frame = cv2.resize(frame, (128, 128), interpolation = cv2.INTER_AREA)
+                #fgmask0 = fgbg0.apply(frame)
                 #fgmask1 = fgbg1.apply(frame)
-                fgmask2 = fgbg2.apply(frame)
+                #fgmask2 = fgbg2.apply(frame)
                 #fgmask3 = fgbg3.apply(frame)
 
                 #fg0 = cv2.bitwise_and(fgmask0, fgmask1)
-                fg1 = cv2.bitwise_and(fgmask0, fgmask2)
+                #fg1 = cv2.bitwise_and(fgmask0, fgmask2)
                 #fg2 = cv2.bitwise_and(fgmask0, fgmask3)
                 #fg3 = cv2.bitwise_and(fgmask1, fgmask2)
                 #fg4 = cv2.bitwise_and(fgmask1, fgmask3)
                 #fg5 = cv2.bitwise_and(fgmask2, fgmask3)
-                fgmask = fg1
+                #fgmask = fgmask0
+                fgmask = cv2.inRange(diff, (THRESHOLD, THRESHOLD, THRESHOLD), (255,255,255))
                 #fgmask = cv2.bitwise_or(fg0, fg1)
                 #fgmask = cv2.bitwise_or(fgmask, fg2)
                 #fgmask = cv2.bitwise_or(fgmask, fg3)
@@ -46,6 +51,8 @@ class Camera:
                 #fgmask = cv2.bitwise_or(fgmask, fg5)
 
                 frame = cv2.bitwise_and(frame, frame, mask = fgmask)
+                frame = cv2.resize(frame, (128, 128), interpolation = cv2.INTER_CUBIC)
+                frame = cv2.flip(frame, 1)
                 cv2.imshow('frame',frame)
                 frame = cv2.flip(frame, 0)
                 image = cv2.imencode('.bmp', frame)
@@ -64,4 +71,8 @@ class Camera:
         # Release everything if job is finished
         cap.release()
         out.release()
+        for i in range(5):
+            cv2.waitKey(1)
         cv2.destroyAllWindows()
+        for i in range(5):
+            cv2.waitKey(1)
