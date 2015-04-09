@@ -1,9 +1,10 @@
 from Tkinter import *
 from Recording import recordSnd
-#from Camera import Camera 
+from Camera import Camera 
 
 class guiVideoRec():
-    #self.vid = Camera()
+    def __init__(self):    
+        self.vid = Camera()
     def team_one_warrior(self):
         self.vid.recordVideo('p0c0.avi')
     def team_one_archer(self):
@@ -65,5 +66,5 @@ class guiSoundRec():
         rec_die.pack(); Button(master, text="Quit", command=quit).pack()
         mainloop()
 
-app2 = guiSoundRec()
-app2.createButton()
+#app2 = guiSoundRec()
+#app2.createButton()
