@@ -201,6 +201,9 @@ class Drawer:
     def sendVideo(self, name):
         cap = cv2.VideoCapture(name)
         i = 0
+        self.boardIsReady();
+        self.setMessagePins(5);
+        self.setDataPins(0);
         while(cap.isOpened()):
             while i < 30:
                 ret, frame = cap.read()
