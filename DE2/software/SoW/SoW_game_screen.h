@@ -13,8 +13,8 @@
 #define VIDEO_X_PIXELS 128
 #define VIDEO_Y_PIXELS 128
 #define NUM_VIDEO_PIXELS 16384
-#define VIDEO_CORNER_X 0
-#define VIDEO_CORNER_Y 0
+#define VIDEO_CORNER_X 180
+#define VIDEO_CORNER_Y 180
 
 //0. Grass					0
 //1. Water					1
