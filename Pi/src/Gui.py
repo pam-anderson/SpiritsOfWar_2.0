@@ -1,5 +1,5 @@
 from Tkinter import *
-from Recording import recordSnd
+#from Recording import recordSnd
 from Camera import Camera 
 
 class guiVideoRec():
@@ -43,28 +43,29 @@ class guiVideoRec():
 
 class guiSoundRec():
     def __init__(self):
-        self.sound = recordSnd()
-    def recWar(self):
-        self.sound.recordSound('rec_war.wav')
-    def recArch(self):
-        self.sound.recordSound('rec_arch.wav')
-    def recMag(self):
-        self.sound.recordSound('rec_mag.wav')
-    def recMov(self):
-        self.sound.recordSound('rec_mov.wav')
-    def recDie(self):
-        self.sound.recordSound('rec_die.wav')
-    def createButton(self):
-        master = Tk()
-        master.title('Sound Recording')
-        rec_warrior = Button(master, text="Warrior Attack", command=self.recWar)
-        rec_archer = Button(master, text="Archer Attack", command=self.recArch)
-        rec_mage = Button(master, text="Mage Attack", command=self.recMag)
-        rec_move = Button(master, text="Movement", command=self.recMov)
-        rec_die = Button(master, text="Death", command= self.recDie)
-        rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack()
-        rec_die.pack(); Button(master, text="Quit", command=quit).pack()
-        mainloop()
+        pass
+ #       self.sound = recordSnd()
+ #   def recWar(self):
+ #       self.sound.recordSound('rec_war.wav')
+ #   def recArch(self):
+ #       self.sound.recordSound('rec_arch.wav')
+ #   def recMag(self):
+ #       self.sound.recordSound('rec_mag.wav')
+ #   def recMov(self):
+ #       self.sound.recordSound('rec_mov.wav')
+ #   def recDie(self):
+ #       self.sound.recordSound('rec_die.wav')
+ #   def createButton(self):
+ #       master = Tk()
+ #       master.title('Sound Recording')
+ #       rec_warrior = Button(master, text="Warrior Attack", command=self.recWar)
+ #       rec_archer = Button(master, text="Archer Attack", command=self.recArch)
+ #       rec_mage = Button(master, text="Mage Attack", command=self.recMag)
+ #       rec_move = Button(master, text="Movement", command=self.recMov)
+ #       rec_die = Button(master, text="Death", command= self.recDie)
+ #       rec_warrior.pack(); rec_archer.pack(); rec_mage.pack(); rec_move.pack()
+ #       rec_die.pack(); Button(master, text="Quit", command=quit).pack()
+ #       mainloop()
 
 #app2 = guiSoundRec()
 #app2.createButton()

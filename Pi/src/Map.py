@@ -81,13 +81,13 @@ class Map:
         x = character.position.x
         y = character.position.y
         possible = []
-        if x > 0 and self.tiles[x-1][y].occupiedBy is 0:
+        if x > 0 and self.tiles[x-1][y].tileIsValid(1, 0):
             possible.append(self.tiles[x-1][y])
-        if x < MAP_SIZE - 1 and self.tiles[x+1][y].occupiedBy is 0:
+        if x < MAP_SIZE - 1 and self.tiles[x+1][y].tileIsValid(1, 0):
             possible.append(self.tiles[x+1][y])
-        if y > 0 and self.tiles[x][y-1].occupiedBy is 0:
+        if y > 0 and self.tiles[x][y-1].tileIsValid(1, 0):
             possible.append(self.tiles[x][y-1])
-        if y < MAP_SIZE - 1 and self.tiles[x][y+1].occupiedBy is 0:
+        if y < MAP_SIZE - 1 and self.tiles[x][y+1].tileIsValid(1, 0):
             possible.append(self.tiles[x][y+1])
         if len(possible) > 0:
             start = possible[0]
@@ -108,28 +108,28 @@ class Map:
                 for direction in Direction:
                     if direction == Direction.Left and node.x > 0 and \
                           self.tiles[node.x - 1][node.y].tileIsValid(teamId, attackable):
-                        print node.x - 1, node.y
+        #                print node.x - 1, node.y
                         self.tiles[node.x - 1][node.y].explored = True
                         neighbours.append(self.tiles[node.x - 1][node.y])
                         validMoves.append(self.tiles[node.x - 1][node.y]) 
                         self.tiles[node.x - 1][node.y].distance = level + 1
                     elif direction == Direction.Right and node.x < MAP_SIZE - 1 and \
                           self.tiles[node.x + 1][node.y].tileIsValid(teamId, attackable):
-                        print node.x + 1, node.y
+        #                print node.x + 1, node.y
                         self.tiles[node.x + 1][node.y].explored = True
                         neighbours.append(self.tiles[node.x + 1][node.y])
                         validMoves.append(self.tiles[node.x + 1][node.y])
                         self.tiles[node.x + 1][node.y].distance = level + 1
                     elif direction == Direction.Up and node.y > 0 and \
                           self.tiles[node.x][node.y - 1].tileIsValid(teamId, attackable):
-                        print node.x, node.y - 1
+        #                print node.x, node.y - 1
                         self.tiles[node.x][node.y - 1].explored = True
                         neighbours.append(self.tiles[node.x][node.y - 1])
                         validMoves.append(self.tiles[node.x][node.y - 1])
                         self.tiles[node.x][node.y - 1].distance = level + 1
                     elif direction == Direction.Down and node.y < MAP_SIZE - 1:
                         if self.tiles[node.x][node.y + 1].tileIsValid(teamId, attackable):
-                            print node.x, node.y + 1
+        #                    print node.x, node.y + 1
                             self.tiles[node.x][node.y + 1].explored = True
                             neighbours.append(self.tiles[node.x][node.y + 1])
                             validMoves.append(self.tiles[node.x][node.y + 1])
